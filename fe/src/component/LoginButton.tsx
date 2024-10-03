@@ -1,9 +1,9 @@
-"use client";  // 클라이언트 컴포넌트로 설정
+"use client";  
 
 import { signIn, signOut, useSession } from 'next-auth/react';
 
 export default function LoginButton() {
-  const { data: session } = useSession();  // 클라이언트 컴포넌트에서만 사용 가능
+  const { data: session } = useSession();  
 
   if (session) {
     return (

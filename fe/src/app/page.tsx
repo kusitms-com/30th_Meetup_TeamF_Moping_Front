@@ -5,7 +5,7 @@ export default function Home() {
     <div>
       <h1>Welcome to the Main Page</h1>
       <p>Please login using Naver:</p>
-      <LoginButton />  {/* 로그인 버튼 컴포넌트 */}
+      <LoginButton />  
     </div>
   );
 }
