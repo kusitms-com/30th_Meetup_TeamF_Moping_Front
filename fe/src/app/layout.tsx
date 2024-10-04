@@ -1,3 +1,9 @@
+// src/app/layout.tsx
+
+"use client";
+
+import { SessionProvider } from "next-auth/react"; // 세션 관리
+
 export default function RootLayout({
   children,
 }: {
@@ -6,13 +12,11 @@ export default function RootLayout({
   return (
     <html lang="en">
       <head>
-        <title>Test App</title>
+        <title>My App</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
       </head>
       <body>
-        <header>
-          <h1>Test App</h1>
-        </header>
-        <main>{children}</main>
+        <SessionProvider>{children}</SessionProvider> {/* 세션 관리 */}
       </body>
     </html>
   );

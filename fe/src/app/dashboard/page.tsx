@@ -1,22 +1,50 @@
-import { getServerSession } from "next-auth";
-import { authOptions } from "@/app/api/auth/authOptions";
-import { redirect } from "next/navigation";
+// src/app/dashboard/page.tsx
 
-export default async function Dashboard() {
-  const session = await getServerSession(authOptions);
+"use client";
+
+import { useEffect, useState } from "react";
+
+interface UserSession {
+  user: {
+    name: string;
+    email: string;
+  };
+}
+
+export default function Dashboard() {
+  const [session, setSession] = useState<UserSession | null>(null);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    const fetchSession = async () => {
+      try {
+        const response = await fetch("/api/auth/session");
+        if (!response.ok) {
+          throw new Error("Failed to fetch session");
+        }
+        const data = await response.json();
+        setSession(data.session);
+      } catch (err) {
+        const errorMessage = (err as Error).message; // err를 사용
+        setError(errorMessage);
+      }
+    };
+
+    fetchSession();
+  }, []);
+
+  if (error) {
+    return <div>Error: {error}</div>;
+  }
 
   if (!session) {
-    redirect("/");
-    return null;
+    return <div>Loading session...</div>;
   }
 
   return (
     <div>
-      <h1>Welcome, {session.user?.email}!</h1>
-      <p>You are logged in.</p>
-      <form method="post" action="/api/auth/signout">
-        <button type="submit">Sign out</button>
-      </form>
+      <h1>Welcome, {session.user.name}</h1>
+      <p>Email: {session.user.email}</p>
     </div>
   );
 }
