@@ -33,15 +33,25 @@ jobs:
         run: pnpm build
         working-directory: ./fe
 
+      # 빌드 결과 디렉토리 확인 단계
+      - name: 빌드 결과 디렉토리 확인
+        run: |
+          ls -al ./fe/dist
+
       # GitHub Token을 사용하여 배포 또는 Git 작업
       - name: 배포 준비 중...
         env:
           GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
         run: |
           echo "Using GitHub Token to authenticate..."
-          git config --global user.email "your-email@example.com"
-          git config --global user.name "your-username"
-          git remote set-url origin https://$GITHUB_TOKEN@github.com/your-username/your-repository.git
-          git add .
-          git commit -m "Auto commit by GitHub Actions"
-          git push origin main
+          git config --global user.email "itskarnel@kyonggi.ac.kr"
+          git config --global user.name "karnelll"
+          # fe 디렉토리로 이동 후 Git 작업 수행
+          cd ./fe
+          if [ -n "$(git status --porcelain)" ]; then
+            git add .
+            git commit -m "Auto commit by GitHub Actions"
+            git push https://$GITHUB_TOKEN@github.com/Team-pingping/pingping-FE.git HEAD:main
+          else
+            echo "No changes to commit"
+          fi
