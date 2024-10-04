@@ -9,21 +9,39 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      # 레포지토리 체크아웃 단계
       - name: 레포지토리 체크아웃 중..
         uses: actions/checkout@v2
 
-      - name: node 설치중..
+      # Node.js 설치 단계
+      - name: Node.js 설치중..
         uses: actions/setup-node@v2
         with:
           node-version: '18.18.2'
 
+      # pnpm 설치 단계
       - name: pnpm 설치중..
         run: npm install -g pnpm
 
+      # 종속성 설치 단계
       - name: 종속성 설치중...
         run: pnpm install
         working-directory: ./fe
 
+      # 빌드 단계
       - name: 빌드 중..
         run: pnpm build
         working-directory: ./fe
+
+      # GitHub Token을 사용하여 배포 또는 Git 작업
+      - name: 배포 준비 중...
+        env:
+          GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
+        run: |
+          echo "Using GitHub Token to authenticate..."
+          git config --global user.email "your-email@example.com"
+          git config --global user.name "your-username"
+          git remote set-url origin https://$GITHUB_TOKEN@github.com/your-username/your-repository.git
+          git add .
+          git commit -m "Auto commit by GitHub Actions"
+          git push origin main
