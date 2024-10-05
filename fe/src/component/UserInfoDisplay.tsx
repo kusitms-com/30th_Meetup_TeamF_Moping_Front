@@ -1,5 +1,3 @@
-// src/component/UserInfoDisplay.tsx
-
 interface UserInfoProps {
   name?: string;
   email?: string;

@@ -1,5 +1,3 @@
-// src/component/NaverLoginButton.tsx
-
 "use client";
 
 interface LoginButtonProps {
@@ -18,12 +16,13 @@ export default function LoginButton({ redirectUri }: LoginButtonProps) {
       return;
     }
 
-    // 네이버 로그인 페이지로 리디렉션
+    console.log("Client ID:", clientId);
+    console.log("Redirect URI:", redirectUri);
+
     const naverAuthUrl = `https://nid.naver.com/oauth2.0/authorize?response_type=code&client_id=${clientId}&redirect_uri=${encodeURIComponent(redirectUri)}&state=${encodeURIComponent(state)}`;
     window.location.href = naverAuthUrl;
   };
 
-  // 버튼의 type을 명시적으로 설정
   return (
     <button type="button" onClick={handleLogin}>
       Sign in with Naver

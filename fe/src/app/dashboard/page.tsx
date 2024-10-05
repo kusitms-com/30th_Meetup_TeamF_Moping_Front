@@ -1,8 +1,7 @@
-// src/app/dashboard/page.tsx
-
 "use client";
 
 import { useEffect, useState } from "react";
+import UserInfoDisplay from "@/component/UserInfoDisplay";
 
 interface UserSession {
   user: {
@@ -25,7 +24,7 @@ export default function Dashboard() {
         const data = await response.json();
         setSession(data.session);
       } catch (err) {
-        const errorMessage = (err as Error).message; // err를 사용
+        const errorMessage = (err as Error).message;
         setError(errorMessage);
       }
     };
@@ -43,8 +42,7 @@ export default function Dashboard() {
 
   return (
     <div>
-      <h1>Welcome, {session.user.name}</h1>
-      <p>Email: {session.user.email}</p>
+      <UserInfoDisplay name={session?.user.name} email={session?.user.email} />
     </div>
   );
 }
