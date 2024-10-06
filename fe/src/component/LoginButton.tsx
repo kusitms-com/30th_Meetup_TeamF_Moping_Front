@@ -1,9 +1,13 @@
-"use client";  
+"use client";
 
-import { signIn, signOut, useSession } from 'next-auth/react';
+import { signIn, signOut, useSession } from "next-auth/react";
 
 export default function LoginButton() {
-  const { data: session } = useSession();  
+  const { data: session, status } = useSession();
+
+  if (status === "loading") {
+    return <p>Loading...</p>; // 세션을 로딩 중일 때 처리
+  }
 
   if (session) {
     return (
@@ -15,8 +19,9 @@ export default function LoginButton() {
   }
 
   return (
-    <button onClick={() => signIn('naver')}>
-      Sign in with Naver
-    </button>
+    <div>
+      <button onClick={() => signIn("naver")}>Sign in with Naver</button>
+      <button onClick={() => signIn("kakao")}>Sign in with Kakao</button>
+    </div>
   );
 }
