@@ -103,7 +103,7 @@ Pull Request 작성 시 PR 제목과 내용 모두 중요합니다. PR 제목은
 
 ---
 
-## Pull Request Template 요약
+## Pull Request Template
 
 ### 📄 Pull Request 템플릿
 
