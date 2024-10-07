@@ -81,22 +81,37 @@ branch는 작업 단위 & 기능 단위로 생성된 issue를 기반으로 합�
         - 예시: `header-styles.scss`, `button.scss`
 
 ---
+# Pull Request Naming Rule & Template
+
+Pull Request 작성 시 PR 제목과 내용 모두 중요합니다. PR 제목은 작업의 간결한 설명을, 내용은 변경 사항에 대한 구체적인 설명을 담아야 합니다.
 
 ## Pull Request Naming Rule
 
-- **Pull Request**: develop & main branch로 merge할 때에는 pull request가 필요합니다. pull request의 내용에는 변경된 사항에 대한 설명을 명시합니다.
-- **Pull Request Naming Rule**: `[<Prefix>] <Description>` 의 양식을 준수하되, prefix는 commit message convention을 따릅니다.
-    
-    **Example**:
-    
-    1. 새로운 UI 컴포넌트 추가
-        - **Pull Request Title**: `[feat] 새로운 버튼 컴포넌트 추가`
-    2. 환경 설정 파일 수정
-        - **Pull Request Title**: `[chore] 환경 설정 파일 업데이트`
-    3. 버그 수정
-        - **Pull Request Title**: `[fix] 드롭다운 메뉴 버그 수정`
-    4. 문서 수정 작업
-        - **Pull Request Title**: `[docs] 프로젝트 README 업데이트`
+- Pull Request: develop & main branch로 merge할 때에는 pull request가 필요합니다. PR 제목에는 간결하고 이해하기 쉬운 설명을 포함해야 합니다.
+- Pull Request Naming Rule: `[<Prefix>] <Description>` 의 양식을 준수하되, prefix는 commit message convention과 일관성을 유지합니다.
+
+### 예시:
+
+1. 새로운 UI 컴포넌트 추가
+   - Pull Request Title: `[feat] 새로운 버튼 컴포넌트 추가`
+2. 환경 설정 파일 수정
+   - Pull Request Title: `[chore] 환경 설정 파일 업데이트`
+3. 버그 수정
+   - Pull Request Title: `[fix] 드롭다운 메뉴 버그 수정`
+4. 문서 수정 작업
+   - Pull Request Title: `[docs] 프로젝트 README 업데이트`
+
+---
+
+## Pull Request Template 요약
+
+### 📄 Pull Request 템플릿
+
+- **관련 이슈**: 작업한 이슈 번호를 명시합니다.
+- **작업 내용**: 구현된 기능이나 변경 사항을 간략하게 설명합니다.
+- **스크린샷**: 변경된 UI나 기능이 있다면, 스크린샷을 첨부합니다.
+- **추가 사항**: 논의가 필요한 사항이 있으면 추가로 작성합니다.
+- **리뷰 요구 사항(선택)**: 특별히 검토가 필요한 사항이 있으면 적어주세요.
 
 ---
 
@@ -105,23 +120,40 @@ branch는 작업 단위 & 기능 단위로 생성된 issue를 기반으로 합�
 `[<Prefix>] #<Issue_Number> <Description>` 의 양식을 준수합니다. 커밋 메시지는 코드 변경 사항을 명확하게 전달할 수 있도록 간결하고 구체적으로 작성해야 합니다.
 
 - **feat**: 새로운 기능 추가
-    - 예시: `[feat] #11 버튼 컴포넌트 구현`
+  - 예시: `[feat] #11 버튼 컴포넌트 구현`
 - **fix**: 버그 수정
-    - 예시: `[fix] #10 UI 렌더링 오류 수정`
+  - 예시: `[fix] #10 UI 렌더링 오류 수정`
 - **docs**: 문서 수정
-    - 예시: `[docs] #14 README 파일 업데이트`
+  - 예시: `[docs] #14 README 파일 업데이트`
 - **style**: 코드 포맷팅, 세미콜론 누락 등 스타일 수정
-    - 예시: `[style] #23 코드 포맷팅 적용`
+  - 예시: `[style] #23 코드 포맷팅 적용`
 - **refactor**: 코드 리팩토링 (기능 변화 없음)
-    - 예시: `[refactor] #15 컴포넌트 구조 개선`
+  - 예시: `[refactor] #15 컴포넌트 구조 개선`
 - **chore**: 기타 자잘한 수정 (빌드 스크립트 수정, 패키지 관리 등)
-    - 예시: `[chore] #21 패키지 의존성 업데이트`
+  - 예시: `[chore] #21 패키지 의존성 업데이트`
 - **test**: 테스트 코드 추가 또는 수정
-    - 예시: `[test] #18 버튼 컴포넌트 테스트 추가`
+  - 예시: `[test] #18 버튼 컴포넌트 테스트 추가`
 - **perf**: 성능 향상 관련 작업
-    - 예시: `[perf] #20 렌더링 최적화 작업`
+  - 예시: `[perf] #20 렌더링 최적화 작업`
 - **rename**: 파일 및 폴더명 수정
-    - 예시: `[rename] #22 컴포넌트 파일명 수정`
+  - 예시: `[rename] #22 컴포넌트 파일명 수정`
+
+---
+
+## Issue 템플릿
+
+### 🐛 Bug Report 템플릿
+
+- **설명**: 버그에 대한 간단한 설명.
+- **재현 방법**: 버그를 재현할 수 있는 단계별 설명.
+- **예상 결과**: 기대했던 동작을 명시.
+- **환경**: OS, 브라우저 등의 환경 정보.
+
+### ✨ Feature Request 템플릿
+
+- **설명**: 제안하는 기능에 대한 간략한 설명.
+- **동기**: 이 기능이 필요한 이유.
+- **예상되는 기능**: 예상되는 기능의 동작 방식 설명.
 
 ---
 
@@ -129,4 +161,4 @@ branch는 작업 단위 & 기능 단위로 생성된 issue를 기반으로 합�
 
 - **Slack**: 실시간 커뮤니케이션을 위한 협업 툴.
 - **Notion**: 문서화, 일정 관리, 작업 관리를 위한 툴.
-- **Gather**: 가상 오피스 환경에서 팀원들이
+- **Gather**: 가상 오피스 환경에서 팀원들이 실시간 협업할 수 있는 툴.
