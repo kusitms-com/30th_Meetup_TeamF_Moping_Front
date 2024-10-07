@@ -138,7 +138,7 @@ Pull Request 작성 시 PR 제목과 내용 모두 중요합니다. PR 제목은
 - **rename**: 파일 및 폴더명 수정
   - 예시: `[rename] #22 컴포넌트 파일명 수정`
 - **enhancement**: 기존 기능의 개선 또는 새로운 기능 추가 (사용자 경험, 성능 등)
-  - 예시: `[enhancement] #6 네이버 OAuth 로그인 기능 리팩토링`
+  - 예시: `[enhancement] #25 사용자 피드백 반영하여 버튼 디자인 개선`
 ---
 
 ## Issue 템플릿
