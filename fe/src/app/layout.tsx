@@ -1,3 +1,5 @@
+import Script from "next/script";
+
 export default function RootLayout({
   children,
 }: {
@@ -5,6 +7,12 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
+      <head>
+        <Script
+          src="https://developers.kakao.com/sdk/js/kakao.min.js"
+          strategy="beforeInteractive" // 페이지 로드 전에 실행
+        />
+      </head>
       <body>
         <header>
           <nav>
