@@ -25,7 +25,7 @@ export async function GET(req: NextRequest) {
         client_id: clientId,
         client_secret: clientSecret,
         redirect_uri: redirectUri,
-        code: code,
+        code,
       }).toString(),
     });
 
@@ -41,7 +41,7 @@ export async function GET(req: NextRequest) {
     const accessToken = tokenData.access_token;
 
     // 액세스 토큰 출력 (테스트 용도)
-    console.log("Access Token:", accessToken); // eslint-disable-line no-console
+    // console.log('Access Token:', accessToken); // eslint-disable-line no-console
 
     // 클라이언트에 액세스 토큰 전달
     return NextResponse.json({ accessToken });
