@@ -46,6 +46,7 @@ export async function GET(req: NextRequest) {
     // 클라이언트에 액세스 토큰 전달
     return NextResponse.json({ accessToken });
   } catch (error) {
+    // eslint-disable-line no-console
     console.error("Error during OAuth process:", error);
     return NextResponse.json(
       { error: "Internal server error" },
