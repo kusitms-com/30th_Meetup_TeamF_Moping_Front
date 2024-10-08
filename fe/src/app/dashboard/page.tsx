@@ -1,28 +1,36 @@
 "use client";
 
-import { useSession, signOut } from 'next-auth/react';
-import { redirect } from 'next/navigation';  
+import { useEffect, useState } from "react";
+
+interface UserInfo {
+  name: string;
+  email: string;
+}
 
 export default function Dashboard() {
-  const { data: session, status } = useSession();
+  const [userInfo, setUserInfo] = useState<UserInfo | null>(null);
 
-  if (status === 'unauthenticated') {
-    redirect('/');  
-  }
+  useEffect(() => {
+    const fetchUserInfo = async () => {
+      const response = await fetch("/api/userinfo");
+      const data = await response.json();
+      setUserInfo(data);
+    };
 
-  if (status === 'loading') {
-    return <div>Loading...</div>; 
-  }
+    fetchUserInfo();
+  }, []);
 
-  if (session) {
-    return (
-      <div>
-        <h1>Welcome, {session.user?.email}!</h1>
-        <p>You are logged in.</p>
-        <button onClick={() => signOut()}>Sign out</button>
-      </div>
-    );
-  }
-
-  return null;  
+  return (
+    <div>
+      <h1>Dashboard</h1>
+      {userInfo ? (
+        <div>
+          <p>Name: {userInfo.name}</p>
+          <p>Email: {userInfo.email}</p>
+        </div>
+      ) : (
+        <p>Loading user info...</p>
+      )}
+    </div>
+  );
 }

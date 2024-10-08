@@ -1,11 +1,11 @@
-import LoginButton from '@/component/LoginButton'
+import NaverLoginButton from "@/app/component/NaverLoginButton";
 
 export default function Home() {
   return (
     <div>
-      <h1>Welcome to the Main Page</h1>
+      <h1>Welcome to My App</h1>
       <p>Please login using Naver:</p>
-      <LoginButton />  
+      <NaverLoginButton />
     </div>
   );
 }
