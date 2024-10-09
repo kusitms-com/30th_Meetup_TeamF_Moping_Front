@@ -1,4 +1,4 @@
-import type { Config } from "tailwindcss";
+import type { Config } from 'tailwindcss';
 
 const config: Config = {
   content: [
@@ -92,6 +92,11 @@ const config: Config = {
         100: '100',
         200: '200',
         300: '300',
+      },
+
+      // Pretendard 폰트 추가
+      fontFamily: {
+        'pretendard': ['Pretendard', 'sans-serif'],
       },
 
       // 모서리 반경 설정
