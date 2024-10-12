@@ -12,7 +12,7 @@ export async function GET(req: NextRequest) {
   if (!code || !clientId || !clientSecret || !redirectUri) {
     return NextResponse.json(
       { error: "Missing required parameters" },
-      { status: 400 },
+      { status: 400 }
     );
   }
 
@@ -22,7 +22,7 @@ export async function GET(req: NextRequest) {
     {
       method: "POST",
       headers: { "Content-Type": "application/x-www-form-urlencoded" },
-    },
+    }
   );
 
   const tokenData = await tokenResponse.json();
@@ -30,7 +30,7 @@ export async function GET(req: NextRequest) {
   if (tokenData.error) {
     return NextResponse.json(
       { error: tokenData.error_description },
-      { status: 400 },
+      { status: 400 }
     );
   }
 
