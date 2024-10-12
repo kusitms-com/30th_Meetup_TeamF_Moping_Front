@@ -16,13 +16,13 @@
   },
   "ignorePatterns": ["node_modules/"],
   "extends": [
-    "next",                          
-    "next/core-web-vitals",          
-    "airbnb",                        
-    "airbnb/hooks",                  
-    "plugin:@typescript-eslint/recommended", 
-    "plugin:prettier/recommended",   
-    "prettier"                       
+    "next",
+    "next/core-web-vitals",
+    "airbnb",
+    "airbnb/hooks",
+    "plugin:@typescript-eslint/recommended",
+    "plugin:prettier/recommended",
+    "prettier"
   ],
   "rules": {
     "import/prefer-default-export": "off",
