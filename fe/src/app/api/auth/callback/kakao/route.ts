@@ -40,14 +40,8 @@ export async function GET(req: NextRequest) {
 
     const accessToken = tokenData.access_token;
 
-    // 액세스 토큰 출력 (테스트 용도)
-    // console.log('Access Token:', accessToken); // eslint-disable-line no-console
-
-    // 클라이언트에 액세스 토큰 전달
     return NextResponse.json({ accessToken });
   } catch (error) {
-    // eslint-disable-line no-console
-    console.error("Error during OAuth process:", error);
     return NextResponse.json(
       { error: "Internal server error" },
       { status: 500 }
