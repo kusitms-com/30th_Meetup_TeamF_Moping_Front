@@ -1,4 +1,4 @@
-import NaverLoginButton from "@/app/component/NaverLoginButton";
+import NaverLoginButton from "@/app/components/NaverLoginButton";
 
 export default function Home() {
   return (
