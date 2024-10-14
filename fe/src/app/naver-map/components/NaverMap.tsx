@@ -2,10 +2,17 @@
 
 import React, { useEffect, useRef, useState } from "react";
 
-// 타입 정의
+// 현재 위치 타입 정의
 interface Location {
   latitude: number;
   longitude: number;
+}
+
+// 네이버 지도 타입 선언
+declare global {
+  interface Window {
+    naver: typeof naver;
+  }
 }
 
 function NaverMap() {
@@ -15,12 +22,13 @@ function NaverMap() {
     latitude: 37.4979517,
     longitude: 127.0276188,
   });
+  const [address, setAddress] = useState<string>("");
 
   useEffect(() => {
     const initializeMap = () => {
-      const { naver } = window as typeof window & { naver: naver.maps.Map };
-      if (!naver || mapInstance.current) return; // 값 반환으로 오류 해결
+      if (mapInstance.current || !window.naver) return;
 
+      const { naver } = window;
       const center = new naver.maps.LatLng(
         myLocation.latitude,
         myLocation.longitude
@@ -60,28 +68,49 @@ function NaverMap() {
       document.head.appendChild(script);
 
       return () => {
-        mapInstance.current?.destroy();
-        mapInstance.current = null;
+        if (mapInstance.current) {
+          mapInstance.current.destroy();
+          mapInstance.current = null;
+        }
         document.head.removeChild(script);
       };
     }
-
     return undefined;
-  }, [myLocation.latitude, myLocation.longitude]); // 종속성 배열 수정
+  }, [myLocation.latitude, myLocation.longitude]);
 
   const handleMoveToCurrentLocation = () => {
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition(
         (position) => {
-          setMyLocation({
-            latitude: position.coords.latitude,
-            longitude: position.coords.longitude,
-          });
-          const newCenter = new naver.maps.LatLng(
-            position.coords.latitude,
-            position.coords.longitude
-          );
+          const { latitude, longitude } = position.coords;
+          setMyLocation({ latitude, longitude });
+
+          const { naver } = window;
+          const newCenter = new naver.maps.LatLng(latitude, longitude);
           mapInstance.current?.setCenter(newCenter);
+
+          // 현재 위치의 주소를 가져와 표시
+          naver.maps.Service.reverseGeocode(
+            {
+              coords: new naver.maps.LatLng(latitude, longitude),
+            },
+            (
+              status: naver.maps.Service.Status,
+              response: naver.maps.Service.ReverseGeocodeResponse
+            ) => {
+              if (
+                status === naver.maps.Service.Status.OK &&
+                response.v2.address.jibunAddress
+              ) {
+                const userAddress =
+                  response.v2.address.jibunAddress ||
+                  "주소 정보를 가져올 수 없습니다.";
+                setAddress(userAddress);
+              } else {
+                setAddress("주소 정보를 가져오는 데 실패했습니다.");
+              }
+            }
+          );
         },
         () => alert("위치 정보를 가져올 수 없습니다.")
       );
@@ -91,13 +120,14 @@ function NaverMap() {
   return (
     <div>
       <button
-        type="button" // 버튼 타입 명시
+        type="button"
         onClick={handleMoveToCurrentLocation}
         style={{ marginBottom: "10px" }}
       >
         내 위치로 이동
       </button>
       <div ref={mapRef} style={{ width: "100%", height: "400px" }} />
+      {address && <p>현재 주소: {address}</p>}
     </div>
   );
 }
