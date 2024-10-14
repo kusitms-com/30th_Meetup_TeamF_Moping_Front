@@ -1,42 +1,32 @@
 "use client";
 
 import React, { useEffect, useRef } from "react";
-import type { Map, Marker, LatLng, MarkerImage, MapOptions } from "navermaps";
-
-// Window 객체에 naver를 안전하게 타입 선언
-interface NaverWindow extends Window {
-  naver: typeof import("naver.maps");
-}
 
 function NaverMap() {
   const mapRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
     const initializeMap = () => {
-      const naverWindow = window as unknown as NaverWindow;
-      const { naver } = naverWindow;
-      if (!naver) {
-        console.error("네이버 지도 API가 로드되지 않았습니다.");
-        return;
-      }
-
       // 지도 생성 옵션
-      const mapOptions: MapOptions = {
+      const mapOptions: naver.maps.MapOptions = {
         center: new naver.maps.LatLng(37.5665, 126.978), // 서울 시청
         zoom: 15, // 줌 레벨 설정
       };
 
       // 지도 객체 생성
-      const map: Map = new naver.maps.Map(
+      const map: naver.maps.Map = new naver.maps.Map(
         mapRef.current as HTMLElement,
         mapOptions
       );
 
       // 마커 위치 설정
-      const position: LatLng = new naver.maps.LatLng(37.5665, 126.978);
+      const position: naver.maps.LatLng = new naver.maps.LatLng(
+        37.5665,
+        126.978
+      );
 
       // 커스텀 마커 이미지 설정
-      const markerImage: MarkerImage = {
+      const markerImage = {
         url: "/favicon.ico", // public 폴더의 이미지
         size: new naver.maps.Size(50, 50),
         origin: new naver.maps.Point(0, 0),
@@ -44,7 +34,7 @@ function NaverMap() {
       };
 
       // 마커 생성
-      const marker: Marker = new naver.maps.Marker({
+      const marker: naver.maps.Marker = new naver.maps.Marker({
         position, // 마커 위치
         map, // 마커를 표시할 지도 객체
         icon: markerImage, // 마커 이미지
