@@ -21,6 +21,7 @@
     "winston": "^3.14.2"
   },
   "devDependencies": {
+    "@types/navermaps": "^3.7.8",
     "@types/node": "^20",
     "@types/react": "^18",
     "@types/react-dom": "^18",
