@@ -19,7 +19,11 @@ export default function NaverLoginButton() {
   };
 
   return (
-    <button type="button" onClick={handleLogin}>
+    <button
+      type="button"
+      onClick={handleLogin}
+      className="bg-green-500 text-white p-4 rounded-lg"
+    >
       Sign in with Naver
     </button>
   );
