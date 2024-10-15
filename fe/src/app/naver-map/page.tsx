@@ -1,8 +1,9 @@
 import React from "react";
-import NaverMap from "./component/naverMap";
 
-const naverMap = () => {
+import NaverMap from "./components/NaverMap";
+
+const page = () => {
   return <NaverMap />;
 };
 
-export default naverMap;
+export default page;
