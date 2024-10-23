@@ -11,12 +11,12 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body>
-        <header>
+        {/* <header>
           <nav>
             <a href="/">Home</a>
             <a href="/dashboard">Dashboard</a>
           </nav>
-        </header>
+        </header> */}
         <main>{children}</main>
         <footer>© 2024 My App</footer>
 
