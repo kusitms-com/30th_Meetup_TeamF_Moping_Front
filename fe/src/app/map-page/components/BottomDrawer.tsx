@@ -2,12 +2,12 @@ import React from "react";
 
 const BottomDrawer = () => {
   return (
-    <div className="w-[100%] h-[218px] bg-grayscale-90 fixed left-0 bottom-0 z-10 rounded-t-xlarge">
+    <div className="w-[100%] h-[218px] bg-grayscale-90 z-10 rounded-t-xlarge">
       <div className="absolute mr-[16px] right-0 -top-[120px] flex flex-col">
-        <button className="w-[48px] h-[48px] mb-[12px]">
+        <button type="button" className="w-[48px] h-[48px] mb-[12px]">
           <img src="/svg/share.svg" alt="share" />
         </button>
-        <button className="w-[48px] h-[48px] mb-[12px]">
+        <button type="button" className="w-[48px] h-[48px] mb-[12px]">
           <img src="/svg/my-location.svg" alt="location" />
         </button>
       </div>
@@ -30,14 +30,20 @@ const BottomDrawer = () => {
       </div>
       <div className="h-[96px] w-[100%] flex pt-[6px] ml-[16px] text-caption font-200 text-grayscale-20">
         <div className="w-[68px] h-[90px] mr-[8px] flex flex-col justify-between">
-          <img src="/svg/add.svg" alt="add" />
+          <button type="button">
+            <img src="/svg/add.svg" alt="add" />
+          </button>
         </div>
         <div className="w-[68px] h-[90px] mr-[8px] flex flex-col justify-between">
-          <img src="/svg/add.svg" alt="add" />
+          <button type="button">
+            <img src="/svg/add.svg" alt="add" />
+          </button>
           <div className="text-center">메롱메롱</div>
         </div>
         <div className="w-[68px] h-[90px] mr-[8px] flex flex-col justify-between">
-          <img src="/svg/add.svg" alt="add" />
+          <button type="button">
+            <img src="/svg/add.svg" alt="add" />
+          </button>
           <div className="text-center">메롱윤소민</div>
         </div>
       </div>

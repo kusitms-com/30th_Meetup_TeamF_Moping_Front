@@ -18,7 +18,7 @@ export default function RootLayout({
           </nav>
         </header> */}
         <main>{children}</main>
-        <footer>© 2024 My App</footer>
+        {/* <footer>© 2024 My App</footer> */}
 
         {/* 네이버 지도 API 스크립트 로드 */}
         <Script
