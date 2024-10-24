@@ -3,7 +3,7 @@ import Image from "next/image"; // Import Next.js Image component
 import { useLocationStore } from "../stores/useLocationStore";
 
 export default function BottomDrawer() {
-  const [selectedButton, setSelectedButton] = useState(0);
+  const [selectedButton, setSelectedButton] = useState<number | null>(null); // Allows deselection
   const moveToLocation = useLocationStore((state) => state.moveToLocation); // 상태에서 함수 가져오기
 
   const handleLocationClick = () => {
@@ -19,7 +19,7 @@ export default function BottomDrawer() {
   };
 
   const handleButtonClick = (id: number) => {
-    setSelectedButton(id);
+    setSelectedButton((prevId) => (prevId === id ? null : id)); // Toggle selection and deselection
   };
 
   const handleShare = () => {
@@ -41,7 +41,7 @@ export default function BottomDrawer() {
     { label: "메롱메롱", id: 1 },
     { label: "메롱메롱", id: 2 },
     { label: "메롱메롱", id: 3 },
-    { label: "메롱윤소민", id: 4 },
+    { label: "메윤소민", id: 4 },
     { label: "메롱윤소민", id: 5 },
     { label: "메롱윤소민", id: 6 },
   ];
@@ -54,8 +54,7 @@ export default function BottomDrawer() {
           className="w-[48px] h-[48px] mb-[12px]"
           onClick={handleShare}
         >
-          <Image src="/svg/share.svg" alt="share" width={48} height={48} />{" "}
-          {/* Optimized image */}
+          <Image src="/svg/share.svg" alt="share" width={48} height={48} />
         </button>
         <button
           type="button"
@@ -67,8 +66,7 @@ export default function BottomDrawer() {
             alt="location"
             width={48}
             height={48}
-          />{" "}
-          {/* Optimized image */}
+          />
         </button>
       </div>
       <div className="w-full h-[20px] flex justify-center">
