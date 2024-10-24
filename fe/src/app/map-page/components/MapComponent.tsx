@@ -13,7 +13,10 @@ const MapComponent = () => {
           center: new window.naver.maps.LatLng(37.5665, 126.978),
           zoom: 15,
           scaleControl: false, // 축척 바 숨김
-          logoControl: false,
+          logoControl: true,
+          logoControlOptions: {
+            position: window.naver.maps.Position.TOP_RIGHT, // 로고를 왼쪽 중간으로 배치
+          },
           mapDataControl: false,
           mapTypeControl: false,
         });
@@ -31,7 +34,7 @@ const MapComponent = () => {
     }
   }, []);
 
-  return <div ref={mapRef} style={{ width: "100vw", height: "110vh" }} />;
+  return <div ref={mapRef} style={{ width: "100vw", height: "100vh" }} />;
 };
 
 export default MapComponent;

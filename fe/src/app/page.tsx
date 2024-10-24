@@ -1,5 +1,4 @@
 import NaverLoginButton from "@/app/components/NaverLoginButton";
-import Script from "next/script";
 
 export default function Home() {
   return (

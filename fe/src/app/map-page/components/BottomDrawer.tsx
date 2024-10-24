@@ -28,19 +28,43 @@ const BottomDrawer = () => {
           </button>
         </div>
       </div>
-      <div className="h-[96px] w-[100%] flex pt-[6px] ml-[16px] text-caption font-200 text-grayscale-20">
-        <div className="w-[68px] h-[90px] mr-[8px] flex flex-col justify-between">
+      <div className="h-[96px] w-full flex pt-[6px] px-[16px] text-caption font-200 text-grayscale-20 overflow-x-auto scrollbar-hide">
+        <div className="w-[68px] h-[90px] mr-[8px] flex flex-col justify-between shrink-0">
           <button type="button">
             <img src="/svg/add.svg" alt="add" />
           </button>
         </div>
-        <div className="w-[68px] h-[90px] mr-[8px] flex flex-col justify-between">
+        <div className="w-[68px] h-[90px] mr-[8px] flex flex-col justify-between shrink-0">
           <button type="button">
             <img src="/svg/add.svg" alt="add" />
           </button>
           <div className="text-center">메롱메롱</div>
         </div>
-        <div className="w-[68px] h-[90px] mr-[8px] flex flex-col justify-between">
+        <div className="w-[68px] h-[90px] mr-[8px] flex flex-col justify-between shrink-0">
+          <button type="button">
+            <img src="/svg/add.svg" alt="add" />
+          </button>
+          <div className="text-center">메롱메롱</div>
+        </div>
+        <div className="w-[68px] h-[90px] mr-[8px] flex flex-col justify-between shrink-0">
+          <button type="button">
+            <img src="/svg/add.svg" alt="add" />
+          </button>
+          <div className="text-center">메롱메롱</div>
+        </div>
+        <div className="w-[68px] h-[90px] mr-[8px] flex flex-col justify-between shrink-0">
+          <button type="button">
+            <img src="/svg/add.svg" alt="add" />
+          </button>
+          <div className="text-center">메롱윤소민</div>
+        </div>
+        <div className="w-[68px] h-[90px] mr-[8px] flex flex-col justify-between shrink-0">
+          <button type="button">
+            <img src="/svg/add.svg" alt="add" />
+          </button>
+          <div className="text-center">메롱윤소민</div>
+        </div>
+        <div className="w-[68px] h-[90px] mr-[8px] flex flex-col justify-between shrink-0">
           <button type="button">
             <img src="/svg/add.svg" alt="add" />
           </button>

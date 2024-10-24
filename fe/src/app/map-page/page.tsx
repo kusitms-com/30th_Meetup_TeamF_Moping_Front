@@ -22,6 +22,11 @@ const Page = () => {
 
   return (
     <div>
+      <div className="w-[100%] h-[56px] px-[16px] py-[8px] fixed z-10">
+        <button type="button" className="w-[40px] h-[40px] ">
+          <img src="/svg/arrow-back.svg" alt="icon" />
+        </button>
+      </div>
       <MapComponent /> {/* 지도 컴포넌트 */}
       <a.div
         {...bind()} // 드래그 제스처 바인딩
