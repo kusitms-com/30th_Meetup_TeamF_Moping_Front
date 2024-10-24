@@ -1,58 +1,58 @@
-import type { Config } from 'tailwindcss';
+import type { Config } from "tailwindcss";
 
 const config: Config = {
-  darkMode: 'class', // 다크 모드 설정 (필요 시 활성화 가능)
+  darkMode: "class", // 다크 모드 설정 (필요 시 활성화 가능)
   content: [
-    './src/pages/**/*.{js,ts,jsx,tsx,mdx}',  
-    './src/components/**/*.{js,ts,jsx,tsx,mdx}',  
-    './src/app/**/*.{js,ts,jsx,tsx,mdx}',  
+    "./src/pages/**/*.{js,ts,jsx,tsx,mdx}",
+    "./src/components/**/*.{js,ts,jsx,tsx,mdx}",
+    "./src/app/**/*.{js,ts,jsx,tsx,mdx}",
   ],
   theme: {
     extend: {
       colors: {
         // Gray 팔레트 (웹 접근성 대비율 준수)
         gray: {
-          50: '#F8F8F8',
-          100: '#F5F5F5',
-          200: '#E8E8E8',
-          300: '#D1D1D1',
-          400: '#BFBFBF',
-          500: '#A6A6A6',
-          600: '#777777',
-          700: '#444444',
-          800: '#333333',
-          900: '#222527',
+          50: "#F8F8F8",
+          100: "#F5F5F5",
+          200: "#E8E8E8",
+          300: "#D1D1D1",
+          400: "#BFBFBF",
+          500: "#A6A6A6",
+          600: "#777777",
+          700: "#444444",
+          800: "#333333",
+          900: "#222527",
         },
 
         // Semantic Colors (텍스트, 아이콘, 경계선 등)
         text: {
-          default: '#222527',   // 기본 텍스트
-          subdued: '#444444',   // 보조 텍스트
-          info: '#777777',      // 정보 텍스트
-          disabled: '#A6A6A6',  // 비활성화 텍스트
-          heading: '#222527',   // 타이틀 텍스트
+          default: "#222527", // 기본 텍스트
+          subdued: "#444444", // 보조 텍스트
+          info: "#777777", // 정보 텍스트
+          disabled: "#A6A6A6", // 비활성화 텍스트
+          heading: "#222527", // 타이틀 텍스트
         },
 
         icon: {
-          default: '#444444',   // 기본 아이콘 색상
-          sub: '#777777',       // 보조 아이콘 색상
-          disabled: '#BFBFBF',  // 비활성화 아이콘 색상
+          default: "#444444", // 기본 아이콘 색상
+          sub: "#777777", // 보조 아이콘 색상
+          disabled: "#BFBFBF", // 비활성화 아이콘 색상
         },
 
         border: {
-          default: '#BFBFBF',   // 기본 경계선 색상
-          strong: '#A6A6A6',    // 강조된 경계선 색상
-          disabled: '#E8E8E8',  // 비활성화된 경계선 색상
+          default: "#BFBFBF", // 기본 경계선 색상
+          strong: "#A6A6A6", // 강조된 경계선 색상
+          disabled: "#E8E8E8", // 비활성화된 경계선 색상
         },
 
         divider: {
-          default: '#E8E8E8',   // 기본 구분선 색상
-          strong: '#A6A6A6',    // 강조된 구분선 색상
+          default: "#E8E8E8", // 기본 구분선 색상
+          strong: "#A6A6A6", // 강조된 구분선 색상
         },
 
         background: {
-          light: '#F8F8F8',     // 밝은 배경색
-          deep: '#F5F5F5',      // 진한 배경색
+          light: "#F8F8F8", // 밝은 배경색
+          deep: "#F5F5F5", // 진한 배경색
         },
 
         // 기존 Primary, Secondary, Grayscale 등 컬러 팔레트
@@ -152,7 +152,7 @@ const config: Config = {
       },
     },
   },
-  plugins: [],
+  plugins: [require("tailwind-scrollbar-hide")],
 };
 
 export default config;
