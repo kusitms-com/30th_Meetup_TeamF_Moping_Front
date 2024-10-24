@@ -1,21 +1,26 @@
+// src/app/map-page/components/MapComponent.tsx
 import React, { useEffect, useRef } from "react";
+import { useLocationStore } from "../stores/useLocationStore";
 
 const MapComponent = () => {
   const mapRef = useRef<HTMLDivElement | null>(null);
+  const { center } = useLocationStore(); // 상태에서 중심 좌표 가져오기
 
   useEffect(() => {
     if (!mapRef.current) return;
 
-    // Naver Maps API가 로드되었는지 확인하고, 로드 후에만 접근
     const initializeMap = () => {
       if (window.naver && mapRef.current) {
         const map = new window.naver.maps.Map(mapRef.current, {
-          center: new window.naver.maps.LatLng(37.5665, 126.978),
+          center: new window.naver.maps.LatLng(
+            center.latitude,
+            center.longitude
+          ),
           zoom: 15,
-          scaleControl: false, // 축척 바 숨김
+          scaleControl: false,
           logoControl: true,
           logoControlOptions: {
-            position: window.naver.maps.Position.TOP_RIGHT, // 로고를 왼쪽 중간으로 배치
+            position: window.naver.maps.Position.TOP_RIGHT,
           },
           mapDataControl: false,
           mapTypeControl: false,
@@ -29,10 +34,10 @@ const MapComponent = () => {
       const script = document.createElement("script");
       script.src = `https://openapi.map.naver.com/openapi/v3/maps.js?ncpClientId=${process.env.NEXT_PUBLIC_NAVER_MAP_CLIENT_ID}`;
       script.async = true;
-      script.onload = initializeMap; // API 로드가 끝나면 initializeMap 실행
+      script.onload = initializeMap;
       document.head.appendChild(script);
     }
-  }, []);
+  }, [center]); // 중심 좌표 변경 시 업데이트
 
   return <div ref={mapRef} style={{ width: "100vw", height: "100vh" }} />;
 };

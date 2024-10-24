@@ -1,10 +1,38 @@
 import React, { useState } from "react";
+import { useLocationStore } from "../stores/useLocationStore";
 
 const BottomDrawer = () => {
   const [selectedButton, setSelectedButton] = useState(0);
+  const moveToLocation = useLocationStore((state) => state.moveToLocation); // 상태에서 함수 가져오기
 
+  const handleLocationClick = () => {
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(
+        (position) => {
+          const { latitude, longitude } = position.coords;
+          moveToLocation(latitude, longitude); // 현재 위치로 이동
+        },
+        () => alert("현재 위치 정보를 가져올 수 없습니다.")
+      );
+    }
+  };
   const handleButtonClick = (id: number) => {
     setSelectedButton(id);
+  };
+
+  const handleShare = () => {
+    if (navigator.share) {
+      navigator
+        .share({
+          title: "공유할 제목",
+          text: "공유할 내용",
+          url: window.location.href, // 현재 페이지의 URL을 공유
+        })
+        .then(() => console.log("공유 성공"))
+        .catch((error) => console.log("공유 실패", error));
+    } else {
+      alert("이 브라우저에서는 공유 기능을 지원하지 않습니다.");
+    }
   };
 
   const buttons = [
@@ -19,10 +47,18 @@ const BottomDrawer = () => {
   return (
     <div className="w-[100%] h-[218px] bg-grayscale-90 z-10 rounded-t-xlarge">
       <div className="absolute mr-[16px] right-0 -top-[120px] flex flex-col">
-        <button type="button" className="w-[48px] h-[48px] mb-[12px]">
+        <button
+          type="button"
+          className="w-[48px] h-[48px] mb-[12px]"
+          onClick={handleShare}
+        >
           <img src="/svg/share.svg" alt="share" />
         </button>
-        <button type="button" className="w-[48px] h-[48px] mb-[12px]">
+        <button
+          type="button"
+          className="w-[48px] h-[48px]"
+          onClick={handleLocationClick}
+        >
           <img src="/svg/my-location.svg" alt="location" />
         </button>
       </div>
