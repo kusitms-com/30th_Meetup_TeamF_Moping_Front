@@ -1,6 +1,21 @@
-import React from "react";
+import React, { useState } from "react";
 
 const BottomDrawer = () => {
+  const [selectedButton, setSelectedButton] = useState(0);
+
+  const handleButtonClick = (id: number) => {
+    setSelectedButton(id);
+  };
+
+  const buttons = [
+    { label: "메롱메롱", id: 1 },
+    { label: "메롱메롱", id: 2 },
+    { label: "메롱메롱", id: 3 },
+    { label: "메롱윤소민", id: 4 },
+    { label: "메롱윤소민", id: 5 },
+    { label: "메롱윤소민", id: 6 },
+  ];
+
   return (
     <div className="w-[100%] h-[218px] bg-grayscale-90 z-10 rounded-t-xlarge">
       <div className="absolute mr-[16px] right-0 -top-[120px] flex flex-col">
@@ -24,7 +39,7 @@ const BottomDrawer = () => {
         </div>
         <div>
           <button type="button" className="w-[32px] h-[32px]">
-            <img src="/svg/refresh.svg" />
+            <img src="/svg/refresh.svg" alt="refresh" />
           </button>
         </div>
       </div>
@@ -34,42 +49,25 @@ const BottomDrawer = () => {
             <img src="/svg/add.svg" alt="add" />
           </button>
         </div>
-        <div className="w-[68px] h-[90px] mr-[8px] flex flex-col justify-between shrink-0">
-          <button type="button">
-            <img src="/svg/add.svg" alt="add" />
-          </button>
-          <div className="text-center">메롱메롱</div>
-        </div>
-        <div className="w-[68px] h-[90px] mr-[8px] flex flex-col justify-between shrink-0">
-          <button type="button">
-            <img src="/svg/add.svg" alt="add" />
-          </button>
-          <div className="text-center">메롱메롱</div>
-        </div>
-        <div className="w-[68px] h-[90px] mr-[8px] flex flex-col justify-between shrink-0">
-          <button type="button">
-            <img src="/svg/add.svg" alt="add" />
-          </button>
-          <div className="text-center">메롱메롱</div>
-        </div>
-        <div className="w-[68px] h-[90px] mr-[8px] flex flex-col justify-between shrink-0">
-          <button type="button">
-            <img src="/svg/add.svg" alt="add" />
-          </button>
-          <div className="text-center">메롱윤소민</div>
-        </div>
-        <div className="w-[68px] h-[90px] mr-[8px] flex flex-col justify-between shrink-0">
-          <button type="button">
-            <img src="/svg/add.svg" alt="add" />
-          </button>
-          <div className="text-center">메롱윤소민</div>
-        </div>
-        <div className="w-[68px] h-[90px] mr-[8px] flex flex-col justify-between shrink-0">
-          <button type="button">
-            <img src="/svg/add.svg" alt="add" />
-          </button>
-          <div className="text-center">메롱윤소민</div>
-        </div>
+        {buttons.map((button, index) => (
+          <div
+            key={button.id}
+            className="w-[68px] h-[90px] mr-[8px] flex flex-col justify-between shrink-0"
+          >
+            <button
+              type="button"
+              onClick={() => handleButtonClick(button.id)}
+              className={`w-[68px] h-[68px] ${
+                selectedButton === button.id
+                  ? "border-2 rounded-lg border-primary-50"
+                  : ""
+              }`}
+            >
+              <img src="/svg/add.svg" alt="add" />
+            </button>
+            <div className="text-center">{button.label}</div>
+          </div>
+        ))}
       </div>
     </div>
   );
