@@ -41,7 +41,7 @@ export default function BottomDrawer() {
     { label: "메롱메롱", id: 1 },
     { label: "메롱메롱", id: 2 },
     { label: "메롱메롱", id: 3 },
-    { label: "메롱윤소민", id: 4 },
+    { label: "메윤소민", id: 4 },
     { label: "메롱윤소민", id: 5 },
     { label: "메롱윤소민", id: 6 },
   ];
