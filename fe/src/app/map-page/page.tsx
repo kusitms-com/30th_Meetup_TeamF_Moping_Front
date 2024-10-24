@@ -1,42 +1,44 @@
 "use client";
 
 import React from "react";
-import BottomDrawer from "./components/BottomDrawer";
+import Image from "next/image";
+import { a } from "@react-spring/web"; // External imports first
+import { useDrag } from "@use-gesture/react"; // External imports
+import BottomDrawer from "./components/BottomDrawer"; // Local imports after external ones
 import MapComponent from "./components/MapComponent";
-import { a } from "@react-spring/web";
-import { useDrag } from "@use-gesture/react";
-import useDrawer from "./hooks/useDrawer"; // 방금 만든 useDrawer 훅을 가져옴
+import useDrawer from "./hooks/useDrawer"; // Local hook import
 
-const Page = () => {
-  const { y, openDrawer, closeDrawer, setPosition } = useDrawer(); // useDrawer 사용
+export default function Page() {
+  // Ensure the function component uses function declaration
+  const { y, openDrawer, closeDrawer, setPosition } = useDrawer();
 
   const bind = useDrag(({ last, movement: [, my] }) => {
     if (last) {
-      // 드래그 종료 시, 일정 임계치를 기준으로 드로어를 열거나 닫기
-      my > 100 ? closeDrawer() : openDrawer();
+      if (my > 100) {
+        closeDrawer(); // Close if dragged more than 100px
+      } else {
+        openDrawer(); // Open if dragged less than 100px
+      }
     } else {
-      // 드래그 중일 때만 위치 업데이트
-      setPosition(my);
+      setPosition(my); // Update the position during the drag
     }
   });
 
   return (
     <div>
       <div className="w-[100%] h-[56px] px-[16px] py-[8px] fixed z-10">
-        <button type="button" className="w-[40px] h-[40px] ">
-          <img src="/svg/arrow-back.svg" alt="icon" />
+        <button type="button" className="w-[40px] h-[40px]">
+          <Image src="/svg/arrow-back.svg" alt="icon" width={40} height={40} />
         </button>
       </div>
-      <MapComponent /> {/* 지도 컴포넌트 */}
+      <MapComponent />
       <a.div
-        {...bind()} // 드래그 제스처 바인딩
-        style={{ y, touchAction: "none" }} // 드래그 시 터치 액션 방지
+        {...bind()}
+        style={{ y, touchAction: "none" }}
         className="w-full h-[218px] fixed bottom-0 z-10"
       >
         <BottomDrawer />
       </a.div>
     </div>
   );
-};
-
-export default Page;
+}

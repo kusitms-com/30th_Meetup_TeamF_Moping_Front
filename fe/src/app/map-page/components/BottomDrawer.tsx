@@ -1,7 +1,8 @@
 import React, { useState } from "react";
+import Image from "next/image"; // Import Next.js Image component
 import { useLocationStore } from "../stores/useLocationStore";
 
-const BottomDrawer = () => {
+export default function BottomDrawer() {
   const [selectedButton, setSelectedButton] = useState(0);
   const moveToLocation = useLocationStore((state) => state.moveToLocation); // 상태에서 함수 가져오기
 
@@ -16,6 +17,7 @@ const BottomDrawer = () => {
       );
     }
   };
+
   const handleButtonClick = (id: number) => {
     setSelectedButton(id);
   };
@@ -28,8 +30,8 @@ const BottomDrawer = () => {
           text: "공유할 내용",
           url: window.location.href, // 현재 페이지의 URL을 공유
         })
-        .then(() => console.log("공유 성공"))
-        .catch((error) => console.log("공유 실패", error));
+        .then()
+        .catch();
     } else {
       alert("이 브라우저에서는 공유 기능을 지원하지 않습니다.");
     }
@@ -52,21 +54,30 @@ const BottomDrawer = () => {
           className="w-[48px] h-[48px] mb-[12px]"
           onClick={handleShare}
         >
-          <img src="/svg/share.svg" alt="share" />
+          <Image src="/svg/share.svg" alt="share" width={48} height={48} />{" "}
+          {/* Optimized image */}
         </button>
         <button
           type="button"
           className="w-[48px] h-[48px]"
           onClick={handleLocationClick}
         >
-          <img src="/svg/my-location.svg" alt="location" />
+          <Image
+            src="/svg/my-location.svg"
+            alt="location"
+            width={48}
+            height={48}
+          />{" "}
+          {/* Optimized image */}
         </button>
       </div>
       <div className="w-full h-[20px] flex justify-center">
-        <img
+        <Image
           src="/svg/Grabber.svg"
           alt="Grabber"
-          className="h-[4px] w-[36px] mt-[12px]"
+          width={36}
+          height={4}
+          className="mt-[12px]"
         />
       </div>
       <div className="h-[62px] w-full pt-[16px] pb-[14px] pl-[20px] pr-[16px] flex justify-between text-lg text-grayscale-0 font-300">
@@ -75,17 +86,22 @@ const BottomDrawer = () => {
         </div>
         <div>
           <button type="button" className="w-[32px] h-[32px]">
-            <img src="/svg/refresh.svg" alt="refresh" />
+            <Image
+              src="/svg/refresh.svg"
+              alt="refresh"
+              width={32}
+              height={32}
+            />
           </button>
         </div>
       </div>
       <div className="h-[96px] w-full flex pt-[6px] px-[16px] text-caption font-200 text-grayscale-20 overflow-x-auto scrollbar-hide">
         <div className="w-[68px] h-[90px] mr-[8px] flex flex-col justify-between shrink-0">
           <button type="button">
-            <img src="/svg/add.svg" alt="add" />
+            <Image src="/svg/add.svg" alt="add" width={68} height={68} />
           </button>
         </div>
-        {buttons.map((button, index) => (
+        {buttons.map((button) => (
           <div
             key={button.id}
             className="w-[68px] h-[90px] mr-[8px] flex flex-col justify-between shrink-0"
@@ -99,7 +115,7 @@ const BottomDrawer = () => {
                   : ""
               }`}
             >
-              <img src="/svg/add.svg" alt="add" />
+              <Image src="/svg/add.svg" alt="add" width={68} height={68} />
             </button>
             <div className="text-center">{button.label}</div>
           </div>
@@ -107,6 +123,4 @@ const BottomDrawer = () => {
       </div>
     </div>
   );
-};
-
-export default BottomDrawer;
+}

@@ -1,13 +1,12 @@
-// ButtonItem.tsx
-import React from "react";
+import Image from "next/image";
 import { UserProps } from "../types/types";
 
-const User: React.FC<UserProps> = ({
+export default function User({
   id,
   label,
   selectedButton,
   handleButtonClick,
-}) => {
+}: UserProps) {
   return (
     <div className="w-[68px] h-[90px] mr-[8px] flex flex-col justify-between shrink-0">
       <button
@@ -17,11 +16,9 @@ const User: React.FC<UserProps> = ({
           selectedButton === id ? "border-2 rounded-lg border-primary-50" : ""
         }`}
       >
-        <img src="/svg/add.svg" alt="add" />
+        <Image src="/svg/add.svg" alt="add" width={68} height={68} />
       </button>
       <div className="text-center">{label}</div>
     </div>
   );
-};
-
-export default User;
+}

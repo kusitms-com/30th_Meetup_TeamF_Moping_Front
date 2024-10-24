@@ -8,7 +8,7 @@ export const useLocationStore = create<LocationState>((set) => ({
     longitude: 126.978,
   },
   moveToLocation: (latitude, longitude) =>
-    set((state) => ({
+    set(() => ({
       center: { latitude, longitude },
     })),
 }));

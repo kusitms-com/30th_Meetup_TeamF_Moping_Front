@@ -15,7 +15,7 @@ export interface LocationState {
 
 // MapComponent의 props 타입 정의
 export interface MapComponentProps {
-  mapInstance: React.MutableRefObject<any>;
+  mapInstance: React.MutableRefObject<naver.maps.Map>;
 }
 
 export interface UserProps {

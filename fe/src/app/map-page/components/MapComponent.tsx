@@ -1,17 +1,19 @@
-// src/app/map-page/components/MapComponent.tsx
 import React, { useEffect, useRef } from "react";
 import { useLocationStore } from "../stores/useLocationStore";
 
-const MapComponent = () => {
+export default function MapComponent() {
   const mapRef = useRef<HTMLDivElement | null>(null);
-  const { center } = useLocationStore(); // 상태에서 중심 좌표 가져오기
+  const mapInstanceRef = useRef<naver.maps.Map | null>(null); // Allow null
+
+  const { center } = useLocationStore();
 
   useEffect(() => {
     if (!mapRef.current) return;
 
     const initializeMap = () => {
       if (window.naver && mapRef.current) {
-        const map = new window.naver.maps.Map(mapRef.current, {
+        // Assign the map instance safely
+        mapInstanceRef.current = new window.naver.maps.Map(mapRef.current, {
           center: new window.naver.maps.LatLng(
             center.latitude,
             center.longitude
@@ -37,9 +39,7 @@ const MapComponent = () => {
       script.onload = initializeMap;
       document.head.appendChild(script);
     }
-  }, [center]); // 중심 좌표 변경 시 업데이트
+  }, [center]);
 
   return <div ref={mapRef} style={{ width: "100vw", height: "100vh" }} />;
-};
-
-export default MapComponent;
+}
