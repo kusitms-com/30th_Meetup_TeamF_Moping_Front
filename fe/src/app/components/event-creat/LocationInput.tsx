@@ -140,8 +140,8 @@ function LocationInput({ className, onSelect }: LocationInputProps) {
           <Image
             src="/images/Location.svg"
             alt="위치 아이콘"
-            width={24}
-            height={24}
+            width={34}
+            height={34}
           />
         </div>
       </div>
