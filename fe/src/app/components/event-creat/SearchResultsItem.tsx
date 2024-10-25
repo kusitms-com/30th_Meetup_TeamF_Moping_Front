@@ -1,4 +1,5 @@
 import React from "react";
+import Image from "next/image";
 
 interface SearchResultItemProps {
   place: { name: string; address: string };
@@ -6,11 +7,11 @@ interface SearchResultItemProps {
   onClick: () => void;
 }
 
-const SearchResultItem: React.FC<SearchResultItemProps> = ({
+function SearchResultItem({
   place,
   searchTerm,
   onClick,
-}) => {
+}: SearchResultItemProps) {
   const highlightText = (text: string, highlight: string) => {
     if (!highlight.trim()) return text;
 
@@ -19,15 +20,18 @@ const SearchResultItem: React.FC<SearchResultItemProps> = ({
 
     return (
       <>
-        {parts.map((part, index) =>
+        {parts.map((part) =>
           part.toLowerCase() === highlight.toLowerCase() ? (
-            <span key={index} className="text-[#3a91ea]">
+            <span
+              key={part + text} // 고유한 값을 사용해 key 설정
+              className="text-blue hover:text-gray-600 transition-colors duration-200"
+            >
               {part}
             </span>
           ) : (
-            <span key={index} className="text-[#555555]">
+            <span key={part + text} className="text-gray-600">
               {part}
-            </span> // 기본 텍스트 색상을 #555555로 변경
+            </span>
           )
         )}
       </>
@@ -35,9 +39,13 @@ const SearchResultItem: React.FC<SearchResultItemProps> = ({
   };
 
   return (
-    <li
-      className="cursor-pointer flex items-center gap-2 bg-[#F8F8F8] hover:bg-[#F0F0F0] rounded-lg"
+    <button
+      type="button"
+      className="cursor-pointer flex items-center gap-2 bg-gray-50 hover:bg-gray-30 transition-colors duration-200"
       onClick={onClick}
+      onKeyDown={(e) => {
+        if (e.key === "Enter" || e.key === " ") onClick();
+      }}
       style={{
         padding: "10px 16px",
         margin: "16px 0",
@@ -45,16 +53,18 @@ const SearchResultItem: React.FC<SearchResultItemProps> = ({
         height: "44px",
       }}
     >
-      <img
+      <Image
         src="/images/LocationPin.svg"
         alt="위치 핀"
-        className="w-5 h-5 text-gray-600"
+        width={24}
+        height={24}
+        className="text-gray-600"
       />
       <div className="text-base font-pretendard">
         {highlightText(place.name, searchTerm)}
       </div>
-    </li>
+    </button>
   );
-};
+}
 
 export default SearchResultItem;

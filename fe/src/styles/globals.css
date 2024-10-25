@@ -23,13 +23,6 @@ body {
   overflow: hidden; /* 스크롤바가 없도록 고정 */
 }
 
-/* 상단바 (시간 표시) */
-.status-bar {
-  height: 36px; /* 상단 상태바 */
-  width: 360px;
-  background-color: #ffffff;
-}
-
 /* 네비게이션 바 */
 .nav-bar {
   height: 56px; /* 네비게이션 바 (헤더) */
@@ -62,8 +55,6 @@ body {
   grid-template-columns: repeat(4, 1fr); /* 4개의 컬럼 */
   gap: 16px; /* 컬럼 간의 간격 */
   padding: 16px; /* 패딩 설정 */
-  height: calc(
-    100vh - 164px
-  ); /* 네비게이션 바와 하단 탭 바, 상단바 제외한 높이 */
+  height: calc(100vh - 164px); /* 네비게이션 바와 하단 탭 바 제외한 높이 */
   box-sizing: border-box;
 }

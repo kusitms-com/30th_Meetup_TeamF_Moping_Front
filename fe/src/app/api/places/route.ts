@@ -1,26 +1,99 @@
-// app/api/places/route.ts
-
 import { NextResponse } from "next/server";
 
-// 예시 장소 데이터 (실제 서비스에서는 DB에서 가져오는 로직 필요)
-const mockPlaces = [
-  { name: "홍대입구역 2호선", address: "서울 마포구 양화로 123" },
-  { name: "강남역 2호선", address: "서울 서초구 강남대로 456" },
-  { name: "역삼역 2호선", address: "서울 강남구 테헤란로 789" },
-];
+const BASE_API_URL = process.env.NEXT_PUBLIC_API_URL;
 
 export async function GET(req: Request) {
   const { searchParams } = new URL(req.url);
-  const query = searchParams.get("search");
+  const searchQuery = searchParams.get("search");
+  const latitude = searchParams.get("lat");
+  const longitude = searchParams.get("lon");
 
-  if (!query) {
-    return NextResponse.json({ places: [] });
+  if (searchQuery) {
+    try {
+      const response = await fetch(
+        `${BASE_API_URL}/places?search=${encodeURIComponent(searchQuery)}`
+      );
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      const data = await response.json();
+
+      if (!data || data.length === 0) {
+        return NextResponse.json({
+          places: [],
+          message: "No places found",
+        });
+      }
+
+      return NextResponse.json({ places: data });
+    } catch (error) {
+      const err = error as Error;
+      return NextResponse.json({
+        places: [],
+        message: err.message || "Error fetching places",
+      });
+    }
   }
 
-  // 검색어에 맞는 장소 필터링
-  const filteredPlaces = mockPlaces.filter((place) =>
-    place.name.toLowerCase().includes(query.toLowerCase())
-  );
+  if (!latitude || !longitude) {
+    return NextResponse.json({
+      places: [],
+      message: "Location parameters missing",
+    });
+  }
 
-  return NextResponse.json({ places: filteredPlaces });
+  try {
+    const response = await fetch(
+      `${BASE_API_URL}/places?lat=${latitude}&lon=${longitude}`
+    );
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+    const data = await response.json();
+
+    if (!data || data.length === 0) {
+      return NextResponse.json({
+        places: [],
+        message: "No places found for the given location",
+      });
+    }
+
+    return NextResponse.json({ places: data });
+  } catch (error) {
+    const err = error as Error;
+    return NextResponse.json({
+      places: [],
+      message: err.message || "Error fetching places by location",
+    });
+  }
+}
+
+export async function POST(req: Request) {
+  const { eventName, nonMembers, pings } = await req.json();
+
+  try {
+    const response = await fetch(`${BASE_API_URL}/events`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        eventName,
+        nonMembers,
+        pings,
+      }),
+    });
+
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+
+    const data = await response.json();
+    return NextResponse.json(data);
+  } catch (error) {
+    const err = error as Error;
+    return NextResponse.json({
+      message: err.message || "Error creating event",
+    });
+  }
 }

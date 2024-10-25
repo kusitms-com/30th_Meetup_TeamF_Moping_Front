@@ -1,25 +1,22 @@
 "use client";
 
-import React from "react";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
+import React from "react";
 import Button from "@/app/components/common/Button";
 
-const LoadingPage = () => {
+// Convert the component to a function declaration
+function LoadingPage() {
   const router = useRouter();
 
-  // 시작하기 버튼 클릭 시 이벤트 생성 페이지로 이동
   const handleStartClick = () => {
     router.push("/event-create");
   };
 
   return (
-    <div className="bg-[#f73a2c] h-screen flex flex-col justify-between items-center relative">
-      {/* MMMM 로고 영역 */}
-      <div className="w-full flex justify-center overflow-hidden mt-[37px]">
-        {" "}
-        {/* 상단에서 37px 간격 추가 */}
-        <div className="w-[360px] h-[89px] overflow-hidden flex justify-center">
+    <div className="bg-primary-50 h-screen flex flex-col items-center relative">
+      <div className="w-full sticky top-0 z-10 flex justify-center overflow-hidden bg-primary-50">
+        <div className="w-[360px] h-[89px] flex justify-center">
           <Image
             src="/images/MMMM.svg"
             alt="MMMM Logo"
@@ -31,11 +28,9 @@ const LoadingPage = () => {
         </div>
       </div>
 
-      {/* MOPING 텍스트 영역 */}
       <div className="absolute top-[338px] left-0 right-0 flex flex-col items-center">
-        {/* MOPING 텍스트 */}
         <div
-          className="text-black text-[62px] leading-[62px] font-black font-pretendard"
+          className="text-text-default text-[62px] leading-[62px] font-black font-pretendard"
           style={{
             textShadow:
               "1px 1px 0 #000, -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000",
@@ -44,21 +39,20 @@ const LoadingPage = () => {
           MOPING
         </div>
 
-        {/* MIX OUR PINS, SHARE OUR PLACES 텍스트 영역 */}
         <div className="w-[198px] h-[56px] flex justify-center text-center">
           <div className="text-center">
-            <span className="text-white text-xl font-black font-pretendard">
+            <span className="text-grayscale-0 text-xl font-black font-pretendard">
               MIX
             </span>
-            <span className="text-black text-xl font-black font-pretendard">
+            <span className="text-text-default text-xl font-black font-pretendard">
               {" "}
               OUR PINS,
               <br />
             </span>
-            <span className="text-white text-xl font-black font-pretendard">
+            <span className="text-grayscale-0 text-xl font-black font-pretendard">
               SHARE
             </span>
-            <span className="text-black text-xl font-black font-pretendard">
+            <span className="text-text-default text-xl font-black font-pretendard">
               {" "}
               OUR PLACES
             </span>
@@ -66,17 +60,16 @@ const LoadingPage = () => {
         </div>
       </div>
 
-      {/* 시작하기 버튼 */}
-      <div className="w-full absolute bottom-[45px] flex justify-center">
+      <div className="w-full fixed bottom-[45px] left-0 right-0 flex justify-center">
         <Button
           label="시작하기"
           onClick={handleStartClick}
           type="start"
-          className="bg-black text-white w-[328px] h-[60px] py-[17px] rounded-lg"
+          className="w-[328px] h-[60px] py-[17px] rounded-lg bg-darkGray text-grayscale-0"
         />
       </div>
     </div>
   );
-};
+}
 
 export default LoadingPage;
