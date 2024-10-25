@@ -1,4 +1,4 @@
-import type { Config } from 'tailwindcss';
+import type { Config } from "tailwindcss";
 
 const config: Config = {
   darkMode: 'class',
@@ -11,16 +11,16 @@ const config: Config = {
     extend: {
       colors: {
         gray: {
-          50: '#F8F8F8',
-          100: '#F5F5F5',
-          200: '#E8E8E8',
-          300: '#D1D1D1',
-          400: '#BFBFBF',
-          500: '#A6A6A6',
-          600: '#777777',
-          700: '#444444',
-          800: '#333333',
-          900: '#222527',
+          50: "#F8F8F8",
+          100: "#F5F5F5",
+          200: "#E8E8E8",
+          300: "#D1D1D1",
+          400: "#BFBFBF",
+          500: "#A6A6A6",
+          600: "#777777",
+          700: "#444444",
+          800: "#333333",
+          900: "#222527",
         },
         text: {
           default: '#222527',
@@ -148,7 +148,7 @@ const config: Config = {
       },
     },
   },
-  plugins: [],
+  plugins: [require("tailwind-scrollbar-hide")],
 };
 
 export default config;
