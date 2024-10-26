@@ -1,16 +1,17 @@
 import type { Config } from "tailwindcss";
 
 const config: Config = {
-  darkMode: 'class',
+  darkMode: "class",
   content: [
-    './src/pages/**/*.{js,ts,jsx,tsx,mdx}',
-    './src/components/**/*.{js,ts,jsx,tsx,mdx}',
-    './src/app/**/*.{js,ts,jsx,tsx,mdx}',
+    "./src/pages/**/*.{js,ts,jsx,tsx,mdx}",
+    "./src/components/**/*.{js,ts,jsx,tsx,mdx}",
+    "./src/app/**/*.{js,ts,jsx,tsx,mdx}",
   ],
   theme: {
     extend: {
       colors: {
         gray: {
+          30: "#F0F0F0",
           50: "#F8F8F8",
           100: "#F5F5F5",
           200: "#E8E8E8",
@@ -21,31 +22,38 @@ const config: Config = {
           700: "#444444",
           800: "#333333",
           900: "#222527",
+          950: "#2c2c2c",
+          1000: "#C6C6C6",
         },
+        darkGray: "#1d1d1d",
+        lightGray: "#e4e4e4",
+        mediumGray: "#8e8e8e",
+        blue: "#3a91ea",
+
         text: {
-          default: '#222527',
-          subdued: '#444444',
-          info: '#777777',
-          disabled: '#A6A6A6',
-          heading: '#222527',
+          default: "#222527",
+          subdued: "#444444",
+          info: "#777777",
+          disabled: "#A6A6A6",
+          heading: "#222527",
         },
         icon: {
-          default: '#444444',
-          sub: '#777777',
-          disabled: '#BFBFBF',
+          default: "#444444",
+          sub: "#777777",
+          disabled: "#BFBFBF",
         },
         border: {
-          default: '#BFBFBF',
-          strong: '#A6A6A6',
-          disabled: '#E8E8E8',
+          default: "#BFBFBF",
+          strong: "#A6A6A6",
+          disabled: "#E8E8E8",
         },
         divider: {
-          default: '#E8E8E8',
-          strong: '#A6A6A6',
+          default: "#E8E8E8",
+          strong: "#A6A6A6",
         },
         background: {
-          light: '#F8F8F8',
-          deep: '#F5F5F5',
+          light: "#F8F8F8",
+          deep: "#F5F5F5",
         },
         primary: {
           0: "#FFF7F7",
@@ -119,13 +127,15 @@ const config: Config = {
         "text-md2": ["16px", { lineHeight: "26px" }],
         "text-sm1": ["14px", { lineHeight: "20px" }],
         "text-sm2": ["14px", { lineHeight: "22px" }],
-        "caption": ["12px", { lineHeight: "16px" }],
+        caption: ["12px", { lineHeight: "16px" }],
       },
+      xl: ["27px", { lineHeight: "37.8px" }],
+      "title-xl": ["52px", { lineHeight: "62px" }],
 
       fontWeight: {
-        100: "400",  
-        200: "500", 
-        300: "600",  
+        100: "400",
+        200: "500",
+        300: "600",
       },
 
       fontFamily: {
@@ -133,8 +143,8 @@ const config: Config = {
       },
 
       boxShadow: {
-        normal: '0px 1px 2px 0px rgba(0, 0, 0, 0.08)', 
-        strong: '0px 0px 4px 0px rgba(5, 23, 43, 0.4)',  
+        normal: "0px 1px 2px 0px rgba(0, 0, 0, 0.08)",
+        strong: "0px 0px 4px 0px rgba(5, 23, 43, 0.4)",
       },
 
       borderRadius: {

@@ -1,23 +1,17 @@
-"use client";
+import "@/styles/globals.css";
+import { ReactNode } from "react";
 
-import "../styles/globals.css";
+export const metadata = {
+  title: "My App",
+  description: "This is my Next.js app",
+};
 
-export default function RootLayout({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
+export default function RootLayout({ children }: { children: ReactNode }) {
   return (
     <html lang="en">
       <body>
-        {/* <header>
-          <nav>
-            <a href="/">Home</a>
-            <a href="/dashboard">Dashboard</a>
-          </nav>
-        </header> */}
-        <main>{children}</main>
-        {/* <footer>© 2024 My App</footer> */}
+        {/* 페이지별로 다른 레이아웃을 여기서 렌더링 */}
+        {children}
       </body>
     </html>
   );
