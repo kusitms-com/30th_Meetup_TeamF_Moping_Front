@@ -11,35 +11,34 @@ export default function Form() {
   const [mapLinks, setMapLinks] = useState([""]);
   const [storeLinks, setStoreLinks] = useState([""]);
   const [isFormComplete, setIsFormComplete] = useState(false);
-  const [isTooltipVisible, setIsTooltipVisible] = useState(false);
+  const [isTooltipVisible, setIsTooltipVisible] = useState(true);
 
-  // 모든 필드가 채워졌는지 확인
   useEffect(() => {
     const isPinComplete = pin.every((digit) => digit !== "");
     const hasMapLink = mapLinks.some((link) => link !== "");
     const hasStoreLink = storeLinks.some((link) => link !== "");
-
     setIsFormComplete(!!(name && isPinComplete && hasMapLink && hasStoreLink));
   }, [name, pin, mapLinks, storeLinks]);
 
-  // 화면을 클릭하면 툴팁 숨김
   useEffect(() => {
-    const hideTooltip = () => setIsTooltipVisible(false);
+    const hideTooltip = (e: MouseEvent) => {
+      if ((e.target as HTMLElement).closest(".group") === null) {
+        setIsTooltipVisible(false);
+      }
+    };
 
     if (isTooltipVisible) {
       window.addEventListener("click", hideTooltip);
     }
+
     return () => {
       window.removeEventListener("click", hideTooltip);
     };
   }, [isTooltipVisible]);
 
   return (
-    <div className="px-4" onClick={() => setIsTooltipVisible(false)}>
-      <form
-        className=""
-        onKeyDown={(e) => e.key === "Enter" && e.preventDefault()}
-      >
+    <div className="px-4">
+      <form>
         <NameField value={name} onChange={setName} />
         <PinField value={pin} onChange={setPin} />
 

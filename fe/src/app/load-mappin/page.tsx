@@ -7,7 +7,7 @@ export default function page() {
       <div className="w-full h-[56px] p-[16px]">
         <button type="button" className="w-[24px] h-[24px] ">
           <Image
-            src={"/images/ArrowBack.svg"}
+            src="/images/ArrowBack.svg"
             alt="뒤로가기"
             width={24}
             height={24}
@@ -18,7 +18,7 @@ export default function page() {
         저장해둔 맵핀을 불러올게요
       </div>
       <Form />
-      <div className="h-[20px]"></div>
+      <div className="h-[20px]" />
     </>
   );
 }

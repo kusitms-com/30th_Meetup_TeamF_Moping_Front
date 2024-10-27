@@ -1,6 +1,6 @@
-"use client";
-
-import React, { useState, useEffect, useRef } from "react";
+// LinkField Component
+import React, { useState } from "react";
+import { nanoid } from "nanoid";
 import Image from "next/image";
 
 interface LinkFieldProps {
@@ -17,35 +17,27 @@ export default function LinkField({
   placeholder,
   value,
   onChange,
+  showTooltip = true,
+  onInfoClick,
 }: LinkFieldProps) {
-  const [showTooltip, setShowTooltip] = useState(true);
-  const tooltipRef = useRef<HTMLDivElement>(null);
+  const [inputFields, setInputFields] = useState(
+    value.map((val) => ({ id: nanoid(), text: val }))
+  );
 
-  const handleInputChange = (index: number, inputValue: string) => {
-    const newInputs = [...value];
-    newInputs[index] = inputValue;
-    onChange(newInputs);
+  const handleInputChange = (id: string, inputValue: string) => {
+    const newInputs = inputFields.map((field) =>
+      field.id === id ? { ...field, text: inputValue } : field
+    );
+    setInputFields(newInputs);
+    onChange(newInputs.map((field) => field.text)); // Update parent state
   };
 
   const addInputField = () => {
-    onChange([...value, ""]);
+    const newField = { id: nanoid(), text: "" };
+    const updatedInputs = [...inputFields, newField];
+    setInputFields(updatedInputs);
+    onChange(updatedInputs.map((field) => field.text));
   };
-
-  const handleOutsideClick = (event: MouseEvent) => {
-    if (
-      tooltipRef.current &&
-      !tooltipRef.current.contains(event.target as Node)
-    ) {
-      setShowTooltip(false);
-    }
-  };
-
-  useEffect(() => {
-    document.addEventListener("mousedown", handleOutsideClick);
-    return () => {
-      document.removeEventListener("mousedown", handleOutsideClick);
-    };
-  }, []);
 
   return (
     <div className="mb-[48px]">
@@ -54,8 +46,10 @@ export default function LinkField({
         {label === "맵핀 모음 링크" && (
           <div
             className="relative group"
-            onClick={() => setShowTooltip(true)}
-            ref={tooltipRef}
+            onClick={onInfoClick}
+            onKeyDown={(e) => e.key === "Enter" && onInfoClick?.()}
+            role="button"
+            tabIndex={0}
           >
             <Image
               src="/svg/infomation.svg"
@@ -65,21 +59,24 @@ export default function LinkField({
               className="ml-[6px] cursor-pointer"
             />
             {showTooltip && (
-              <div className="absolute left-1/2 -translate-x-[48.5%] bottom-full mb-2 bg-black text-white text-caption rounded px-[12px] py-[10px] w-[215px]">
+              <div
+                className="absolute left-1/2 -translate-x-[51%] bottom-full mb-2 bg-black text-white text-caption rounded px-[12px] py-[10px] w-[215px]"
+                aria-hidden={!showTooltip}
+              >
                 즐겨찾기 링크 복사 방법을 확인해보세요
-                <div className="absolute left-1/2 bottom-[-6px] -translate-x-[48.5%] w-0 h-0 border-l-[6px] border-l-transparent border-r-[6px] border-r-transparent border-t-[6px] border-t-black"></div>
+                <div className="absolute left-1/2 bottom-[-6px] -translate-x-1/2 w-0 h-0 border-l-[6px] border-l-transparent border-r-[6px] border-r-transparent border-t-[6px] border-t-black" />
               </div>
             )}
           </div>
         )}
       </label>
       <div className="flex flex-col items-center border-grayscale-10 border p-[16px] gap-[16px] rounded-medium">
-        {value.map((inputValue, index) => (
+        {inputFields.map((field) => (
           <input
-            key={index}
+            key={field.id}
             type="text"
-            value={inputValue}
-            onChange={(e) => handleInputChange(index, e.target.value)}
+            value={field.text}
+            onChange={(e) => handleInputChange(field.id, e.target.value)}
             placeholder={placeholder}
             className="w-full p-3 mt-2 border rounded-md bg-gray-50 focus:outline-none focus:ring-2 focus:ring-grayscale-80"
           />
