@@ -16,7 +16,7 @@ function LoadingPage() {
   return (
     <div className="bg-primary-50 h-screen flex flex-col items-center relative">
       <div className="w-full sticky top-0 z-10 flex justify-center overflow-hidden bg-primary-50">
-        <div className="w-[360px] h-[89px] flex justify-center">
+        <div className="w-full h-[89px] flex justify-center">
           <Image
             src="/images/MMMM.svg"
             alt="MMMM Logo"
