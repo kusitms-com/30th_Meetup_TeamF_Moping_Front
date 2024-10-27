@@ -1,4 +1,3 @@
-// LinkField Component
 import React, { useState } from "react";
 import { nanoid } from "nanoid";
 import Image from "next/image";
@@ -29,7 +28,15 @@ export default function LinkField({
       field.id === id ? { ...field, text: inputValue } : field
     );
     setInputFields(newInputs);
-    onChange(newInputs.map((field) => field.text)); // Update parent state
+    onChange(newInputs.map((field) => field.text));
+  };
+
+  const clearInput = (id: string) => {
+    const newInputs = inputFields.map((field) =>
+      field.id === id ? { ...field, text: "" } : field
+    );
+    setInputFields(newInputs);
+    onChange(newInputs.map((field) => field.text));
   };
 
   const addInputField = () => {
@@ -72,14 +79,29 @@ export default function LinkField({
       </label>
       <div className="flex flex-col items-center border-grayscale-10 border p-[16px] gap-[16px] rounded-medium">
         {inputFields.map((field) => (
-          <input
-            key={field.id}
-            type="text"
-            value={field.text}
-            onChange={(e) => handleInputChange(field.id, e.target.value)}
-            placeholder={placeholder}
-            className="w-full p-3 mt-2 border rounded-md bg-gray-50 focus:outline-none focus:ring-2 focus:ring-grayscale-80"
-          />
+          <div key={field.id} className="relative w-full">
+            <input
+              type="text"
+              value={field.text}
+              onChange={(e) => handleInputChange(field.id, e.target.value)}
+              placeholder={placeholder}
+              className="w-full p-3 border rounded-md bg-gray-50 focus:outline-none focus:ring-2 focus:ring-grayscale-80"
+            />
+            {field.text && (
+              <button
+                type="button"
+                onClick={() => clearInput(field.id)}
+                className="absolute right-2 top-1/2 -translate-y-1/2"
+              >
+                <Image
+                  src="/svg/delete.svg"
+                  alt="delete"
+                  width={20}
+                  height={20}
+                />
+              </button>
+            )}
+          </div>
         ))}
         <button type="button" onClick={addInputField}>
           <Image src="/svg/linkAdd.svg" alt="linkAdd" width={28} height={28} />
