@@ -17,10 +17,9 @@ body {
   font-family: "Pretendard", sans-serif;
   margin: 0;
   padding: 0;
-  width: 360px; /* 전체 화면 너비 */
+  width: 100vw; /* 전체 화면 너비 */
   height: 100vh;
   margin: 0 auto;
-  overflow: hidden; /* 스크롤바가 없도록 고정 */
 }
 
 /* 네비게이션 바 */

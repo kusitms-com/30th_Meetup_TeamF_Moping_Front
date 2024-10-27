@@ -3,7 +3,7 @@ import { useLocationStore } from "../stores/useLocationStore";
 
 export default function MapComponent() {
   const mapRef = useRef<HTMLDivElement | null>(null);
-  const mapInstanceRef = useRef<naver.maps.Map | null>(null); // Allow null
+  const mapInstanceRef = useRef<naver.maps.Map | null>(null);
 
   const { center } = useLocationStore();
 
@@ -11,8 +11,7 @@ export default function MapComponent() {
     if (!mapRef.current) return;
 
     const initializeMap = () => {
-      if (window.naver && mapRef.current) {
-        // Assign the map instance safely
+      if (!mapInstanceRef.current && window.naver && mapRef.current) {
         mapInstanceRef.current = new window.naver.maps.Map(mapRef.current, {
           center: new window.naver.maps.LatLng(
             center.latitude,
@@ -27,6 +26,10 @@ export default function MapComponent() {
           mapDataControl: false,
           mapTypeControl: false,
         });
+      } else if (mapInstanceRef.current) {
+        mapInstanceRef.current.setCenter(
+          new window.naver.maps.LatLng(center.latitude, center.longitude)
+        );
       }
     };
 

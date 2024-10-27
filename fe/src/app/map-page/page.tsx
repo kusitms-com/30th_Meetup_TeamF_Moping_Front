@@ -2,27 +2,34 @@
 
 import React from "react";
 import Image from "next/image";
-import { a } from "@react-spring/web"; // External imports first
-import { useDrag } from "@use-gesture/react"; // External imports
-import BottomDrawer from "./components/BottomDrawer"; // Local imports after external ones
+import { a } from "@react-spring/web";
+import { useDrag } from "@use-gesture/react";
+import BottomDrawer from "./components/BottomDrawer";
 import MapComponent from "./components/MapComponent";
-import useDrawer from "./hooks/useDrawer"; // Local hook import
+import useDrawer from "./hooks/useDrawer";
 
 export default function Page() {
-  // Ensure the function component uses function declaration
   const { y, openDrawer, closeDrawer, setPosition } = useDrawer();
 
-  const bind = useDrag(({ last, movement: [, my] }) => {
-    if (last) {
-      if (my > 100) {
-        closeDrawer(); // Close if dragged more than 100px
+  const bind = useDrag(
+    ({ last, movement: [, my], memo = y.get() }) => {
+      // 드래그가 일정 거리 이상 발생해야 드로워를 이동시킴
+      if (last) {
+        if (my + memo > 100) {
+          closeDrawer();
+        } else {
+          openDrawer();
+        }
       } else {
-        openDrawer(); // Open if dragged less than 100px
+        setPosition(my + memo);
       }
-    } else {
-      setPosition(my); // Update the position during the drag
+      return memo;
+    },
+    {
+      filterTaps: true, // 클릭과 드래그 구분
+      threshold: 10, // 드래그 최소 거리 지정 (10px 이상 이동 시 드래그로 인식)
     }
-  });
+  );
 
   return (
     <div>
