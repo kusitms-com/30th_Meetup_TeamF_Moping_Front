@@ -18,9 +18,7 @@ function LocationInput({ className, onSelect }: LocationInputProps) {
       const response = await fetch(
         `${process.env.NEXT_PUBLIC_API_BASE_URL}/places?lat=${latitude}&lon=${longitude}`,
         {
-          headers: {
-            accept: "*/*",
-          },
+          headers: { accept: "*/*" },
         }
       );
 
@@ -31,7 +29,7 @@ function LocationInput({ className, onSelect }: LocationInputProps) {
       const data = await response.json();
 
       if (data.places && data.places.length > 0) {
-        setResults(data.places);
+        setResults(data.places); // 결과 저장
       } else {
         alert("현재 위치에 대한 장소를 찾을 수 없습니다.");
       }
@@ -46,9 +44,7 @@ function LocationInput({ className, onSelect }: LocationInputProps) {
       const response = await fetch(
         `${process.env.NEXT_PUBLIC_API_BASE_URL}/places/search/${encodeURIComponent(query)}`,
         {
-          headers: {
-            accept: "*/*",
-          },
+          headers: { accept: "*/*" },
         }
       );
 
@@ -57,9 +53,8 @@ function LocationInput({ className, onSelect }: LocationInputProps) {
       }
 
       const data = await response.json();
-
       if (data.code === 200) {
-        setResults(data.data);
+        setResults(data.data); // 검색 결과 저장
       } else {
         setResults([]);
         alert(`장소 검색에 실패했습니다: ${data.message}`);
@@ -71,21 +66,20 @@ function LocationInput({ className, onSelect }: LocationInputProps) {
   };
 
   const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { value } = e.target; // Destructuring here to comply with ESLint
+    const { value } = e.target;
     setLocation(value);
 
     if (value.length > 0) {
-      fetchPlacesBySearch(value);
+      fetchPlacesBySearch(value); // 검색 실행
     } else {
-      setResults([]);
+      setResults([]); // 입력이 없으면 결과 초기화
     }
   };
 
-  // 구조 분해 할당을 사용하여 문제 해결
   const handleSelectPlace = ({ name }: { name: string }) => {
     setLocation(name);
     setResults([]);
-    onSelect(name);
+    onSelect(name); // 부모 컴포넌트에 선택된 장소 전달
   };
 
   const handleCurrentLocation = async () => {
@@ -97,7 +91,7 @@ function LocationInput({ className, onSelect }: LocationInputProps) {
     navigator.geolocation.getCurrentPosition(
       async ({ coords }) => {
         const { latitude, longitude } = coords;
-        await fetchPlaces(latitude.toString(), longitude.toString());
+        await fetchPlaces(latitude.toString(), longitude.toString()); // 현재 위치를 이용해 장소 검색
       },
       () => {
         alert("위치 정보를 가져오는 중 오류가 발생했습니다.");
@@ -128,6 +122,7 @@ function LocationInput({ className, onSelect }: LocationInputProps) {
           />
         </div>
 
+        {/* 현재 위치 찾기 버튼 복원 */}
         <div
           role="button"
           tabIndex={0}

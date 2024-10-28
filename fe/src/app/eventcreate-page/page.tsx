@@ -1,14 +1,18 @@
 "use client";
 
 import React, { useState } from "react";
+import { useRouter } from "next/navigation";
+import { useLocationStore } from "@/app/eventcreate-page/stores/useLocationStore";
 import Navigation from "@/app/components/common/Navigation";
-import LocationInput from "@/app/components/event-creat/LocationInput";
-import EventNameInput from "@/app/components/event-creat/EventNameInput";
+import LocationInput from "@/app/eventcreate-page/components/LocationInput";
+import EventNameInput from "@/app/eventcreate-page/components/EventNameInput";
 import Button from "@/app/components/common/Button";
 
 function EventCreatePage() {
   const [selectedLocation, setSelectedLocation] = useState("");
   const [eventName, setEventName] = useState("");
+  const { moveToLocation } = useLocationStore();
+  const router = useRouter();
 
   const handleLocationSelect = (location: string) => {
     setSelectedLocation(location);
@@ -18,33 +22,23 @@ function EventCreatePage() {
     setEventName(name);
   };
 
-  const handleNextClick = async () => {
-    const eventData = {
-      eventName,
-      selectedLocation,
-    };
+  const handleNextClick = () => {
+    const latitude = 37.5665;
+    const longitude = 126.978;
 
-    try {
-      const response = await fetch("/api/create-event", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(eventData),
-      });
-
-      if (!response.ok) {
-        throw new Error("이벤트 생성에 실패했습니다.");
-      }
-
-      // Removed unused result variable
-      await response.json();
-
-      // Optionally handle success or navigate to a different page here
-    } catch (error) {
-      // Remove console statement and handle the error with UI feedback instead
-      alert("이벤트 생성 중 오류가 발생했습니다.");
+    if (!eventName) {
+      alert("이벤트 이름을 입력해주세요.");
+      return;
     }
+
+    if (!selectedLocation) {
+      alert("장소를 선택해주세요.");
+      return;
+    }
+
+    moveToLocation(latitude, longitude);
+
+    router.push("/map-page");
   };
 
   return (
@@ -60,6 +54,7 @@ function EventCreatePage() {
         />
 
         <EventNameInput
+          value={eventName}
           selectedLocation={selectedLocation}
           onChange={handleEventNameChange}
           className="mt-[20px] w-full"
