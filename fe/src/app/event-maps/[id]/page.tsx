@@ -2,6 +2,7 @@
 
 import React from "react";
 import Image from "next/image";
+import { useParams } from "next/navigation";
 import { a } from "@react-spring/web";
 import { useDrag } from "@use-gesture/react";
 import BottomDrawer from "./components/BottomDrawer";
@@ -10,7 +11,7 @@ import useDrawer from "./hooks/useDrawer";
 
 export default function Page() {
   const { y, openDrawer, closeDrawer, setPosition } = useDrawer();
-
+  const { id } = useParams();
   const bind = useDrag(
     ({ last, movement: [, my], memo = y.get() }) => {
       // 드래그가 일정 거리 이상 발생해야 드로워를 이동시킴

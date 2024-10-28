@@ -1,7 +1,13 @@
+"use client";
+
 import Image from "next/image";
+import { useParams } from "next/navigation";
 import Form from "./components/Form";
 
-export default function page() {
+export default function Page() {
+  const { id } = useParams();
+  const uuid = Array.isArray(id) ? id[0] : id;
+
   return (
     <>
       <div className="w-full h-[56px] p-[16px]">
@@ -17,7 +23,7 @@ export default function page() {
       <div className="mt-[24px] mb-[44px] ml-[16px] text-darkGray text-title-md">
         저장해둔 맵핀을 불러올게요
       </div>
-      <Form />
+      <Form uuid={uuid} />
       <div className="h-[20px]" />
     </>
   );
