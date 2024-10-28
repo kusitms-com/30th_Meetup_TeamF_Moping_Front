@@ -1,17 +1,17 @@
 import React, { useState } from "react";
-import Image from "next/image"; // Import Next.js Image component
+import Image from "next/image";
 import { useLocationStore } from "../stores/useLocationStore";
 
 export default function BottomDrawer() {
-  const [selectedButton, setSelectedButton] = useState<number | null>(null); // Allows deselection
-  const moveToLocation = useLocationStore((state) => state.moveToLocation); // 상태에서 함수 가져오기
+  const [selectedButton, setSelectedButton] = useState<number | null>(null);
+  const moveToLocation = useLocationStore((state) => state.moveToLocation);
 
   const handleLocationClick = () => {
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition(
         (position) => {
           const { latitude, longitude } = position.coords;
-          moveToLocation(latitude, longitude); // 현재 위치로 이동
+          moveToLocation(latitude, longitude);
         },
         () => alert("현재 위치 정보를 가져올 수 없습니다.")
       );
@@ -19,16 +19,14 @@ export default function BottomDrawer() {
   };
 
   const handleButtonClick = (id: number) => {
-    setSelectedButton((prevId) => (prevId === id ? null : id)); // Toggle selection and deselection
+    setSelectedButton((prevId) => (prevId === id ? null : id));
   };
 
   const handleShare = () => {
     if (navigator.share) {
       navigator
         .share({
-          title: "공유할 제목",
-          text: "공유할 내용",
-          url: window.location.href, // 현재 페이지의 URL을 공유
+          url: window.location.href,
         })
         .then()
         .catch();
@@ -47,18 +45,18 @@ export default function BottomDrawer() {
   ];
 
   return (
-    <div className="w-[100%] h-[218px] bg-grayscale-90 z-10 rounded-t-xlarge">
+    <div className="w-full h-[218px] bg-grayscale-90 z-10 rounded-t-xlarge">
       <div className="absolute mr-[16px] right-0 -top-[120px] flex flex-col">
         <button
           type="button"
-          className="w-[48px] h-[48px] mb-[12px]"
+          className="w-[48px] h-[48px] mb-[12px] shadow-medium"
           onClick={handleShare}
         >
           <Image src="/svg/share.svg" alt="share" width={48} height={48} />
         </button>
         <button
           type="button"
-          className="w-[48px] h-[48px]"
+          className="w-[48px] h-[48px] shadow-medium"
           onClick={handleLocationClick}
         >
           <Image
@@ -85,16 +83,18 @@ export default function BottomDrawer() {
         <div>
           <button type="button" className="w-[32px] h-[32px]">
             <Image
-              src="/svg/refresh.svg"
-              alt="refresh"
+              src={
+                selectedButton !== null ? "/svg/edit.svg" : "/svg/refresh.svg"
+              }
+              alt={selectedButton !== null ? "edit" : "refresh"}
               width={32}
               height={32}
             />
           </button>
         </div>
       </div>
-      <div className="h-[96px] w-full flex pt-[6px] px-[16px] text-caption font-200 text-grayscale-20 overflow-x-auto scrollbar-hide">
-        <div className="w-[68px] h-[90px] mr-[8px] flex flex-col justify-between shrink-0">
+      <div className="h-[96px] w-full flex pt-[6px] px-[16px] text-caption font-200 text-grayscale-20 overflow-x-auto scrollbar-hide gap-[12px]">
+        <div className="w-[68px] h-[90px] flex flex-col justify-between shrink-0">
           <button type="button">
             <Image src="/svg/add.svg" alt="add" width={68} height={68} />
           </button>
@@ -102,7 +102,7 @@ export default function BottomDrawer() {
         {buttons.map((button) => (
           <div
             key={button.id}
-            className="w-[68px] h-[90px] mr-[8px] flex flex-col justify-between shrink-0"
+            className="w-[68px] h-[90px] flex flex-col justify-between shrink-0"
           >
             <button
               type="button"

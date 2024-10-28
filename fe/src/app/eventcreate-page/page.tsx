@@ -42,7 +42,7 @@ function EventCreatePage() {
   };
 
   return (
-    <div className="w-[360px] h-screen relative bg-white mx-auto flex flex-col">
+    <div className="w-full h-screen relative bg-white mx-auto flex flex-col justify-center items-center">
       <div className="sticky top-0 w-full z-10">
         <Navigation title="이벤트 생성" showBackButton />
       </div>

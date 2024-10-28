@@ -16,10 +16,9 @@ body {
   font-family: "Pretendard", sans-serif;
   margin: 0;
   padding: 0;
-  width: 360px;
+  width: 100vw; /* 전체 화면 너비 */
   height: 100vh;
   margin: 0 auto;
-  overflow: hidden;
 }
 
 .nav-bar {
