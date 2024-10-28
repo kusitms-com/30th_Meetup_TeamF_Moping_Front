@@ -33,13 +33,20 @@ export default function MapComponent() {
       }
     };
 
-    if (window.naver) {
+    if (window.naver && window.naver.maps) {
+      // If Naver Maps is already loaded
       initializeMap();
     } else {
+      // Load Naver Maps script
       const script = document.createElement("script");
       script.src = `https://openapi.map.naver.com/openapi/v3/maps.js?ncpClientId=${process.env.NEXT_PUBLIC_NAVER_MAP_CLIENT_ID}`;
       script.async = true;
-      script.onload = initializeMap;
+      script.onload = () => {
+        // Ensure the script is loaded before initializing the map
+        if (window.naver && window.naver.maps) {
+          initializeMap();
+        }
+      };
       document.head.appendChild(script);
     }
   }, [center]);

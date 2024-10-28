@@ -9,10 +9,7 @@ export const metadata = {
 export default function RootLayout({ children }: { children: ReactNode }) {
   return (
     <html lang="en">
-      <body>
-        {/* 페이지별로 다른 레이아웃을 여기서 렌더링 */}
-        {children}
-      </body>
+      <body>{children}</body>
     </html>
   );
 }

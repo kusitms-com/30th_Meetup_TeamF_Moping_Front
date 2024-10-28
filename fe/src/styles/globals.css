@@ -11,21 +11,20 @@
     format("truetype");
 }
 
-/* 전역 설정 */
 html,
 body {
   font-family: "Pretendard", sans-serif;
   margin: 0;
   padding: 0;
-  width: 100vw; /* 전체 화면 너비 */
+  width: 360px;
   height: 100vh;
   margin: 0 auto;
+  overflow: hidden;
 }
 
-/* 네비게이션 바 */
 .nav-bar {
-  height: 56px; /* 네비게이션 바 (헤더) */
-  width: 340px; /* 헤더는 340px로 설정 */
+  height: 56px;
+  width: 340px;
   background-color: #ffffff;
   display: flex;
   align-items: center;
@@ -33,9 +32,8 @@ body {
   margin: 0 auto;
 }
 
-/* 하단 탭 바 */
 .bottom-tap-bar {
-  height: 72px; /* 하단 탭 바 */
+  height: 72px;
   width: 360px;
   background-color: #f8f8f8;
   display: flex;
@@ -51,9 +49,9 @@ body {
 /* 그리드 설정 */
 .container {
   display: grid;
-  grid-template-columns: repeat(4, 1fr); /* 4개의 컬럼 */
-  gap: 16px; /* 컬럼 간의 간격 */
-  padding: 16px; /* 패딩 설정 */
-  height: calc(100vh - 164px); /* 네비게이션 바와 하단 탭 바 제외한 높이 */
+  grid-template-columns: repeat(4, 1fr); /* 4열 그리드 */
+  gap: 16px;
+  padding: 16px;
+  height: calc(100vh - 164px); /* 네비게이션 바와 하단 탭 바의 높이를 제외 */
   box-sizing: border-box;
 }

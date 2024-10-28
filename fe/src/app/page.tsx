@@ -5,12 +5,11 @@ import Image from "next/image";
 import React from "react";
 import Button from "@/app/components/common/Button";
 
-// Convert the component to a function declaration
 function LoadingPage() {
   const router = useRouter();
 
   const handleStartClick = () => {
-    router.push("/event-create");
+    router.push("/eventcreate-page");
   };
 
   return (
@@ -34,6 +33,7 @@ function LoadingPage() {
           style={{
             textShadow:
               "1px 1px 0 #000, -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000",
+            color: "#000",
           }}
         >
           MOPING
