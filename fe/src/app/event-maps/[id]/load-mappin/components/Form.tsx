@@ -28,7 +28,7 @@ export default function Form({ uuid }: FormProps) {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          uuid: uuid, // UUID를 실제로 생성하거나 가져와야 합니다.
+          uuid, // UUID를 실제로 생성하거나 가져와야 합니다.
           name,
           password: pin.join(""),
           bookmarkUrls: mapLinks,

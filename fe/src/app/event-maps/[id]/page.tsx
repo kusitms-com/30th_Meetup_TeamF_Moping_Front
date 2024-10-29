@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import Image from "next/image";
 import { useParams } from "next/navigation";
 import { a } from "@react-spring/web";
@@ -12,7 +12,7 @@ import useDrawer from "./hooks/useDrawer";
 export default function Page() {
   const { y, openDrawer, closeDrawer, setPosition } = useDrawer();
   const { id } = useParams();
-  const [data, setData] = useState(null);
+  // const [data, setData] = useState(null);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -26,8 +26,8 @@ export default function Page() {
 
         if (response.ok) {
           const result = await response.json();
-          setData(result); // 데이터를 상태에 저장
-          console.log(data);
+          // setData(result); // 데이터를 상태에 저장
+          console.log(result); // 결과 로깅
         } else {
           console.error("데이터 가져오기에 실패했습니다.");
         }
@@ -37,11 +37,10 @@ export default function Page() {
     };
 
     fetchData();
-  }, [id]);
+  }, [id]); // `id`가 변경될 때만 실행됨
 
   const bind = useDrag(
     ({ last, movement: [, my], memo = y.get() }) => {
-      // 드래그가 일정 거리 이상 발생해야 드로워를 이동시킴
       if (last) {
         if (my + memo > 100) {
           closeDrawer();
@@ -54,8 +53,8 @@ export default function Page() {
       return memo;
     },
     {
-      filterTaps: true, // 클릭과 드래그 구분
-      threshold: 10, // 드래그 최소 거리 지정 (10px 이상 이동 시 드래그로 인식)
+      filterTaps: true,
+      threshold: 10,
     }
   );
 
