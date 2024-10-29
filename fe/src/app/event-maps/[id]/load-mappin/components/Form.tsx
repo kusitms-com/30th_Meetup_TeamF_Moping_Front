@@ -20,32 +20,36 @@ export default function Form({ uuid }: FormProps) {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    // API 호출
+    const requestBody = {
+      uuid,
+      name,
+      password: pin.join(""),
+      bookmarkUrls: mapLinks,
+      storeUrls: storeLinks,
+    };
+
+    console.log("Request Body:", JSON.stringify(requestBody, null, 2));
+
     try {
-      const response = await fetch("/api/nonmembers/pings", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          uuid, // UUID를 실제로 생성하거나 가져와야 합니다.
-          name,
-          password: pin.join(""),
-          bookmarkUrls: mapLinks,
-          storeUrls: storeLinks,
-        }),
-      });
+      const response = await fetch(
+        "http://110.165.17.236:8081/api/v1/nonmembers/pings",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(requestBody),
+        }
+      );
 
-      const data = await response.json();
-
+      // 요청 성공 여부 확인
       if (response.ok) {
-        console.log(data.message || "성공적으로 처리되었습니다.");
-        console.log(data);
+        console.log("요청에 성공했습니다. 상태 코드:", response.status);
       } else {
-        console.log(data.error || "요청에 실패했습니다.");
+        console.log("요청에 실패했습니다. 상태 코드:", response.status);
       }
     } catch (error) {
-      console.log("서버 오류가 발생했습니다.");
+      console.log("서버 오류가 발생했습니다.", error);
     }
   };
 

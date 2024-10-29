@@ -1,33 +1,40 @@
 "use client";
 
 import React, { useEffect } from "react";
-import Image from "next/image";
 import { useParams } from "next/navigation";
+import useDataStore from "./stores/useDataStore";
+import MapComponent from "./components/MapComponent";
+import BottomDrawer from "./components/BottomDrawer";
+import useDrawer from "./hooks/useDrawer";
+import Image from "next/image";
 import { a } from "@react-spring/web";
 import { useDrag } from "@use-gesture/react";
-import BottomDrawer from "./components/BottomDrawer";
-import MapComponent from "./components/MapComponent";
-import useDrawer from "./hooks/useDrawer";
 
 export default function Page() {
   const { y, openDrawer, closeDrawer, setPosition } = useDrawer();
   const { id } = useParams();
-  // const [data, setData] = useState(null);
+  const setData = useDataStore((state) => state.setData);
+  const data = useDataStore((state) => state.data);
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await fetch(`/api/nonmembers/pings?uuid=${id}`, {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-          },
-        });
+        const response = await fetch(
+          `http://110.165.17.236:8081/api/v1/nonmembers/pings?uuid=${id}`,
+          {
+            method: "GET",
+            headers: {
+              "Content-Type": "application/json",
+            },
+          }
+        );
 
         if (response.ok) {
           const result = await response.json();
-          // setData(result); // 데이터를 상태에 저장
-          console.log(result); // 결과 로깅
+          if (!data) {
+            setData(result);
+            console.log("Response Data:", JSON.stringify(result, null, 2));
+          }
         } else {
           console.error("데이터 가져오기에 실패했습니다.");
         }
@@ -36,8 +43,11 @@ export default function Page() {
       }
     };
 
-    fetchData();
-  }, [id]); // `id`가 변경될 때만 실행됨
+    // data가 비어있을 때 fetchData 호출
+    if (!data) {
+      fetchData();
+    }
+  }, []);
 
   const bind = useDrag(
     ({ last, movement: [, my], memo = y.get() }) => {

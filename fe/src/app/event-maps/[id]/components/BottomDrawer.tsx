@@ -1,11 +1,14 @@
 import React, { useState } from "react";
 import Image from "next/image";
 import { useLocationStore } from "../stores/useLocationStore";
+import useDataStore from "../stores/useDataStore";
 
 export default function BottomDrawer() {
   const [selectedButton, setSelectedButton] = useState<number | null>(null);
   const moveToLocation = useLocationStore((state) => state.moveToLocation);
 
+  const nonMembers = useDataStore((state) => state.data?.nonMembers || []);
+  console.log(nonMembers);
   const handleLocationClick = () => {
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition(
@@ -34,15 +37,6 @@ export default function BottomDrawer() {
       alert("이 브라우저에서는 공유 기능을 지원하지 않습니다.");
     }
   };
-
-  const buttons = [
-    { label: "메롱메롱", id: 1 },
-    { label: "메롱메롱", id: 2 },
-    { label: "메롱메롱", id: 3 },
-    { label: "메윤소민", id: 4 },
-    { label: "메롱윤소민", id: 5 },
-    { label: "메롱윤소민", id: 6 },
-  ];
 
   return (
     <div className="w-full h-[218px] bg-grayscale-90 z-10 rounded-t-xlarge">
@@ -99,23 +93,23 @@ export default function BottomDrawer() {
             <Image src="/svg/add.svg" alt="add" width={68} height={68} />
           </button>
         </div>
-        {buttons.map((button) => (
+        {nonMembers.map((member) => (
           <div
-            key={button.id}
+            key={member.nonMemberId}
             className="w-[68px] h-[90px] flex flex-col justify-between shrink-0"
           >
             <button
               type="button"
-              onClick={() => handleButtonClick(button.id)}
+              onClick={() => handleButtonClick(member.nonMemberId)}
               className={`w-[68px] h-[68px] ${
-                selectedButton === button.id
+                selectedButton === member.nonMemberId
                   ? "border-2 rounded-lg border-primary-50"
                   : ""
               }`}
             >
               <Image src="/svg/add.svg" alt="add" width={68} height={68} />
             </button>
-            <div className="text-center">{button.label}</div>
+            <div className="text-center">{member.name}</div>
           </div>
         ))}
       </div>

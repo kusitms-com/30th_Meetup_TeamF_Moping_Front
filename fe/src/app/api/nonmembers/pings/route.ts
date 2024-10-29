@@ -1,50 +1,44 @@
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 
-export async function POST(request: NextRequest) {
+export async function GET(request: NextRequest) {
+  const { searchParams } = new URL(request.url);
+  const uuid = searchParams.get("uuid");
+
+  if (!uuid) {
+    return NextResponse.json(
+      { error: "UUID parameter is missing" },
+      { status: 400 }
+    );
+  }
+
   try {
-    // 요청 바디를 JSON 형식으로 파싱
-    const { uuid, name, password, bookmarkUrls, storeUrls } =
-      await request.json();
-
-    // 유효성 검사
-    if (
-      !uuid ||
-      !name ||
-      !password ||
-      !Array.isArray(bookmarkUrls) ||
-      !Array.isArray(storeUrls)
-    ) {
-      return NextResponse.json(
-        { error: "필수 필드가 누락되었거나 형식이 잘못되었습니다." },
-        { status: 400 }
-      );
-    }
-
-    // 비밀번호 길이 검사
-    if (password.length !== 4 || !/^\d+$/.test(password)) {
-      return NextResponse.json(
-        { error: "비밀번호는 4자리 숫자여야 합니다." },
-        { status: 400 }
-      );
-    }
-
-    // 요청이 성공적으로 처리된 경우
-    const responseData = {
-      message: "성공적으로 처리되었습니다.",
-      data: {
-        uuid,
-        name,
-        bookmarkUrls,
-        storeUrls,
+    // 외부 API 요청 보내기
+    const externalResponse = await fetch(`/api/nonmembers/pings?uuid=${uuid}`, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
       },
-    };
+    });
 
-    return NextResponse.json(responseData, { status: 200 });
+    // 외부 API 요청 실패 처리
+    if (!externalResponse.ok) {
+      return NextResponse.json(
+        { error: "Failed to fetch data from external API" },
+        { status: externalResponse.status }
+      );
+    }
+
+    // JSON 데이터로 변환
+    const data = await externalResponse.json();
+
+    // 외부 API에서 받은 데이터를 클라이언트로 반환
+    return NextResponse.json(data, { status: 200 });
   } catch (error) {
     // 오류 처리
+    console.error("Error fetching data:", error);
     return NextResponse.json(
-      { error: "서버 오류가 발생했습니다." },
+      { error: "Internal Server Error" },
       { status: 500 }
     );
   }
