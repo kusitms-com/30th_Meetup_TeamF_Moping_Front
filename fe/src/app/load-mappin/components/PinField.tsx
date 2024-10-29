@@ -58,40 +58,44 @@ export default function PinField({ value, onChange }: PinFieldProps) {
       </label>
       <div className="flex space-x-3">
         <input
-          type="password"
+          type="text" // 숫자가 보이도록 type="text"로 변경
           maxLength={1}
           ref={pinRefs[0]}
           value={value[0]}
           onChange={(e) => handlePINChange(e, 0)}
           onKeyDown={(e) => handleKeyDown(e, 0)}
-          className="w-1/4 p-3 text-center border rounded-md bg-gray-50 focus:outline-none focus:ring-2 focus:ring-grayscale-80"
+          className="w-1/4 p-3 text-center rounded-md bg-gray-50 focus:outline-none focus:ring-2 focus:ring-grayscale-80"
+          style={{ border: "none" }} // 테두리 제거
         />
         <input
-          type="password"
+          type="text" // 숫자가 보이도록 type="text"로 변경
           maxLength={1}
           ref={pinRefs[1]}
           value={value[1]}
           onChange={(e) => handlePINChange(e, 1)}
           onKeyDown={(e) => handleKeyDown(e, 1)}
-          className="w-1/4 p-3 text-center border rounded-md bg-gray-50 focus:outline-none focus:ring-2 focus:ring-grayscale-80"
+          className="w-1/4 p-3 text-center rounded-md bg-gray-50 focus:outline-none focus:ring-2 focus:ring-grayscale-80"
+          style={{ border: "none" }} // 테두리 제거
         />
         <input
-          type="password"
+          type="text" // 숫자가 보이도록 type="text"로 변경
           maxLength={1}
           ref={pinRefs[2]}
           value={value[2]}
           onChange={(e) => handlePINChange(e, 2)}
           onKeyDown={(e) => handleKeyDown(e, 2)}
-          className="w-1/4 p-3 text-center border rounded-md bg-gray-50 focus:outline-none focus:ring-2 focus:ring-grayscale-80"
+          className="w-1/4 p-3 text-center rounded-md bg-gray-50 focus:outline-none focus:ring-2 focus:ring-grayscale-80"
+          style={{ border: "none" }} // 테두리 제거
         />
         <input
-          type="password"
+          type="text" // 숫자가 보이도록 type="text"로 변경
           maxLength={1}
           ref={pinRefs[3]}
           value={value[3]}
           onChange={(e) => handlePINChange(e, 3)}
           onKeyDown={(e) => handleKeyDown(e, 3)}
-          className="w-1/4 p-3 text-center border rounded-md bg-gray-50 focus:outline-none focus:ring-2 focus:ring-grayscale-80"
+          className="w-1/4 p-3 text-center rounded-md bg-gray-50 focus:outline-none focus:ring-2 focus:ring-grayscale-80"
+          style={{ border: "none" }} // 테두리 제거
         />
       </div>
     </div>

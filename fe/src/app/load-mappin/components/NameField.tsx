@@ -43,7 +43,10 @@ export default function NameField({ value, onChange }: NameFieldProps) {
           value={value}
           onChange={handleChange}
           placeholder="이름"
-          className="w-full p-3 border rounded-md bg-gray-50 focus:outline-none focus:ring-2 focus:ring-grayscale-80"
+          className="w-full p-3 bg-gray-50 rounded-md focus:outline-none focus:ring-2 focus:ring-grayscale-80"
+          style={{
+            border: "none", // 테두리 제거
+          }}
         />
         {value && (
           <button
