@@ -1,8 +1,8 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
-import Image from "next/image"; // next/image import
-import { EventNameInputProps } from "@/types/types"; // 타입 import
+import Image from "next/image";
+import { EventNameInputProps } from "@/app/eventcreate-page/types/types";
 
 const getCurrentDate = () => {
   const today = new Date();
@@ -11,7 +11,6 @@ const getCurrentDate = () => {
   return `${month}.${day}`;
 };
 
-// 함수 선언 방식으로 컴포넌트 작성
 function EventNameInput({
   className,
   selectedLocation,
@@ -19,8 +18,8 @@ function EventNameInput({
 }: EventNameInputProps) {
   const [eventName, setEventName] = useState("");
   const [isFocused, setIsFocused] = useState(false);
-  const [hasUserEdited, setHasUserEdited] = useState(false); // 사용자가 직접 수정했는지 확인
-  const [isLoading, setIsLoading] = useState(true); // 로딩 상태 추가
+  const [hasUserEdited, setHasUserEdited] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
   const currentDate = getCurrentDate();
 
   useEffect(() => {
@@ -31,19 +30,19 @@ function EventNameInput({
       setEventName(newEventName);
       onChange(newEventName);
     }
-    setIsLoading(false);
+    setIsLoading(false); // 로딩 완료 상태로 변경
   }, [selectedLocation, currentDate, onChange, hasUserEdited]);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const newValue = e.target.value;
     setEventName(newValue);
-    setHasUserEdited(true); // 사용자가 수동으로 입력하면 플래그를 설정
+    setHasUserEdited(true);
     onChange(newValue);
   };
 
   const handleClear = () => {
     setEventName("");
-    setHasUserEdited(true); // 수동으로 입력이 변경되었음을 알림
+    setHasUserEdited(true);
     onChange("");
   };
 
@@ -55,7 +54,7 @@ function EventNameInput({
       : "text-text-default";
 
   const charCount = eventName.length;
-  const showWarning = !isLoading && (charCount < 1 || charCount > 20); // 로딩 중일 때는 경고 숨김
+  const showWarning = charCount < 1 || charCount > 20;
   const isDefaultValue =
     eventName === `${currentDate} 모임` ||
     eventName === `${currentDate} ${selectedLocation} 모임`;
@@ -68,7 +67,7 @@ function EventNameInput({
 
       <div
         className={`relative w-[328px] h-14 p-4 bg-background-light rounded-lg flex justify-between items-center border-2 ${
-          showWarning ? "border-danger-base" : borderClass
+          showWarning && !isLoading ? "border-danger-base" : borderClass
         }`}
       >
         <input
@@ -82,25 +81,25 @@ function EventNameInput({
 
         {eventName && !isDefaultValue && (
           <div
-            role="button" // 상호작용 요소로 설정
-            tabIndex={0} // 키보드로 접근 가능
+            role="button"
+            tabIndex={0}
             onClick={handleClear}
             onKeyDown={(e) => {
               if (e.key === "Enter" || e.key === " ") handleClear();
             }}
             className="w-5 h-5 relative cursor-pointer"
           >
-            {/* next/image를 사용하여 성능 최적화 */}
             <Image
               src="/images/Cancel.svg"
               alt="삭제 아이콘"
-              layout="fill" // 이미지 크기 최적화
+              layout="fill"
               objectFit="cover"
             />
           </div>
         )}
       </div>
 
+      {/* 로딩 중이 아닐 때 글자 수 검사 결과 표시 */}
       {!isLoading && (
         <>
           {showWarning ? (

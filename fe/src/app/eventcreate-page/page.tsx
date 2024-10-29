@@ -1,14 +1,25 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
+import { useLocationStore } from "@/app/eventcreate-page/stores/useLocationStore";
 import Navigation from "@/app/components/common/Navigation";
-import LocationInput from "@/app/components/event-creat/LocationInput";
-import EventNameInput from "@/app/components/event-creat/EventNameInput";
+import LocationInput from "@/app/eventcreate-page/components/LocationInput";
+import EventNameInput from "@/app/eventcreate-page/components/EventNameInput";
 import Button from "@/app/components/common/Button";
 
 function EventCreatePage() {
   const [selectedLocation, setSelectedLocation] = useState("");
   const [eventName, setEventName] = useState("");
+  const [isFormComplete, setIsFormComplete] = useState(false);
+  const { moveToLocation } = useLocationStore();
+  const router = useRouter();
+
+  useEffect(() => {
+    setIsFormComplete(
+      selectedLocation.trim() !== "" && eventName.trim() !== ""
+    );
+  }, [selectedLocation, eventName]);
 
   const handleLocationSelect = (location: string) => {
     setSelectedLocation(location);
@@ -18,37 +29,18 @@ function EventCreatePage() {
     setEventName(name);
   };
 
-  const handleNextClick = async () => {
-    const eventData = {
-      eventName,
-      selectedLocation,
-    };
+  const handleNextClick = () => {
+    if (!isFormComplete) return;
 
-    try {
-      const response = await fetch("/api/create-event", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(eventData),
-      });
+    const latitude = 37.5665;
+    const longitude = 126.978;
 
-      if (!response.ok) {
-        throw new Error("이벤트 생성에 실패했습니다.");
-      }
-
-      // Removed unused result variable
-      await response.json();
-
-      // Optionally handle success or navigate to a different page here
-    } catch (error) {
-      // Remove console statement and handle the error with UI feedback instead
-      alert("이벤트 생성 중 오류가 발생했습니다.");
-    }
+    moveToLocation(latitude, longitude);
+    router.push("/map-page");
   };
 
   return (
-    <div className="w-full h-screen relative bg-white mx-auto flex flex-col justify-center items-center">
+    <div className="w-[360px] h-screen relative bg-white mx-auto flex flex-col">
       <div className="sticky top-0 w-full z-10">
         <Navigation title="이벤트 생성" showBackButton />
       </div>
@@ -60,6 +52,7 @@ function EventCreatePage() {
         />
 
         <EventNameInput
+          value={eventName}
           selectedLocation={selectedLocation}
           onChange={handleEventNameChange}
           className="mt-[20px] w-full"
@@ -69,9 +62,10 @@ function EventCreatePage() {
       <div className="w-full flex justify-center mb-[45px]">
         <Button
           label="다음"
-          type="next"
+          type="start"
           onClick={handleNextClick}
-          className="w-[328px] h-[60px] py-[17px] rounded-lg bg-black text-white"
+          className="w-[328px] h-[60px] py-[17px] rounded-lg"
+          disabled={!isFormComplete}
         />
       </div>
     </div>

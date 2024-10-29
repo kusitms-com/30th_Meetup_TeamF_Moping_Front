@@ -26,7 +26,6 @@ export default function PinField({ value, onChange }: PinFieldProps) {
       newPin[index] = inputValue;
       onChange(newPin);
 
-      // 입력 후 다음 칸으로 이동
       if (inputValue && index < pinRefs.length - 1) {
         pinRefs[index + 1].current?.focus();
       }
@@ -40,7 +39,6 @@ export default function PinField({ value, onChange }: PinFieldProps) {
     if (e.key === "Backspace") {
       const newPin = [...value];
 
-      // 현재 칸 값 지우기 또는 이전 칸으로 이동하며 값 삭제
       if (newPin[index]) {
         newPin[index] = "";
       } else if (index > 0) {
@@ -58,40 +56,44 @@ export default function PinField({ value, onChange }: PinFieldProps) {
       </label>
       <div className="flex space-x-3">
         <input
-          type="password"
+          type="text"
           maxLength={1}
           ref={pinRefs[0]}
           value={value[0]}
           onChange={(e) => handlePINChange(e, 0)}
           onKeyDown={(e) => handleKeyDown(e, 0)}
-          className="w-1/4 p-3 text-center border rounded-md bg-gray-50 focus:outline-none focus:ring-2 focus:ring-grayscale-80"
+          className="w-1/4 p-3 text-center rounded-md bg-gray-50 focus:outline-none focus:ring-2 focus:ring-grayscale-80"
+          style={{ border: "none" }}
         />
         <input
-          type="password"
+          type="text"
           maxLength={1}
           ref={pinRefs[1]}
           value={value[1]}
           onChange={(e) => handlePINChange(e, 1)}
           onKeyDown={(e) => handleKeyDown(e, 1)}
-          className="w-1/4 p-3 text-center border rounded-md bg-gray-50 focus:outline-none focus:ring-2 focus:ring-grayscale-80"
+          className="w-1/4 p-3 text-center rounded-md bg-gray-50 focus:outline-none focus:ring-2 focus:ring-grayscale-80"
+          style={{ border: "none" }}
         />
         <input
-          type="password"
+          type="text"
           maxLength={1}
           ref={pinRefs[2]}
           value={value[2]}
           onChange={(e) => handlePINChange(e, 2)}
           onKeyDown={(e) => handleKeyDown(e, 2)}
-          className="w-1/4 p-3 text-center border rounded-md bg-gray-50 focus:outline-none focus:ring-2 focus:ring-grayscale-80"
+          className="w-1/4 p-3 text-center rounded-md bg-gray-50 focus:outline-none focus:ring-2 focus:ring-grayscale-80"
+          style={{ border: "none" }}
         />
         <input
-          type="password"
+          type="text"
           maxLength={1}
           ref={pinRefs[3]}
           value={value[3]}
           onChange={(e) => handlePINChange(e, 3)}
           onKeyDown={(e) => handleKeyDown(e, 3)}
-          className="w-1/4 p-3 text-center border rounded-md bg-gray-50 focus:outline-none focus:ring-2 focus:ring-grayscale-80"
+          className="w-1/4 p-3 text-center rounded-md bg-gray-50 focus:outline-none focus:ring-2 focus:ring-grayscale-80"
+          style={{ border: "none" }}
         />
       </div>
     </div>

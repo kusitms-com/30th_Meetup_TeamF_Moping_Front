@@ -11,21 +11,22 @@
     format("truetype");
 }
 
-/* 전역 설정 */
+/* Global styles */
 html,
 body {
-  font-family: "Pretendard", sans-serif;
+  font-family: "Pretendard Variable", sans-serif;
   margin: 0;
   padding: 0;
-  width: 100vw; /* 전체 화면 너비 */
-  height: 100vh;
-  margin: 0 auto;
+  width: 100%;
+  min-height: 100vh;
+  overflow-x: hidden;
 }
 
-/* 네비게이션 바 */
+/* Navigation bar */
 .nav-bar {
-  height: 56px; /* 네비게이션 바 (헤더) */
-  width: 340px; /* 헤더는 340px로 설정 */
+  height: 56px;
+  max-width: 360px;
+  width: 100%;
   background-color: #ffffff;
   display: flex;
   align-items: center;
@@ -33,10 +34,11 @@ body {
   margin: 0 auto;
 }
 
-/* 하단 탭 바 */
+/* Bottom tap bar */
 .bottom-tap-bar {
-  height: 72px; /* 하단 탭 바 */
-  width: 360px;
+  height: 72px;
+  max-width: 360px;
+  width: 100%;
   background-color: #f8f8f8;
   display: flex;
   align-items: center;
@@ -45,15 +47,29 @@ body {
   bottom: 0;
   left: 0;
   right: 0;
+  margin: 0 auto;
   z-index: 1000;
 }
 
-/* 그리드 설정 */
+/* Scrollbar hiding */
+.hide-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.hide-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+/* Main container grid layout */
 .container {
   display: grid;
-  grid-template-columns: repeat(4, 1fr); /* 4개의 컬럼 */
-  gap: 16px; /* 컬럼 간의 간격 */
-  padding: 16px; /* 패딩 설정 */
-  height: calc(100vh - 164px); /* 네비게이션 바와 하단 탭 바 제외한 높이 */
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16px;
+  padding: 16px;
+  max-width: 360px;
+  width: 100%;
+  height: calc(100vh - 164px); /* Adjusted for navbar and bottom bar */
   box-sizing: border-box;
+  overflow-y: auto;
+  margin: 0 auto;
 }

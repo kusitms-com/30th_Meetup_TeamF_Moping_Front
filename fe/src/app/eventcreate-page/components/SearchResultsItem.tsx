@@ -23,7 +23,7 @@ function SearchResultItem({
         {parts.map((part) =>
           part.toLowerCase() === highlight.toLowerCase() ? (
             <span
-              key={part + text} // 고유한 값을 사용해 key 설정
+              key={part + text}
               className="text-blue hover:text-gray-600 transition-colors duration-200"
             >
               {part}
@@ -41,11 +41,8 @@ function SearchResultItem({
   return (
     <button
       type="button"
-      className="cursor-pointer flex items-center gap-2 bg-gray-50 hover:bg-gray-30 transition-colors duration-200"
+      className="cursor-pointer flex items-center gap-2 bg-gray-50 hover:bg-gray-100 transition-colors duration-200"
       onClick={onClick}
-      onKeyDown={(e) => {
-        if (e.key === "Enter" || e.key === " ") onClick();
-      }}
       style={{
         padding: "10px 16px",
         margin: "16px 0",

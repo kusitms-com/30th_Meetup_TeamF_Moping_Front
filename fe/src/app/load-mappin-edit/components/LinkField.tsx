@@ -3,7 +3,7 @@ import { nanoid } from "nanoid";
 import Image from "next/image";
 
 interface LinkFieldProps {
-  label: string;
+  label: string; // label 속성 추가
   placeholder: string;
   value: string[];
   onChange: (value: string[]) => void;
@@ -22,9 +22,7 @@ export default function LinkField({
   const [inputFields, setInputFields] = useState(
     value.map((val) => ({ id: nanoid(), text: val }))
   );
-  const handleNaverMove = () => {
-    window.open("https://m.place.naver.com/my/place");
-  };
+
   const handleInputChange = (id: string, inputValue: string) => {
     const newInputs = inputFields.map((field) =>
       field.id === id ? { ...field, text: inputValue } : field
@@ -78,19 +76,6 @@ export default function LinkField({
             )}
           </div>
         )}
-        <button
-          type="button"
-          className="mr-0 ml-auto text-grayscale-50 flex items-center text-text-sm1"
-          onClick={handleNaverMove}
-        >
-          네이버 지도
-          <Image
-            src="/svg/rightArrow.svg"
-            alt="rightArrow"
-            width={12}
-            height={24}
-          />
-        </button>
       </label>
       <div className="flex flex-col items-center border-grayscale-10 border p-[16px] gap-[16px] rounded-medium">
         {inputFields.map((field) => (
