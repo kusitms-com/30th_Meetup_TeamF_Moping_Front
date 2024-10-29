@@ -11,20 +11,22 @@
     format("truetype");
 }
 
+/* Global styles */
 html,
 body {
-  font-family: "Pretendard", sans-serif;
+  font-family: "Pretendard Variable", sans-serif;
   margin: 0;
   padding: 0;
-  width: 100%; /* 화면 너비에 맞추도록 변경 */
+  width: 100%;
   min-height: 100vh;
-  overflow-x: hidden; /* 수평 스크롤 비활성화 */
+  overflow-x: hidden;
 }
 
+/* Navigation bar */
 .nav-bar {
   height: 56px;
   max-width: 360px;
-  width: 100%; /* 화면 너비에 맞추기 */
+  width: 100%;
   background-color: #ffffff;
   display: flex;
   align-items: center;
@@ -32,10 +34,11 @@ body {
   margin: 0 auto;
 }
 
+/* Bottom tap bar */
 .bottom-tap-bar {
   height: 72px;
   max-width: 360px;
-  width: 100%; /* 화면 너비에 맞추기 */
+  width: 100%;
   background-color: #f8f8f8;
   display: flex;
   align-items: center;
@@ -48,23 +51,24 @@ body {
   z-index: 1000;
 }
 
+/* Scrollbar hiding */
 .hide-scrollbar::-webkit-scrollbar {
   display: none;
 }
-
 .hide-scrollbar {
   -ms-overflow-style: none;
   scrollbar-width: none;
 }
 
+/* Main container grid layout */
 .container {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
   gap: 16px;
   padding: 16px;
-  max-width: 360px; 
-  width: 100%;  
-  height: calc(100vh - 164px);
+  max-width: 360px;
+  width: 100%;
+  height: calc(100vh - 164px); /* Adjusted for navbar and bottom bar */
   box-sizing: border-box;
   overflow-y: auto;
   margin: 0 auto;

@@ -18,7 +18,7 @@ function LoadingPage() {
       <div className="w-full sticky top-0 z-10 flex justify-center overflow-hidden bg-primary-50">
         <div className="w-full h-[89px] flex justify-center">
           <Image
-            src="/images/MMMM.svg"
+            src="/images/loadinglogo.svg"
             alt="MMMM Logo"
             width={623}
             height={89}

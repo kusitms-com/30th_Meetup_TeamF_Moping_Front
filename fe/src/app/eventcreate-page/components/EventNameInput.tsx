@@ -30,7 +30,7 @@ function EventNameInput({
       setEventName(newEventName);
       onChange(newEventName);
     }
-    setIsLoading(false);
+    setIsLoading(false); // 로딩 완료 상태로 변경
   }, [selectedLocation, currentDate, onChange, hasUserEdited]);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -99,6 +99,7 @@ function EventNameInput({
         )}
       </div>
 
+      {/* 로딩 중이 아닐 때 글자 수 검사 결과 표시 */}
       {!isLoading && (
         <>
           {showWarning ? (

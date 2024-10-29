@@ -33,39 +33,44 @@ export default function PasswordInput() {
     [correctPassword, router]
   );
 
-  useEffect(() => {
-    const handleKeyDown = ({ key }: KeyboardEvent) => {
-      if (/^\d$/.test(key)) {
-        const newPass = [...password];
-        newPass[currentIndex] = key;
-        setPassword(newPass);
+  const handleInputChange = (
+    e: React.ChangeEvent<HTMLInputElement>,
+    index: number
+  ) => {
+    const inputValue = e.target.value;
 
-        if (currentIndex < password.length - 1) {
-          setCurrentIndex(currentIndex + 1);
-        }
+    // 숫자만 허용
+    if (/^\d$/.test(inputValue)) {
+      const newPass = [...password];
+      newPass[index] = inputValue;
+      setPassword(newPass);
 
-        checkPassword(newPass);
+      if (index < password.length - 1) {
+        setCurrentIndex(index + 1);
       }
 
-      if (key === "Backspace") {
-        const newPass = [...password];
-        newPass[currentIndex] = "";
+      checkPassword(newPass);
+    }
+  };
 
-        if (currentIndex > 0) {
-          setCurrentIndex(currentIndex - 1);
-        }
+  const handleKeyDown = (
+    e: React.KeyboardEvent<HTMLInputElement>,
+    index: number
+  ) => {
+    if (e.key === "Backspace") {
+      const newPass = [...password];
+      newPass[index] = "";
 
-        setPassword(newPass);
-        setError(false);
+      if (index > 0) {
+        setCurrentIndex(index - 1);
       }
-    };
 
-    window.addEventListener("keydown", handleKeyDown);
-    return () => {
-      window.removeEventListener("keydown", handleKeyDown);
-    };
-  }, [currentIndex, password, checkPassword]);
+      setPassword(newPass);
+      setError(false);
+    }
+  };
 
+  // 현재 인덱스의 입력 칸에 포커스 설정
   useEffect(() => {
     inputRefs.current[currentIndex]?.focus();
   }, [currentIndex]);
@@ -92,10 +97,8 @@ export default function PasswordInput() {
               className="grow shrink basis-0 text-center w-full h-full bg-transparent outline-none text-2xl text-text-default"
               maxLength={1}
               value={char}
-              readOnly
-              style={{
-                caretColor: "transparent",
-              }}
+              onChange={(e) => handleInputChange(e, index)}
+              onKeyDown={(e) => handleKeyDown(e, index)}
             />
           </div>
         ))}
