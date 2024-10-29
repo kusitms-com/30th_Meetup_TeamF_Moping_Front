@@ -19,7 +19,7 @@ body {
   width: 360px;
   height: 100vh;
   margin: 0 auto;
-  overflow: hidden; /* 전체 페이지의 기본 스크롤 비활성화 */
+  overflow: hidden;
 }
 
 .nav-bar {
