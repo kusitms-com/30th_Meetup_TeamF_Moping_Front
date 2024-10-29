@@ -16,7 +16,6 @@ function Navigation({ showBackButton = true }: NavigationProps) {
     <header className="nav-bar sticky top-[36px] z-10">
       {showBackButton && (
         <div className="absolute left-0">
-          {/* 왼쪽 간격을 0으로 설정 */}
           <button type="button" onClick={handleBackClick} className="p-2">
             <Image
               src="/images/ArrowBack.svg"

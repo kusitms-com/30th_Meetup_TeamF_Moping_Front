@@ -13,7 +13,6 @@ export default function Page() {
 
   const bind = useDrag(
     ({ last, movement: [, my], memo = y.get() }) => {
-      // 드래그가 일정 거리 이상 발생해야 드로워를 이동시킴
       if (last) {
         if (my + memo > 100) {
           closeDrawer();
@@ -26,8 +25,8 @@ export default function Page() {
       return memo;
     },
     {
-      filterTaps: true, // 클릭과 드래그 구분
-      threshold: 10, // 드래그 최소 거리 지정 (10px 이상 이동 시 드래그로 인식)
+      filterTaps: true,
+      threshold: 10,
     }
   );
 

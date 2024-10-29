@@ -11,20 +11,22 @@
     format("truetype");
 }
 
+/* Global styles */
 html,
 body {
-  font-family: "Pretendard", sans-serif;
+  font-family: "Pretendard Variable", sans-serif;
   margin: 0;
   padding: 0;
-  width: 360px;
-  height: 100vh;
-  margin: 0 auto;
-  overflow: hidden;
+  width: 100%;
+  min-height: 100vh;
+  overflow-x: hidden;
 }
 
+/* Navigation bar */
 .nav-bar {
   height: 56px;
-  width: 340px;
+  max-width: 360px;
+  width: 100%;
   background-color: #ffffff;
   display: flex;
   align-items: center;
@@ -32,9 +34,11 @@ body {
   margin: 0 auto;
 }
 
+/* Bottom tap bar */
 .bottom-tap-bar {
   height: 72px;
-  width: 360px;
+  max-width: 360px;
+  width: 100%;
   background-color: #f8f8f8;
   display: flex;
   align-items: center;
@@ -43,26 +47,29 @@ body {
   bottom: 0;
   left: 0;
   right: 0;
+  margin: 0 auto;
   z-index: 1000;
 }
 
-/* 스크롤바 숨기기 */
+/* Scrollbar hiding */
 .hide-scrollbar::-webkit-scrollbar {
-  display: none; /* 크롬, 사파리, 엣지 */
+  display: none;
 }
-
 .hide-scrollbar {
-  -ms-overflow-style: none; /* IE와 Edge */
-  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none;
+  scrollbar-width: none;
 }
 
-/* 그리드 설정 */
+/* Main container grid layout */
 .container {
   display: grid;
-  grid-template-columns: repeat(4, 1fr); /* 4열 그리드 */
+  grid-template-columns: repeat(4, 1fr);
   gap: 16px;
   padding: 16px;
-  height: calc(100vh - 164px); /* 네비게이션 바와 하단 탭 바의 높이를 제외 */
+  max-width: 360px;
+  width: 100%;
+  height: calc(100vh - 164px); /* Adjusted for navbar and bottom bar */
   box-sizing: border-box;
-  overflow-y: auto; /* 스크롤 활성화 */
+  overflow-y: auto;
+  margin: 0 auto;
 }

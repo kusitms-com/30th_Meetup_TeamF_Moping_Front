@@ -17,66 +17,64 @@ export default function PasswordInput() {
   const inputRefs = useRef<(HTMLInputElement | null)[]>([]);
   const router = useRouter();
 
-  // Correct password that you are checking against
   const correctPassword = useMemo(() => ["1", "2", "3", "4"], []);
 
-  // Function to check if the entered password is correct
   const checkPassword = useCallback(
     (inputPassword: string[]) => {
       if (inputPassword.every((char) => char !== "")) {
         if (JSON.stringify(inputPassword) === JSON.stringify(correctPassword)) {
           setError(false);
-          router.push("/editmappin-page"); // Navigate if password is correct
+          router.push("/editmappin-page");
         } else {
-          setError(true); // Show error if password is incorrect
+          setError(true);
         }
       }
     },
     [correctPassword, router]
   );
 
-  // Effect to handle key down events for number input and backspace
-  useEffect(() => {
-    const handleKeyDown = ({ key }: KeyboardEvent) => {
-      if (/^\d$/.test(key)) {
-        const newPass = [...password];
-        newPass[currentIndex] = key;
-        setPassword(newPass);
+  const handleInputChange = (
+    e: React.ChangeEvent<HTMLInputElement>,
+    index: number
+  ) => {
+    const inputValue = e.target.value;
 
-        // Move to the next input field
-        if (currentIndex < password.length - 1) {
-          setCurrentIndex(currentIndex + 1);
-        }
+    // 숫자만 허용
+    if (/^\d$/.test(inputValue)) {
+      const newPass = [...password];
+      newPass[index] = inputValue;
+      setPassword(newPass);
 
-        checkPassword(newPass); // Check the password after each change
+      if (index < password.length - 1) {
+        setCurrentIndex(index + 1);
       }
 
-      if (key === "Backspace") {
-        const newPass = [...password];
-        newPass[currentIndex] = ""; // Clear the current input
+      checkPassword(newPass);
+    }
+  };
 
-        // Move back to the previous input field
-        if (currentIndex > 0) {
-          setCurrentIndex(currentIndex - 1);
-        }
+  const handleKeyDown = (
+    e: React.KeyboardEvent<HTMLInputElement>,
+    index: number
+  ) => {
+    if (e.key === "Backspace") {
+      const newPass = [...password];
+      newPass[index] = "";
 
-        setPassword(newPass);
-        setError(false); // Reset error state
+      if (index > 0) {
+        setCurrentIndex(index - 1);
       }
-    };
 
-    window.addEventListener("keydown", handleKeyDown);
-    return () => {
-      window.removeEventListener("keydown", handleKeyDown);
-    };
-  }, [currentIndex, password, checkPassword]);
+      setPassword(newPass);
+      setError(false);
+    }
+  };
 
-  // Effect to focus the correct input field based on current index
+  // 현재 인덱스의 입력 칸에 포커스 설정
   useEffect(() => {
     inputRefs.current[currentIndex]?.focus();
   }, [currentIndex]);
 
-  // Generate unique IDs for each input field
   const inputKeys = useMemo(() => password.map(() => uuidv4()), [password]);
 
   return (
@@ -84,7 +82,7 @@ export default function PasswordInput() {
       <div className="inline-flex items-center justify-start gap-4 mb-4">
         {password.map((char, index) => (
           <div
-            key={inputKeys[index]} // Use generated UUID as the key
+            key={inputKeys[index]}
             className={`w-14 h-14 p-4 bg-[#f7f7f7] rounded-lg justify-start items-center gap-3 inline-flex
             ${error ? "border-2 border-primary-50" : ""}
             ${currentIndex === index ? "border-2 border-gray-950" : ""}`}
@@ -99,10 +97,8 @@ export default function PasswordInput() {
               className="grow shrink basis-0 text-center w-full h-full bg-transparent outline-none text-2xl text-text-default"
               maxLength={1}
               value={char}
-              readOnly
-              style={{
-                caretColor: "transparent", // Hide caret
-              }}
+              onChange={(e) => handleInputChange(e, index)}
+              onKeyDown={(e) => handleKeyDown(e, index)}
             />
           </div>
         ))}

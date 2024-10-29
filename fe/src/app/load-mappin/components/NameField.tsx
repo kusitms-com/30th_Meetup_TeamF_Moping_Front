@@ -12,14 +12,13 @@ export default function NameField({ value, onChange }: NameFieldProps) {
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const inputValue = e.target.value;
 
-    // Validation for Korean and English letters only, up to 6 characters
     if (/^[ㄱ-ㅎ가-힣a-zA-Z]*$/.test(inputValue) && inputValue.length <= 6) {
       onChange(inputValue);
-      setShowError(false); // Hide error if input is valid
+      setShowError(false);
     } else {
       setShowError(
         inputValue.length > 7 || !/^[ㄱ-ㅎ가-힣a-zA-Z]*$/.test(inputValue)
-      ); // Show error if input is invalid or too long
+      );
     }
   };
 
@@ -45,7 +44,7 @@ export default function NameField({ value, onChange }: NameFieldProps) {
           placeholder="이름"
           className="w-full p-3 bg-gray-50 rounded-md focus:outline-none focus:ring-2 focus:ring-grayscale-80"
           style={{
-            border: "none", // 테두리 제거
+            border: "none",
           }}
         />
         {value && (

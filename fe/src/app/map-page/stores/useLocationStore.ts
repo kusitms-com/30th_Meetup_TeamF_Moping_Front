@@ -1,5 +1,5 @@
 import { create } from "zustand";
-import { LocationState } from "../types/types"; // types 파일에서 타입을 import
+import { LocationState } from "../types/types";
 
 // 위치 상태를 zustand로 관리
 export const useLocationStore = create<LocationState>((set) => ({

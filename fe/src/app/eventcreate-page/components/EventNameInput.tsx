@@ -18,8 +18,8 @@ function EventNameInput({
 }: EventNameInputProps) {
   const [eventName, setEventName] = useState("");
   const [isFocused, setIsFocused] = useState(false);
-  const [hasUserEdited, setHasUserEdited] = useState(false); // 사용자가 직접 수정했는지 확인
-  const [isLoading, setIsLoading] = useState(true); // 로딩 상태 추가
+  const [hasUserEdited, setHasUserEdited] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
   const currentDate = getCurrentDate();
 
   useEffect(() => {
@@ -36,13 +36,13 @@ function EventNameInput({
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const newValue = e.target.value;
     setEventName(newValue);
-    setHasUserEdited(true); // 사용자가 수동으로 입력하면 플래그를 설정
+    setHasUserEdited(true);
     onChange(newValue);
   };
 
   const handleClear = () => {
     setEventName("");
-    setHasUserEdited(true); // 수동으로 입력이 변경되었음을 알림
+    setHasUserEdited(true);
     onChange("");
   };
 
@@ -54,7 +54,7 @@ function EventNameInput({
       : "text-text-default";
 
   const charCount = eventName.length;
-  const showWarning = charCount < 1 || charCount > 20; // 글자 수 검사 조건 설정
+  const showWarning = charCount < 1 || charCount > 20;
   const isDefaultValue =
     eventName === `${currentDate} 모임` ||
     eventName === `${currentDate} ${selectedLocation} 모임`;
@@ -81,8 +81,8 @@ function EventNameInput({
 
         {eventName && !isDefaultValue && (
           <div
-            role="button" // 상호작용 요소로 설정
-            tabIndex={0} // 키보드로 접근 가능
+            role="button"
+            tabIndex={0}
             onClick={handleClear}
             onKeyDown={(e) => {
               if (e.key === "Enter" || e.key === " ") handleClear();
