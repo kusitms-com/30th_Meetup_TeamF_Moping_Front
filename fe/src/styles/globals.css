@@ -62,10 +62,10 @@ body {
   grid-template-columns: repeat(4, 1fr);
   gap: 16px;
   padding: 16px;
-  max-width: 360px; /* 최대 너비 설정 */
-  width: 100%; /* 화면 너비에 맞추기 */
+  max-width: 360px; 
+  width: 100%;  
   height: calc(100vh - 164px);
   box-sizing: border-box;
   overflow-y: auto;
-  margin: 0 auto; /* 가운데 정렬 */
+  margin: 0 auto;
 }
