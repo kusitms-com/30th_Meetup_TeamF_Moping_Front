@@ -13,7 +13,8 @@ function LoadingPage() {
   };
 
   return (
-    <div className="bg-primary-50 h-screen flex flex-col items-center relative">
+    <div className="bg-primary-50 h-screen w-full flex flex-col items-center relative">
+      {/* 로고 영역 */}
       <div className="w-full sticky top-0 z-10 flex justify-center overflow-hidden bg-primary-50">
         <div className="w-full h-[89px] flex justify-center">
           <Image
@@ -21,15 +22,18 @@ function LoadingPage() {
             alt="MMMM Logo"
             width={623}
             height={89}
-            className="object-cover"
+            className="object-cover w-full h-full"
             priority
           />
         </div>
       </div>
 
-      <div className="absolute top-[338px] left-0 right-0 flex flex-col items-center">
+      <div
+        className="flex flex-col items-center absolute left-0 right-0"
+        style={{ top: "327px" }}
+      >
         <div
-          className="text-text-default text-[62px] leading-[62px] font-black font-pretendard"
+          className="text-text-default text-[62px] leading-[62px] font-black font-pretendard text-center"
           style={{
             textShadow:
               "1px 1px 0 #000, -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000",
@@ -39,7 +43,7 @@ function LoadingPage() {
           MOPING
         </div>
 
-        <div className="w-[198px] h-[56px] flex justify-center text-center">
+        <div className="w-full flex justify-center text-center mt-2">
           <div className="text-center">
             <span className="text-grayscale-0 text-xl font-black font-pretendard">
               MIX
@@ -60,12 +64,13 @@ function LoadingPage() {
         </div>
       </div>
 
-      <div className="w-full fixed bottom-[45px] left-0 right-0 flex justify-center">
+      {/* 시작하기 버튼 */}
+      <div className="w-full fixed bottom-[45px] left-0 right-0 flex justify-center px-4">
         <Button
           label="시작하기"
           onClick={handleStartClick}
           type="start"
-          className="w-[328px] h-[60px] py-[17px] rounded-lg bg-darkGray text-grayscale-0"
+          className="w-full max-w-[328px] h-[60px] py-[17px] rounded-lg bg-darkGray text-grayscale-0"
         />
       </div>
     </div>

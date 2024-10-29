@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useLocationStore } from "@/app/eventcreate-page/stores/useLocationStore";
 import Navigation from "@/app/components/common/Navigation";
@@ -11,8 +11,15 @@ import Button from "@/app/components/common/Button";
 function EventCreatePage() {
   const [selectedLocation, setSelectedLocation] = useState("");
   const [eventName, setEventName] = useState("");
+  const [isFormComplete, setIsFormComplete] = useState(false);
   const { moveToLocation } = useLocationStore();
   const router = useRouter();
+
+  useEffect(() => {
+    setIsFormComplete(
+      selectedLocation.trim() !== "" && eventName.trim() !== ""
+    );
+  }, [selectedLocation, eventName]);
 
   const handleLocationSelect = (location: string) => {
     setSelectedLocation(location);
@@ -23,26 +30,17 @@ function EventCreatePage() {
   };
 
   const handleNextClick = () => {
+    if (!isFormComplete) return;
+
     const latitude = 37.5665;
     const longitude = 126.978;
 
-    if (!eventName) {
-      alert("이벤트 이름을 입력해주세요.");
-      return;
-    }
-
-    if (!selectedLocation) {
-      alert("장소를 선택해주세요.");
-      return;
-    }
-
     moveToLocation(latitude, longitude);
-
     router.push("/map-page");
   };
 
   return (
-    <div className="w-full h-screen relative bg-white mx-auto flex flex-col justify-center items-center">
+    <div className="w-[360px] h-screen relative bg-white mx-auto flex flex-col">
       <div className="sticky top-0 w-full z-10">
         <Navigation title="이벤트 생성" showBackButton />
       </div>
@@ -64,9 +62,10 @@ function EventCreatePage() {
       <div className="w-full flex justify-center mb-[45px]">
         <Button
           label="다음"
-          type="next"
+          type="start"
           onClick={handleNextClick}
-          className="w-[328px] h-[60px] py-[17px] rounded-lg bg-black text-white"
+          className="w-[328px] h-[60px] py-[17px] rounded-lg"
+          disabled={!isFormComplete}
         />
       </div>
     </div>

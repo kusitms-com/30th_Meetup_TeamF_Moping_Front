@@ -17,25 +17,22 @@ export default function PasswordInput() {
   const inputRefs = useRef<(HTMLInputElement | null)[]>([]);
   const router = useRouter();
 
-  // Correct password that you are checking against
   const correctPassword = useMemo(() => ["1", "2", "3", "4"], []);
 
-  // Function to check if the entered password is correct
   const checkPassword = useCallback(
     (inputPassword: string[]) => {
       if (inputPassword.every((char) => char !== "")) {
         if (JSON.stringify(inputPassword) === JSON.stringify(correctPassword)) {
           setError(false);
-          router.push("/editmappin-page"); // Navigate if password is correct
+          router.push("/editmappin-page");
         } else {
-          setError(true); // Show error if password is incorrect
+          setError(true);
         }
       }
     },
     [correctPassword, router]
   );
 
-  // Effect to handle key down events for number input and backspace
   useEffect(() => {
     const handleKeyDown = ({ key }: KeyboardEvent) => {
       if (/^\d$/.test(key)) {
@@ -43,25 +40,23 @@ export default function PasswordInput() {
         newPass[currentIndex] = key;
         setPassword(newPass);
 
-        // Move to the next input field
         if (currentIndex < password.length - 1) {
           setCurrentIndex(currentIndex + 1);
         }
 
-        checkPassword(newPass); // Check the password after each change
+        checkPassword(newPass);
       }
 
       if (key === "Backspace") {
         const newPass = [...password];
-        newPass[currentIndex] = ""; // Clear the current input
+        newPass[currentIndex] = "";
 
-        // Move back to the previous input field
         if (currentIndex > 0) {
           setCurrentIndex(currentIndex - 1);
         }
 
         setPassword(newPass);
-        setError(false); // Reset error state
+        setError(false);
       }
     };
 
@@ -71,12 +66,10 @@ export default function PasswordInput() {
     };
   }, [currentIndex, password, checkPassword]);
 
-  // Effect to focus the correct input field based on current index
   useEffect(() => {
     inputRefs.current[currentIndex]?.focus();
   }, [currentIndex]);
 
-  // Generate unique IDs for each input field
   const inputKeys = useMemo(() => password.map(() => uuidv4()), [password]);
 
   return (
@@ -84,7 +77,7 @@ export default function PasswordInput() {
       <div className="inline-flex items-center justify-start gap-4 mb-4">
         {password.map((char, index) => (
           <div
-            key={inputKeys[index]} // Use generated UUID as the key
+            key={inputKeys[index]}
             className={`w-14 h-14 p-4 bg-[#f7f7f7] rounded-lg justify-start items-center gap-3 inline-flex
             ${error ? "border-2 border-primary-50" : ""}
             ${currentIndex === index ? "border-2 border-gray-950" : ""}`}
@@ -101,7 +94,7 @@ export default function PasswordInput() {
               value={char}
               readOnly
               style={{
-                caretColor: "transparent", // Hide caret
+                caretColor: "transparent",
               }}
             />
           </div>
