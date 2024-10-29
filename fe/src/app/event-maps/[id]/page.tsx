@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { useEffect, useState } from "react";
 import Image from "next/image";
 import { useParams } from "next/navigation";
 import { a } from "@react-spring/web";
@@ -12,6 +12,33 @@ import useDrawer from "./hooks/useDrawer";
 export default function Page() {
   const { y, openDrawer, closeDrawer, setPosition } = useDrawer();
   const { id } = useParams();
+  const [data, setData] = useState(null);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await fetch(`/api/nonmembers/pings?uuid=${id}`, {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        });
+
+        if (response.ok) {
+          const result = await response.json();
+          setData(result); // 데이터를 상태에 저장
+          console.log(data);
+        } else {
+          console.error("데이터 가져오기에 실패했습니다.");
+        }
+      } catch (error) {
+        console.error("서버 오류:", error);
+      }
+    };
+
+    fetchData();
+  }, [id]);
+
   const bind = useDrag(
     ({ last, movement: [, my], memo = y.get() }) => {
       // 드래그가 일정 거리 이상 발생해야 드로워를 이동시킴
