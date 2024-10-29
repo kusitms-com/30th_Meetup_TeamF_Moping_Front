@@ -85,7 +85,10 @@ export default function LinkField({
               value={field.text}
               onChange={(e) => handleInputChange(field.id, e.target.value)}
               placeholder={placeholder}
-              className="w-full p-3 border rounded-md bg-gray-50 focus:outline-none focus:ring-2 focus:ring-grayscale-80"
+              className="w-full p-3 bg-gray-50 rounded-md focus:outline-none focus:ring-2 focus:ring-grayscale-80"
+              style={{
+                border: "none",
+              }}
             />
             {field.text && (
               <button

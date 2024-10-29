@@ -1,9 +1,9 @@
 import Image from "next/image";
 import Form from "./components/Form";
 
-export default function page() {
+export default function Page() {
   return (
-    <>
+    <div className="w-full h-screen overflow-y-auto hide-scrollbar">
       <div className="w-full h-[56px] p-[16px]">
         <button type="button" className="w-[24px] h-[24px] ">
           <Image
@@ -19,6 +19,6 @@ export default function page() {
       </div>
       <Form />
       <div className="h-[20px]" />
-    </>
+    </div>
   );
 }

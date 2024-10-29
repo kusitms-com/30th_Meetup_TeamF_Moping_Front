@@ -19,7 +19,7 @@ body {
   width: 360px;
   height: 100vh;
   margin: 0 auto;
-  overflow: hidden;
+  overflow: hidden; /* 전체 페이지의 기본 스크롤 비활성화 */
 }
 
 .nav-bar {
@@ -46,6 +46,16 @@ body {
   z-index: 1000;
 }
 
+/* 스크롤바 숨기기 */
+.hide-scrollbar::-webkit-scrollbar {
+  display: none; /* 크롬, 사파리, 엣지 */
+}
+
+.hide-scrollbar {
+  -ms-overflow-style: none; /* IE와 Edge */
+  scrollbar-width: none; /* Firefox */
+}
+
 /* 그리드 설정 */
 .container {
   display: grid;
@@ -54,4 +64,5 @@ body {
   padding: 16px;
   height: calc(100vh - 164px); /* 네비게이션 바와 하단 탭 바의 높이를 제외 */
   box-sizing: border-box;
+  overflow-y: auto; /* 스크롤 활성화 */
 }
