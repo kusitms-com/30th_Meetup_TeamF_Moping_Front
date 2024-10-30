@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
 import NameField from "./NameField";
 import PinField from "./PinField";
 import LinkField from "./LinkField";
@@ -12,10 +13,11 @@ interface FormProps {
 export default function Form({ uuid }: FormProps) {
   const [name, setName] = useState("");
   const [pin, setPin] = useState(["", "", "", ""]);
-  const [mapLinks, setMapLinks] = useState([""]);
-  const [storeLinks, setStoreLinks] = useState([""]);
+  const [mapLinks, setMapLinks] = useState<string[]>([]); // 빈 배열로 초기화
+  const [storeLinks, setStoreLinks] = useState<string[]>([]); // 빈 배열로 초기화
   const [isFormComplete, setIsFormComplete] = useState(false);
   const [isTooltipVisible, setIsTooltipVisible] = useState(true);
+  const router = useRouter();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -27,8 +29,6 @@ export default function Form({ uuid }: FormProps) {
       bookmarkUrls: mapLinks,
       storeUrls: storeLinks,
     };
-
-    console.log("Request Body:", JSON.stringify(requestBody, null, 2));
 
     try {
       const response = await fetch(
@@ -42,9 +42,9 @@ export default function Form({ uuid }: FormProps) {
         }
       );
 
-      // 요청 성공 여부 확인
       if (response.ok) {
-        console.log("요청에 성공했습니다. 상태 코드:", response.status);
+        console.log("성공적으로 처리되었습니다.");
+        router.push(`/event-maps/${uuid}`);
       } else {
         console.log("요청에 실패했습니다. 상태 코드:", response.status);
       }

@@ -1,20 +1,45 @@
 "use client";
 
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
-import useDataStore from "./stores/useDataStore";
 import MapComponent from "./components/MapComponent";
 import BottomDrawer from "./components/BottomDrawer";
 import useDrawer from "./hooks/useDrawer";
+import { useLocationStore } from "./stores/useLocationStore";
+import { useMarkerStore } from "./load-mappin/stores/useMarkerStore";
 import Image from "next/image";
 import { a } from "@react-spring/web";
 import { useDrag } from "@use-gesture/react";
 
+interface NonMember {
+  nonMemberId: number;
+  name: string;
+}
+
+interface Ping {
+  iconLevel: number;
+  nonMembers: NonMember[];
+  url: string;
+  placeName: string;
+  px: number;
+  py: number;
+}
+
+interface Data {
+  eventName: string;
+  px: number;
+  py: number;
+  nonMembers: NonMember[];
+  pings: Ping[];
+}
+
 export default function Page() {
   const { y, openDrawer, closeDrawer, setPosition } = useDrawer();
   const { id } = useParams();
-  const setData = useDataStore((state) => state.setData);
-  const data = useDataStore((state) => state.data);
+  const parsedId = Array.isArray(id) ? id[0] : id;
+  const [data, setData] = useState<Data | null>(null);
+  const moveToLocation = useLocationStore((state) => state.moveToLocation);
+  const setCustomMarkers = useMarkerStore((state) => state.setCustomMarkers); // setCustomMarkers 가져오기
 
   useEffect(() => {
     const fetchData = async () => {
@@ -31,9 +56,17 @@ export default function Page() {
 
         if (response.ok) {
           const result = await response.json();
-          if (!data) {
-            setData(result);
-            console.log("Response Data:", JSON.stringify(result, null, 2));
+          setData(result);
+          console.log("Response Data:", JSON.stringify(result, null, 2));
+
+          // 처음 px, py 값을 useLocationStore에 저장
+          if (result.px && result.py) {
+            moveToLocation(result.py, result.px);
+          }
+
+          // pings 데이터를 useMarkerStore에 저장
+          if (result.pings) {
+            setCustomMarkers(result.pings);
           }
         } else {
           console.error("데이터 가져오기에 실패했습니다.");
@@ -43,11 +76,10 @@ export default function Page() {
       }
     };
 
-    // data가 비어있을 때 fetchData 호출
     if (!data) {
       fetchData();
     }
-  }, []);
+  }, [id, data, moveToLocation, setCustomMarkers]);
 
   const bind = useDrag(
     ({ last, movement: [, my], memo = y.get() }) => {
@@ -75,14 +107,23 @@ export default function Page() {
           <Image src="/svg/arrow-back.svg" alt="icon" width={40} height={40} />
         </button>
       </div>
-      <MapComponent />
-      <a.div
-        {...bind()}
-        style={{ y, touchAction: "none" }}
-        className="w-full h-[218px] fixed bottom-0 z-10"
-      >
-        <BottomDrawer />
-      </a.div>
+      {data && (
+        <>
+          {/* MapComponent에 pings 전달하지 않고 상태에서 직접 사용 */}
+          <MapComponent px={data.px} py={data.py} />
+          <a.div
+            {...bind()}
+            style={{ y, touchAction: "none" }}
+            className="w-full h-[218px] fixed bottom-0 z-10"
+          >
+            <BottomDrawer
+              nonMembers={data.nonMembers}
+              eventName={data.eventName}
+              id={parsedId}
+            />
+          </a.div>
+        </>
+      )}
     </div>
   );
 }

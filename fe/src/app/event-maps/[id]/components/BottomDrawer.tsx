@@ -1,14 +1,81 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Image from "next/image";
+import { useRouter } from "next/navigation";
 import { useLocationStore } from "../stores/useLocationStore";
-import useDataStore from "../stores/useDataStore";
+import { useMarkerStore } from "../load-mappin/stores/useMarkerStore"; // useMarkerStore 가져오기
 
-export default function BottomDrawer() {
+interface NonMember {
+  nonMemberId: number;
+  name: string;
+}
+
+interface Ping {
+  iconLevel: number;
+  placeName: string;
+  px: number;
+  py: number;
+  url: string;
+}
+
+interface BottomDrawerProps {
+  nonMembers: NonMember[];
+  eventName: string;
+  id: string;
+}
+
+export default function BottomDrawer({
+  nonMembers,
+  eventName,
+  id,
+}: BottomDrawerProps) {
   const [selectedButton, setSelectedButton] = useState<number | null>(null);
+  const [memberProfiles, setMemberProfiles] = useState<{
+    [key: number]: string;
+  }>({});
+  const [allPings, setAllPings] = useState<Ping[]>([]);
+  const { setCustomMarkers } = useMarkerStore(); // useMarkerStore에서 setCustomMarkers 가져오기
   const moveToLocation = useLocationStore((state) => state.moveToLocation);
+  const router = useRouter();
+  const profileImages = [
+    "/profile/profil1.svg",
+    "/profile/profil2.svg",
+    "/profile/profil3.svg",
+    "/profile/profil4.svg",
+  ];
 
-  const nonMembers = useDataStore((state) => state.data?.nonMembers || []);
-  console.log(nonMembers);
+  useEffect(() => {
+    // 프로필 이미지 랜덤 할당
+    const profiles = nonMembers.reduce(
+      (acc, member) => {
+        const randomImage =
+          profileImages[Math.floor(Math.random() * profileImages.length)];
+        acc[member.nonMemberId] = randomImage;
+        return acc;
+      },
+      {} as { [key: number]: string }
+    );
+    setMemberProfiles(profiles);
+  }, [nonMembers]);
+
+  useEffect(() => {
+    // 전체 pings 데이터를 처음 로드할 때 가져옴
+    const fetchAllPings = async () => {
+      try {
+        const response = await fetch(
+          `http://110.165.17.236:8081/api/v1/nonmembers/pings?uuid=${id}`
+        );
+        if (response.ok) {
+          const data = await response.json();
+          setAllPings(data.pings || []);
+          setCustomMarkers(data.pings || []); // 모든 핑을 setCustomMarkers에 설정
+        }
+      } catch (error) {
+        console.log("Error:", error);
+      }
+    };
+    fetchAllPings();
+  }, [id, setCustomMarkers]);
+
   const handleLocationClick = () => {
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition(
@@ -21,18 +88,46 @@ export default function BottomDrawer() {
     }
   };
 
-  const handleButtonClick = (id: number) => {
-    setSelectedButton((prevId) => (prevId === id ? null : id));
+  const handleButtonClick = async (nonMemberId: number) => {
+    // 선택된 버튼 토글
+    const isDeselect = selectedButton === nonMemberId;
+    setSelectedButton(isDeselect ? null : nonMemberId);
+
+    if (isDeselect) {
+      // 선택 해제 시 전체 핑 표시
+      setCustomMarkers(allPings);
+    } else {
+      // 특정 nonMemberId에 대한 핑 요청
+      try {
+        const response = await fetch(
+          `http://110.165.17.236:8081/api/v1/nonmembers/pings/${nonMemberId}`,
+          { method: "GET", headers: { "Content-Type": "application/json" } }
+        );
+
+        if (response.ok) {
+          const data = await response.json();
+          const filteredPings = data.pings.map((ping: Ping) => ({
+            ...ping,
+            iconLevel: 1, // 선택된 nonMember에 대한 핑을 level1로 설정
+          }));
+          console.log(filteredPings);
+          setCustomMarkers(filteredPings); // 필터링된 핑을 setCustomMarkers에 설정
+        } else {
+          console.log("Failed to fetch data:", response.status);
+        }
+      } catch (error) {
+        console.log("Error:", error);
+      }
+    }
+  };
+
+  const handleAddButtonClick = () => {
+    router.push(`/event-maps/${id}/load-mappin`);
   };
 
   const handleShare = () => {
     if (navigator.share) {
-      navigator
-        .share({
-          url: window.location.href,
-        })
-        .then()
-        .catch();
+      navigator.share({ url: window.location.href }).then().catch();
     } else {
       alert("이 브라우저에서는 공유 기능을 지원하지 않습니다.");
     }
@@ -71,9 +166,7 @@ export default function BottomDrawer() {
         />
       </div>
       <div className="h-[62px] w-full pt-[16px] pb-[14px] pl-[20px] pr-[16px] flex justify-between text-lg text-grayscale-0 font-300">
-        <div className="truncate max-w-[210px]">
-          텍스트텍스트텍스트텍스트텍스트
-        </div>
+        <div className="truncate max-w-[210px]">{eventName}</div>
         <div>
           <button type="button" className="w-[32px] h-[32px]">
             <Image
@@ -89,7 +182,11 @@ export default function BottomDrawer() {
       </div>
       <div className="h-[96px] w-full flex pt-[6px] px-[16px] text-caption font-200 text-grayscale-20 overflow-x-auto scrollbar-hide gap-[12px]">
         <div className="w-[68px] h-[90px] flex flex-col justify-between shrink-0">
-          <button type="button">
+          <button
+            type="button"
+            onClick={handleAddButtonClick}
+            className="w-[68px] h-[68px] rounded-lg"
+          >
             <Image src="/svg/add.svg" alt="add" width={68} height={68} />
           </button>
         </div>
@@ -107,7 +204,14 @@ export default function BottomDrawer() {
                   : ""
               }`}
             >
-              <Image src="/svg/add.svg" alt="add" width={68} height={68} />
+              <Image
+                src={
+                  memberProfiles[member.nonMemberId] || "/profile/default.svg"
+                }
+                alt="profile"
+                width={68}
+                height={68}
+              />
             </button>
             <div className="text-center">{member.name}</div>
           </div>

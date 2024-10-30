@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { nanoid } from "nanoid";
 import Image from "next/image";
 
@@ -20,11 +20,22 @@ export default function LinkField({
   onInfoClick,
 }: LinkFieldProps) {
   const [inputFields, setInputFields] = useState(
-    value.map((val) => ({ id: nanoid(), text: val }))
+    value.length > 0
+      ? value.map((val) => ({ id: nanoid(), text: val }))
+      : [{ id: nanoid(), text: "" }]
   );
+
+  useEffect(() => {
+    // Ensure at least one field exists
+    if (inputFields.length === 0) {
+      addInputField();
+    }
+  }, [inputFields]);
+
   const handleNaverMove = () => {
     window.open("https://m.place.naver.com/my/place");
   };
+
   const handleInputChange = (id: string, inputValue: string) => {
     const newInputs = inputFields.map((field) =>
       field.id === id ? { ...field, text: inputValue } : field
