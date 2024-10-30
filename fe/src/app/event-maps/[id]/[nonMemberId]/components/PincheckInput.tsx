@@ -6,7 +6,7 @@ import { useRouter, useParams } from "next/navigation";
 export default function PasswordInput() {
   const [password, setPassword] = useState(["", "", "", ""]);
   const [currentIndex, setCurrentIndex] = useState(0);
-  const [error, setError] = useState(false);
+  const [hasError, setHasError] = useState(false); // 변수명 변경
   const inputRefs = useRef<(HTMLInputElement | null)[]>([]);
   const router = useRouter();
   const { id, nonMemberId } = useParams();
@@ -35,13 +35,13 @@ export default function PasswordInput() {
       if (response.ok) {
         router.push(`/event-maps/${id}/${nonMemberId}/load-mappin-edit`);
       } else {
-        setError(true);
+        setHasError(true); // hasError로 변경
         setPassword(["", "", "", ""]);
         setCurrentIndex(0);
       }
     } catch (error) {
       console.error("서버 오류:", error);
-      setError(true);
+      setHasError(true); // hasError로 변경
     }
   };
 
@@ -75,7 +75,7 @@ export default function PasswordInput() {
       }
 
       setPassword(newPass);
-      setError(false);
+      setHasError(false); // hasError로 변경
     }
   };
 
@@ -88,7 +88,7 @@ export default function PasswordInput() {
       <div className="inline-flex items-center justify-start gap-4 mb-4">
         <div
           className={`w-14 h-14 p-4 bg-[#f7f7f7] rounded-lg inline-flex items-center ${
-            error ? "border-2 border-primary-50" : ""
+            hasError ? "border-2 border-primary-50" : ""
           } ${currentIndex === 0 ? "border-2 border-gray-950" : ""}`}
         >
           <input
@@ -107,7 +107,7 @@ export default function PasswordInput() {
         </div>
         <div
           className={`w-14 h-14 p-4 bg-[#f7f7f7] rounded-lg inline-flex items-center ${
-            error ? "border-2 border-primary-50" : ""
+            hasError ? "border-2 border-primary-50" : ""
           } ${currentIndex === 1 ? "border-2 border-gray-950" : ""}`}
         >
           <input
@@ -126,7 +126,7 @@ export default function PasswordInput() {
         </div>
         <div
           className={`w-14 h-14 p-4 bg-[#f7f7f7] rounded-lg inline-flex items-center ${
-            error ? "border-2 border-primary-50" : ""
+            hasError ? "border-2 border-primary-50" : ""
           } ${currentIndex === 2 ? "border-2 border-gray-950" : ""}`}
         >
           <input
@@ -145,7 +145,7 @@ export default function PasswordInput() {
         </div>
         <div
           className={`w-14 h-14 p-4 bg-[#f7f7f7] rounded-lg inline-flex items-center ${
-            error ? "border-2 border-primary-50" : ""
+            hasError ? "border-2 border-primary-50" : ""
           } ${currentIndex === 3 ? "border-2 border-gray-950" : ""}`}
         >
           <input
@@ -164,7 +164,7 @@ export default function PasswordInput() {
         </div>
       </div>
 
-      {error && (
+      {hasError && (
         <p className="text-primary-50 text-left w-full max-w-sm">
           비밀번호가 일치하지 않아요
         </p>

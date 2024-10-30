@@ -1,8 +1,8 @@
 "use client";
 
 import Image from "next/image";
-import PasswordInput from "./components/PincheckInput";
 import NavBar from "@/app/components/common/Navigation";
+import PasswordInput from "./components/PincheckInput";
 
 export default function PasswordPage() {
   return (
