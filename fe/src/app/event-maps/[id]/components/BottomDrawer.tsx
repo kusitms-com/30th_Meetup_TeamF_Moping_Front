@@ -127,6 +127,12 @@ export default function BottomDrawer({
     router.push(`/event-maps/${id}/load-mappin`);
   };
 
+  const handleEditBtn = () => {
+    if (selectedButton !== null) {
+      router.push(`/event-maps/${id}/${selectedButton}`);
+    }
+  };
+
   const handleShare = () => {
     if (navigator.share) {
       navigator.share({ url: window.location.href }).then().catch();
@@ -170,7 +176,11 @@ export default function BottomDrawer({
       <div className="h-[62px] w-full pt-[16px] pb-[14px] pl-[20px] pr-[16px] flex justify-between text-lg text-grayscale-0 font-300">
         <div className="truncate max-w-[210px]">{eventName}</div>
         <div>
-          <button type="button" className="w-[32px] h-[32px]">
+          <button
+            type="button"
+            className="w-[32px] h-[32px]"
+            onClick={selectedButton !== null ? handleEditBtn : undefined}
+          >
             <Image
               src={
                 selectedButton !== null ? "/svg/edit.svg" : "/svg/refresh.svg"

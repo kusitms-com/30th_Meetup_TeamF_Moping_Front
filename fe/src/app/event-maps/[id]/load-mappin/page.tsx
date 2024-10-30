@@ -8,6 +8,7 @@ export default function Page() {
   const { id } = useParams();
   const uuid = Array.isArray(id) ? id[0] : id;
   const router = useRouter();
+
   return (
     <div className="w-full h-screen flex justify-center items-center">
       <div className="max-w-[360px] w-full h-screen overflow-y-auto hide-scrollbar">
@@ -15,7 +16,7 @@ export default function Page() {
           <button
             type="button"
             className="w-[24px] h-[24px]"
-            onClick={() => router.push(`/event-maps/${uuid}`)}
+            onClick={() => router.back()} // 뒤로 가기 기능
           >
             <Image
               src="/images/ArrowBack.svg"
