@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { nanoid } from "nanoid";
 import Image from "next/image";
 
@@ -20,8 +20,29 @@ export default function LinkField({
   onInfoClick,
 }: LinkFieldProps) {
   const [inputFields, setInputFields] = useState(
-    value.map((val) => ({ id: nanoid(), text: val }))
+    value.length > 0
+      ? value.map((val) => ({ id: nanoid(), text: val }))
+      : [{ id: nanoid(), text: "" }]
   );
+
+  // addInputField 함수를 useCallback으로 메모이제이션하여 종속성 문제 해결
+  const addInputField = useCallback(() => {
+    const newField = { id: nanoid(), text: "" };
+    const updatedInputs = [...inputFields, newField];
+    setInputFields(updatedInputs);
+    onChange(updatedInputs.map((field) => field.text));
+  }, [inputFields, onChange]);
+
+  useEffect(() => {
+    // Ensure at least one field exists
+    if (inputFields.length === 0) {
+      addInputField();
+    }
+  }, [inputFields, addInputField]);
+
+  const handleNaverMove = () => {
+    window.open("https://m.place.naver.com/my/place");
+  };
 
   const handleInputChange = (id: string, inputValue: string) => {
     const newInputs = inputFields.map((field) =>
@@ -37,13 +58,6 @@ export default function LinkField({
     );
     setInputFields(newInputs);
     onChange(newInputs.map((field) => field.text));
-  };
-
-  const addInputField = () => {
-    const newField = { id: nanoid(), text: "" };
-    const updatedInputs = [...inputFields, newField];
-    setInputFields(updatedInputs);
-    onChange(updatedInputs.map((field) => field.text));
   };
 
   return (
@@ -76,6 +90,19 @@ export default function LinkField({
             )}
           </div>
         )}
+        <button
+          type="button"
+          className="mr-0 ml-auto text-grayscale-50 flex items-center text-text-sm1"
+          onClick={handleNaverMove}
+        >
+          네이버 지도
+          <Image
+            src="/svg/rightArrow.svg"
+            alt="rightArrow"
+            width={12}
+            height={24}
+          />
+        </button>
       </label>
       <div className="flex flex-col items-center border-grayscale-10 border p-[16px] gap-[16px] rounded-medium">
         {inputFields.map((field) => (
