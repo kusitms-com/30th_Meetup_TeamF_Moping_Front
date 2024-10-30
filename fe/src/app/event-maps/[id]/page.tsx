@@ -1,16 +1,15 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
-import { useParams } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import Image from "next/image"; // 외부 라이브러리
 import { a } from "@react-spring/web"; // 외부 라이브러리
 import { useDrag } from "@use-gesture/react"; // 외부 라이브러리
-
-import MapComponent from "./components/MapComponent"; // 내부 모듈
-import BottomDrawer from "./components/BottomDrawer"; // 내부 모듈
+import MapComponent from "./components/MapComponent";
+import BottomDrawer from "./components/BottomDrawer";
 import useDrawer from "./hooks/useDrawer"; // 내부 모듈
 import { useLocationStore } from "./stores/useLocationStore"; // 내부 모듈
-import { useMarkerStore } from "./load-mappin/stores/useMarkerStore"; // 내부 모듈
+import { useMarkerStore } from "./load-mappin/stores/useMarkerStore";
 
 interface NonMember {
   nonMemberId: number;
@@ -41,6 +40,7 @@ export default function Page() {
   const [data, setData] = useState<Data | null>(null);
   const moveToLocation = useLocationStore((state) => state.moveToLocation);
   const setCustomMarkers = useMarkerStore((state) => state.setCustomMarkers);
+  const router = useRouter();
 
   useEffect(() => {
     const fetchData = async () => {
@@ -82,6 +82,9 @@ export default function Page() {
     }
   }, [id, data, moveToLocation, setCustomMarkers]);
 
+  const handleBackbtn = () => {
+    router.push(`eventcreate-page`);
+  };
   const bind = useDrag(
     ({ last, movement: [, my], memo = y.get() }) => {
       if (last) {
@@ -104,7 +107,11 @@ export default function Page() {
   return (
     <div>
       <div className="w-[100%] h-[56px] px-[16px] py-[8px] fixed z-10">
-        <button type="button" className="w-[40px] h-[40px]">
+        <button
+          type="button"
+          className="w-[40px] h-[40px]"
+          onClick={handleBackbtn}
+        >
           <Image src="/svg/arrow-back.svg" alt="icon" width={40} height={40} />
         </button>
       </div>

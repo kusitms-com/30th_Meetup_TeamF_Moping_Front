@@ -2,7 +2,7 @@
 
 import React, { useState } from "react";
 import Image from "next/image";
-import { useRouter } from "next/navigation";
+import { useRouter, useParams } from "next/navigation";
 import ExitModal from "@/app/components/common/ExitModal";
 import Form from "./components/Form";
 
@@ -10,6 +10,7 @@ export default function Page() {
   const [userName] = useState("규리");
   const [isModalOpen, setIsModalOpen] = useState(false);
   const router = useRouter();
+  const { id } = useParams();
 
   const handleBackClick = () => {
     setIsModalOpen(true);
@@ -20,7 +21,7 @@ export default function Page() {
   };
 
   const handleExit = () => {
-    router.push("/map-page");
+    router.push(`/event-maps/${id}`);
   };
 
   return (

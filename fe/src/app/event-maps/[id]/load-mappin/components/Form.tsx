@@ -13,8 +13,8 @@ interface FormProps {
 export default function Form({ uuid }: FormProps) {
   const [name, setName] = useState("");
   const [pin, setPin] = useState(["", "", "", ""]);
-  const [mapLinks, setMapLinks] = useState<string[]>([]); // 빈 배열로 초기화
-  const [storeLinks, setStoreLinks] = useState<string[]>([]); // 빈 배열로 초기화
+  const [mapLinks, setMapLinks] = useState<string[]>([]);
+  const [storeLinks, setStoreLinks] = useState<string[]>([]);
   const [isFormComplete, setIsFormComplete] = useState(false);
   const [isTooltipVisible, setIsTooltipVisible] = useState(true);
   const router = useRouter();
@@ -22,12 +22,16 @@ export default function Form({ uuid }: FormProps) {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
+    // 빈 문자열을 제거한 배열을 생성
+    const filteredMapLinks = mapLinks.filter((link) => link.trim() !== "");
+    const filteredStoreLinks = storeLinks.filter((link) => link.trim() !== "");
+
     const requestBody = {
       uuid,
       name,
       password: pin.join(""),
-      bookmarkUrls: mapLinks,
-      storeUrls: storeLinks,
+      bookmarkUrls: filteredMapLinks,
+      storeUrls: filteredStoreLinks,
     };
 
     try {
@@ -43,9 +47,11 @@ export default function Form({ uuid }: FormProps) {
       );
 
       if (response.ok) {
+        console.log(requestBody);
         console.log("성공적으로 처리되었습니다.");
         router.push(`/event-maps/${uuid}`);
       } else {
+        console.log(requestBody);
         console.log("요청에 실패했습니다. 상태 코드:", response.status);
       }
     } catch (error) {

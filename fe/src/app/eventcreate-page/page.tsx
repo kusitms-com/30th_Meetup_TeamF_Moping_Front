@@ -71,7 +71,7 @@ function EventCreatePage() {
   useEffect(() => {
     if (uuid && !isRedirecting) {
       setIsRedirecting(true); // 이동 시작 시 상태 설정
-      router.push(`/map-page?uuid=${uuid}`);
+      router.push(`/event-maps/${uuid}`);
     }
   }, [uuid, isRedirecting, router]);
 
