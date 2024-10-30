@@ -1,8 +1,8 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useLocationStore } from "../stores/useLocationStore";
-import { useMarkerStore } from "../load-mappin/stores/useMarkerStore"; // useMarkerStore 가져오기
+import { useMarkerStore } from "../load-mappin/stores/useMarkerStore";
 
 interface NonMember {
   nonMemberId: number;
@@ -36,19 +36,21 @@ export default function BottomDrawer({
   const { setCustomMarkers } = useMarkerStore(); // useMarkerStore에서 setCustomMarkers 가져오기
   const moveToLocation = useLocationStore((state) => state.moveToLocation);
   const router = useRouter();
-  const profileImages = [
+  const profileImagesRef = useRef([
     "/profile/profil1.svg",
     "/profile/profil2.svg",
     "/profile/profil3.svg",
     "/profile/profil4.svg",
-  ];
+  ]);
 
   useEffect(() => {
     // 프로필 이미지 랜덤 할당
     const profiles = nonMembers.reduce(
       (acc, member) => {
         const randomImage =
-          profileImages[Math.floor(Math.random() * profileImages.length)];
+          profileImagesRef.current[
+            Math.floor(Math.random() * profileImagesRef.current.length)
+          ];
         acc[member.nonMemberId] = randomImage;
         return acc;
       },

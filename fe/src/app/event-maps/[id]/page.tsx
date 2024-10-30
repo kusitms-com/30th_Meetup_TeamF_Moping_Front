@@ -2,14 +2,15 @@
 
 import React, { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
-import MapComponent from "./components/MapComponent";
-import BottomDrawer from "./components/BottomDrawer";
-import useDrawer from "./hooks/useDrawer";
-import { useLocationStore } from "./stores/useLocationStore";
-import { useMarkerStore } from "./load-mappin/stores/useMarkerStore";
-import Image from "next/image";
-import { a } from "@react-spring/web";
-import { useDrag } from "@use-gesture/react";
+import Image from "next/image"; // 외부 라이브러리
+import { a } from "@react-spring/web"; // 외부 라이브러리
+import { useDrag } from "@use-gesture/react"; // 외부 라이브러리
+
+import MapComponent from "./components/MapComponent"; // 내부 모듈
+import BottomDrawer from "./components/BottomDrawer"; // 내부 모듈
+import useDrawer from "./hooks/useDrawer"; // 내부 모듈
+import { useLocationStore } from "./stores/useLocationStore"; // 내부 모듈
+import { useMarkerStore } from "./load-mappin/stores/useMarkerStore"; // 내부 모듈
 
 interface NonMember {
   nonMemberId: number;
@@ -39,7 +40,7 @@ export default function Page() {
   const parsedId = Array.isArray(id) ? id[0] : id;
   const [data, setData] = useState<Data | null>(null);
   const moveToLocation = useLocationStore((state) => state.moveToLocation);
-  const setCustomMarkers = useMarkerStore((state) => state.setCustomMarkers); // setCustomMarkers 가져오기
+  const setCustomMarkers = useMarkerStore((state) => state.setCustomMarkers);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -109,7 +110,6 @@ export default function Page() {
       </div>
       {data && (
         <>
-          {/* MapComponent에 pings 전달하지 않고 상태에서 직접 사용 */}
           <MapComponent px={data.px} py={data.py} />
           <a.div
             {...bind()}

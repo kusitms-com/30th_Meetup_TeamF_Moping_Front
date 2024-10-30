@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { nanoid } from "nanoid";
 import Image from "next/image";
 
@@ -25,12 +25,20 @@ export default function LinkField({
       : [{ id: nanoid(), text: "" }]
   );
 
+  // addInputField 함수를 useCallback으로 메모이제이션하여 종속성 문제 해결
+  const addInputField = useCallback(() => {
+    const newField = { id: nanoid(), text: "" };
+    const updatedInputs = [...inputFields, newField];
+    setInputFields(updatedInputs);
+    onChange(updatedInputs.map((field) => field.text));
+  }, [inputFields, onChange]);
+
   useEffect(() => {
     // Ensure at least one field exists
     if (inputFields.length === 0) {
       addInputField();
     }
-  }, [inputFields]);
+  }, [inputFields, addInputField]);
 
   const handleNaverMove = () => {
     window.open("https://m.place.naver.com/my/place");
@@ -50,13 +58,6 @@ export default function LinkField({
     );
     setInputFields(newInputs);
     onChange(newInputs.map((field) => field.text));
-  };
-
-  const addInputField = () => {
-    const newField = { id: nanoid(), text: "" };
-    const updatedInputs = [...inputFields, newField];
-    setInputFields(updatedInputs);
-    onChange(updatedInputs.map((field) => field.text));
   };
 
   return (
