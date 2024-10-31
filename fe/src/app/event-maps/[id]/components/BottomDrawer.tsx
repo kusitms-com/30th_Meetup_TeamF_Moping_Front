@@ -24,11 +24,13 @@ interface BottomDrawerProps {
 }
 
 export default function BottomDrawer({
-  nonMembers,
-  eventName,
+  nonMembers: initialNonMembers,
+  eventName: initialEventName,
   id,
 }: BottomDrawerProps) {
+  const [eventName, setEventName] = useState(initialEventName);
   const [selectedButton, setSelectedButton] = useState<number | null>(null);
+  const [nonMembers, setNonMembers] = useState<NonMember[]>(initialNonMembers);
   const [memberProfiles, setMemberProfiles] = useState<{
     [key: number]: string;
   }>({});
@@ -107,7 +109,6 @@ export default function BottomDrawer({
             ...ping,
             iconLevel: 1,
           }));
-          console.log(filteredPings);
           setCustomMarkers(filteredPings);
         } else {
           console.log("Failed to fetch data:", response.status);
@@ -136,7 +137,31 @@ export default function BottomDrawer({
     }
   };
 
-  // 드로워 내부에서 이미지가 아닌 다른 요소 클릭 시 선택 해제
+  const handleRefresh = async () => {
+    try {
+      const response = await fetch(
+        `${apiUrl}/nonmembers/pings/refresh-all?uuid=${id}`,
+        {
+          method: "GET",
+          headers: { "Content-Type": "application/json" },
+        }
+      );
+
+      if (response.ok) {
+        const data = await response.json();
+        console.log(data);
+        setEventName(data.eventName);
+        setNonMembers(data.nonMembers);
+        setAllPings(data.pings || []);
+        setCustomMarkers(data.pings || []);
+      } else {
+        console.log("Failed to fetch refreshed data:", response.status);
+      }
+    } catch (error) {
+      console.log("Error refreshing data:", error);
+    }
+  };
+
   const handleDrawerClick = (
     event:
       | React.MouseEvent<HTMLDivElement>
@@ -203,20 +228,28 @@ export default function BottomDrawer({
       <div className="h-[62px] w-full pt-[16px] pb-[14px] pl-[20px] pr-[16px] flex justify-between text-lg text-grayscale-0 font-300">
         <div className="truncate max-w-[210px]">{eventName}</div>
         <div>
-          <button
-            type="button"
-            className="w-[32px] h-[32px]"
-            onClick={selectedButton !== null ? handleEditBtn : undefined}
-          >
-            <Image
-              src={
-                selectedButton !== null ? "/svg/edit.svg" : "/svg/refresh.svg"
-              }
-              alt={selectedButton !== null ? "edit" : "refresh"}
-              width={32}
-              height={32}
-            />
-          </button>
+          {selectedButton !== null ? (
+            <button
+              type="button"
+              className="w-[32px] h-[32px]"
+              onClick={handleEditBtn}
+            >
+              <Image src="/svg/edit.svg" alt="edit" width={32} height={32} />
+            </button>
+          ) : (
+            <button
+              type="button"
+              className="w-[32px] h-[32px]"
+              onClick={handleRefresh}
+            >
+              <Image
+                src="/svg/refresh.svg"
+                alt="refresh"
+                width={32}
+                height={32}
+              />
+            </button>
+          )}
         </div>
       </div>
       <div className="h-[96px] w-full flex pt-[6px] px-[16px] text-caption font-200 text-grayscale-20 overflow-x-auto scrollbar-hide gap-[12px]">
@@ -237,11 +270,7 @@ export default function BottomDrawer({
             <button
               type="button"
               onClick={() => handleButtonClick(member.nonMemberId)}
-              className={`w-[68px] h-[68px] ${
-                selectedButton === member.nonMemberId
-                  ? "border-2 rounded-lg border-primary-50"
-                  : ""
-              }`}
+              className={`w-[68px] h-[68px] ${selectedButton === member.nonMemberId ? "border-2 rounded-lg border-primary-50" : ""}`}
             >
               <Image
                 src={

@@ -22,7 +22,6 @@ export default function LinkField({
   showTooltip = true,
   onInfoClick,
 }: LinkFieldProps) {
-
   const userData = useUserDataStore((state) => state.userData);
   const [inputFields, setInputFields] = useState(
     value.length > 0
@@ -31,7 +30,6 @@ export default function LinkField({
   );
 
   useEffect(() => {
-
     const initialData =
       label === "맵핀 모음 링크" ? userData.bookmarkUrls : userData.storeUrls;
     setInputFields(

@@ -8,7 +8,6 @@ import Form from "./components/Form";
 import { useUserDataStore } from "../stores/useUserDataStore";
 
 export default function Page() {
-
   const userName = useUserDataStore((state) => state.userData.name);
 
   const [isModalOpen, setIsModalOpen] = useState(false);
