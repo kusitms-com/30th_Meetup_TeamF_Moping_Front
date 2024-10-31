@@ -102,7 +102,7 @@ export default function BottomDrawer({
       // 특정 nonMemberId에 대한 핑 요청
       try {
         const response = await fetch(
-          `http://110.165.17.236:8081/api/v1/nonmembers/pings/${nonMemberId}`,
+          `${process.env.NEXT_PUBLIC_API_BASE_URL}/nonmembers/pings/${nonMemberId}`,
           { method: "GET", headers: { "Content-Type": "application/json" } }
         );
 
