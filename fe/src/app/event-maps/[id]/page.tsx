@@ -2,14 +2,15 @@
 
 import React, { useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
-import Image from "next/image"; // 외부 라이브러리
-import { a } from "@react-spring/web"; // 외부 라이브러리
-import { useDrag } from "@use-gesture/react"; // 외부 라이브러리
+import Image from "next/image";
+import { a } from "@react-spring/web";
+import { useDrag } from "@use-gesture/react";
 import MapComponent from "./components/MapComponent";
 import BottomDrawer from "./components/BottomDrawer";
-import useDrawer from "./hooks/useDrawer"; // 내부 모듈
-import { useLocationStore } from "./stores/useLocationStore"; // 내부 모듈
+import useDrawer from "./hooks/useDrawer";
+import { useLocationStore } from "./stores/useLocationStore";
 import { useMarkerStore } from "./load-mappin/stores/useMarkerStore";
+import ExitModal from "./components/EventMapExitModal";
 
 interface NonMember {
   nonMemberId: number;
@@ -38,15 +39,20 @@ export default function Page() {
   const { id } = useParams();
   const parsedId = Array.isArray(id) ? id[0] : id;
   const [data, setData] = useState<Data | null>(null);
+  const [isModalOpen, setIsModalOpen] = useState(false); // 모달 열림 상태 추가
   const moveToLocation = useLocationStore((state) => state.moveToLocation);
   const setCustomMarkers = useMarkerStore((state) => state.setCustomMarkers);
   const router = useRouter();
 
   useEffect(() => {
+    console.log("useEffect triggered with id:", id);
+
     const fetchData = async () => {
       try {
+        console.log("Fetching data for id:", id);
+
         const response = await fetch(
-          `http://110.165.17.236:8081/api/v1/nonmembers/pings?uuid=${id}`,
+          `${process.env.NEXT_PUBLIC_API_BASE_URL}/nonmembers/pings?uuid=${id}`,
           {
             method: "GET",
             headers: {
@@ -58,22 +64,25 @@ export default function Page() {
         if (response.ok) {
           const result = await response.json();
           setData(result);
-          console.log("Response Data:", JSON.stringify(result, null, 2));
+          console.log("API Response Data:", JSON.stringify(result, null, 2));
 
-          // 처음 px, py 값을 useLocationStore에 저장
           if (result.px && result.py) {
+            console.log("Moving to location:", result.py, result.px);
             moveToLocation(result.py, result.px);
           }
 
-          // pings 데이터를 useMarkerStore에 저장
           if (result.pings) {
+            console.log("Setting custom markers:", result.pings);
             setCustomMarkers(result.pings);
           }
         } else {
-          console.error("데이터 가져오기에 실패했습니다.");
+          console.error(
+            "Failed to fetch data from API. Status:",
+            response.status
+          );
         }
       } catch (error) {
-        console.error("서버 오류:", error);
+        console.error("Server error:", error);
       }
     };
 
@@ -83,8 +92,18 @@ export default function Page() {
   }, [id, data, moveToLocation, setCustomMarkers]);
 
   const handleBackbtn = () => {
-    router.push(`eventcreate-page`);
+    setIsModalOpen(true); // 뒤로 가기 버튼 클릭 시 모달 열기
   };
+
+  const handleExit = () => {
+    setIsModalOpen(false);
+    router.replace("/eventcreate-page"); // UUID 초기화 후 이벤트 생성 페이지로 이동
+  };
+
+  const handleCancel = () => {
+    setIsModalOpen(false); // 모달 닫기
+  };
+
   const bind = useDrag(
     ({ last, movement: [, my], memo = y.get() }) => {
       if (last) {
@@ -131,6 +150,8 @@ export default function Page() {
           </a.div>
         </>
       )}
+      {/* isModalOpen 상태에 따라 모달을 조건부 렌더링 */}
+      {isModalOpen && <ExitModal onCancel={handleCancel} onExit={handleExit} />}
     </div>
   );
 }
