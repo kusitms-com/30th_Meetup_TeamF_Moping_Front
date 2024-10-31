@@ -4,6 +4,7 @@ import React, { useEffect, useState } from "react";
 import Image from "next/image";
 import { EventNameInputProps } from "@/app/eventcreate-page/types/types";
 
+// 현재 날짜를 "MM.DD" 형식으로 반환하는 함수
 const getCurrentDate = () => {
   const today = new Date();
   const month = String(today.getMonth() + 1).padStart(2, "0");
@@ -44,11 +45,13 @@ function EventNameInput({
   };
 
   const borderClass = isFocused ? "border-[#2C2C2C]" : "border-transparent";
+
+  // 기본 값일 때는 #8e8e8e 색상으로, 그렇지 않을 경우 #2c2c2c 색상으로 설정
   const textColorClass =
     value === `${currentDate} 모임` ||
     value === `${currentDate} ${selectedLocation} 모임`
-      ? "text-mediumGray"
-      : "text-[#8e8e8e]";
+      ? "text-[#8e8e8e]"
+      : "text-[#2c2c2c]";
 
   const charCount = value.length;
   const showWarning = charCount < 1 || charCount > 20;
@@ -96,7 +99,6 @@ function EventNameInput({
         )}
       </div>
 
-      {/* 로딩 중이 아닐 때 글자 수 검사 결과 표시 */}
       {!isLoading && (
         <>
           {showWarning ? (
