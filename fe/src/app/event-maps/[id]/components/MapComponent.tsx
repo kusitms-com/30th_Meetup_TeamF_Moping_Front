@@ -17,7 +17,7 @@ export default function MapComponent({ px, py }: MapComponentProps) {
 
   // 레벨에 따라 커스텀 마커 아이콘 설정
   const getIconByLevel = (level: number, isSelected: boolean = false) => {
-    const size = isSelected ? 44 : 24; // 선택된 마커는 44px, 기본 마커는 24px
+    const size = isSelected ? 44 : 36; // 선택된 마커는 44px, 기본 마커는 24px
     return {
       url: `/pin/level${level}.svg`, // 레벨에 따라 다른 아이콘 파일 사용
       size: new window.naver.maps.Size(size, size),

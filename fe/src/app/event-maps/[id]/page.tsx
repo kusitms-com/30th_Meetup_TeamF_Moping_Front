@@ -65,7 +65,6 @@ export default function Page() {
           const result = await response.json();
           setData(result);
           console.log("API Response Data:", JSON.stringify(result, null, 2));
-
           if (result.px && result.py) {
             console.log("Moving to location:", result.py, result.px);
             moveToLocation(result.py, result.px);

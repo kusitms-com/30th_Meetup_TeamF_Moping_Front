@@ -5,9 +5,11 @@ import Image from "next/image";
 import { useRouter, useParams } from "next/navigation";
 import ExitModal from "@/app/event-maps/[id]/[nonMemberId]/components/PinExitModal";
 import Form from "./components/Form";
+import { useUserDataStore } from "../stores/useUserDataStore";
 
 export default function Page() {
-  const [userName] = useState("규리");
+  const userName = useUserDataStore((state) => state.userData.name);
+
   const [isModalOpen, setIsModalOpen] = useState(false);
   const router = useRouter();
   const { id } = useParams();
@@ -46,7 +48,7 @@ export default function Page() {
             {userName}님의 맵핀 모음이에요
           </div>
         )}
-        <Form userName={userName} />
+        <Form />
         <div className="h-[20px]" />
 
         {isModalOpen && (

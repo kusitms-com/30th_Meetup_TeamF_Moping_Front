@@ -2,8 +2,8 @@ import "@/styles/globals.css";
 import { ReactNode } from "react";
 
 export const metadata = {
-  title: "My App",
-  description: "This is my Next.js app",
+  title: "Moping!",
+  description: "Moping",
 };
 
 export default function RootLayout({ children }: { children: ReactNode }) {

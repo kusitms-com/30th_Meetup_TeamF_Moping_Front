@@ -57,6 +57,7 @@ export default function PinField({ value, onChange }: PinFieldProps) {
       <div className="flex space-x-3">
         <input
           type="text"
+          inputMode="numeric"
           maxLength={1}
           ref={pinRefs[0]}
           value={value[0]}
@@ -67,6 +68,7 @@ export default function PinField({ value, onChange }: PinFieldProps) {
         />
         <input
           type="text"
+          inputMode="numeric"
           maxLength={1}
           ref={pinRefs[1]}
           value={value[1]}
@@ -77,6 +79,7 @@ export default function PinField({ value, onChange }: PinFieldProps) {
         />
         <input
           type="text"
+          inputMode="numeric"
           maxLength={1}
           ref={pinRefs[2]}
           value={value[2]}
@@ -87,6 +90,7 @@ export default function PinField({ value, onChange }: PinFieldProps) {
         />
         <input
           type="text"
+          inputMode="numeric"
           maxLength={1}
           ref={pinRefs[3]}
           value={value[3]}

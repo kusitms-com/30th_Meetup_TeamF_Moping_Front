@@ -3,7 +3,6 @@
 import React, { useState } from "react";
 import Image from "next/image";
 import SearchResults from "./SearchResults";
-
 interface Place {
   name: string;
   address: string;
@@ -18,7 +17,9 @@ interface LocationInputProps {
 
 function LocationInput({ className, onSelect }: LocationInputProps) {
   const [location, setLocation] = useState<string>("");
-  const [results, setResults] = useState<Place[]>([]);
+  const [results, setResults] = useState<
+    { name: string; address: string; px?: number; py?: number }[]
+  >([]);
   const [isFetching, setIsFetching] = useState(false);
 
   const fetchPlacesBySearch = async (query: string) => {
@@ -64,7 +65,12 @@ function LocationInput({ className, onSelect }: LocationInputProps) {
     }
   };
 
-  const handleSelectPlace = (place: Place) => {
+  const handleSelectPlace = (place: {
+    name: string;
+    address: string;
+    px?: number;
+    py?: number;
+  }) => {
     setLocation(place.name);
     setResults([]);
     onSelect(place);
