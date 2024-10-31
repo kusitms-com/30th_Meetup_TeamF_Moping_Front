@@ -41,6 +41,23 @@ export default function NameField({
     setLocalErrorType(null);
   };
 
+  const getInputBorderClass = () => {
+    if (errorType === "exists" && !localErrorType) {
+      return "border-2 border-danger-base focus:ring-danger-base";
+    }
+    return "focus:ring-grayscale-80";
+  };
+
+  // 조건에 따라 표시할 메시지 설정
+  let message = null;
+  if (errorType === "exists" && !localErrorType) {
+    message = <div className="text-danger-base">이미 존재하는 이름이에요</div>;
+  } else if (localErrorType === "invalid") {
+    message = (
+      <div className="text-success-base">공백, 특수문자, 숫자 불가</div>
+    );
+  }
+
   return (
     <div className="relative mb-[20px]">
       <label
@@ -56,11 +73,7 @@ export default function NameField({
           value={value}
           onChange={handleChange}
           placeholder="이름"
-          className={`w-full p-3 bg-gray-50 rounded-md focus:outline-none focus:ring-2 ${
-            errorType === "exists" && !localErrorType
-              ? "border-2 border-danger-base focus:ring-danger-base"
-              : "focus:ring-grayscale-80"
-          }`}
+          className={`w-full p-3 bg-gray-50 rounded-md focus:outline-none focus:ring-2 ${getInputBorderClass()}`}
           style={{
             border:
               errorType === "exists" && !localErrorType
@@ -79,11 +92,7 @@ export default function NameField({
         )}
       </div>
       <div className="flex justify-between text-sm mt-1">
-        {errorType === "exists" && !localErrorType ? (
-          <div className="text-danger-base">이미 존재하는 이름이에요</div>
-        ) : localErrorType === "invalid" ? (
-          <div className="text-success-base">공백, 특수문자, 숫자 불가</div>
-        ) : null}
+        {message}
         <div className="ml-auto text-gray-500">{value.length}/6</div>
       </div>
     </div>

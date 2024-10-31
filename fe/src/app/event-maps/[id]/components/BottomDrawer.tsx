@@ -137,18 +137,38 @@ export default function BottomDrawer({
   };
 
   // 드로워 내부에서 이미지가 아닌 다른 요소 클릭 시 선택 해제
-  const handleDrawerClick = (event: React.MouseEvent<HTMLDivElement>) => {
-    const target = event.target as HTMLElement;
-    if (!target.closest("button")) {
-      setSelectedButton(null);
-      setCustomMarkers(allPings); // 선택 해제 시 전체 마커 표시
+  const handleDrawerClick = (
+    event:
+      | React.MouseEvent<HTMLDivElement>
+      | React.KeyboardEvent<HTMLDivElement>
+  ) => {
+    if (event.type === "keydown") {
+      const keyboardEvent = event as React.KeyboardEvent<HTMLDivElement>;
+      if (keyboardEvent.key === "Enter" || keyboardEvent.key === " ") {
+        setSelectedButton(null);
+        setCustomMarkers(allPings);
+      }
+    } else if (event.type === "click") {
+      const mouseEvent = event as React.MouseEvent<HTMLDivElement>;
+      const target = mouseEvent.target as HTMLElement;
+      if (!target.closest("button")) {
+        setSelectedButton(null);
+        setCustomMarkers(allPings);
+      }
     }
   };
 
   return (
     <div
+      role="button"
+      tabIndex={0}
       className="bottom-drawer w-full h-[218px] bg-grayscale-90 z-10 rounded-t-xlarge"
       onClick={handleDrawerClick}
+      onKeyDown={(e) => {
+        if (e.key === "Enter" || e.key === " ") {
+          handleDrawerClick(e);
+        }
+      }}
     >
       <div className="absolute mr-[16px] right-0 -top-[120px] flex flex-col">
         <button
