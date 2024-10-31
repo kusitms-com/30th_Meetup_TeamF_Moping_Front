@@ -1,15 +1,11 @@
 "use client";
 
 import React, { useState, useEffect, FormEvent } from "react";
+import { useRouter, useParams } from "next/navigation";
 import LinkField from "./LinkField";
 import { useUserDataStore } from "../../stores/useUserDataStore";
-import { useRouter, useParams } from "next/navigation";
 
-interface FormProps {
-  userName: string;
-}
-
-export default function Form({ userName }: FormProps) {
+export default function Form() {
   const { userData } = useUserDataStore(); // Access userData from zustand
   const [mapLinks, setMapLinks] = useState<string[]>([]);
   const [storeLinks, setStoreLinks] = useState<string[]>([]);

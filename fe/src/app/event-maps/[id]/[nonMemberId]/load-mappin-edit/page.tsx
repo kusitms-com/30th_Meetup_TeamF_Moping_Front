@@ -47,7 +47,7 @@ export default function Page() {
             {userName}님의 맵핀 모음이에요
           </div>
         )}
-        <Form userName={userName} />
+        <Form />
         <div className="h-[20px]" />
 
         {isModalOpen && (
