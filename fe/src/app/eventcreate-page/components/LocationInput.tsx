@@ -3,6 +3,7 @@
 import React, { useState } from "react";
 import Image from "next/image";
 import SearchResults from "./SearchResults";
+
 interface Place {
   name: string;
   address: string;
