@@ -3,6 +3,7 @@
 import React, { useRef, useState, useEffect, useCallback } from "react";
 import { useRouter, useParams } from "next/navigation";
 import { v4 as uuidv4 } from "uuid";
+import { useUserDataStore } from "../stores/useUserDataStore"; // zustand store import
 
 export default function PasswordInput() {
   const [password, setPassword] = useState(["", "", "", ""]);
@@ -11,8 +12,8 @@ export default function PasswordInput() {
   const inputRefs = useRef<(HTMLInputElement | null)[]>([]);
   const router = useRouter();
   const { id, nonMemberId } = useParams();
+  const setUserData = useUserDataStore((state) => state.setUserData); // Use zustand's setUserData
 
-  // Define submitPassword before useEffect
   const submitPassword = useCallback(async () => {
     const fullPassword = password.join("");
 
@@ -38,6 +39,16 @@ export default function PasswordInput() {
       );
 
       if (response.ok) {
+        const data = await response.json(); // Get the JSON response
+
+        // Save data in zustand store
+        setUserData({
+          nonMemberId: data.nonMemberId,
+          name: data.name,
+          bookmarkUrls: data.bookmarkUrls || [],
+          storeUrls: data.storeUrls || [],
+        });
+
         router.push(`/event-maps/${id}/${nonMemberId}/load-mappin-edit`);
       } else {
         setHasError(true);
@@ -47,7 +58,7 @@ export default function PasswordInput() {
     } catch (error) {
       setHasError(true);
     }
-  }, [id, nonMemberId, password, router]);
+  }, [id, nonMemberId, password, router, setUserData]);
 
   useEffect(() => {
     if (password.every((digit) => digit !== "")) {
@@ -98,7 +109,7 @@ export default function PasswordInput() {
       <div className="inline-flex items-center justify-start gap-4 mb-4">
         {password.map((_, i) => (
           <div
-            key={uuidv4()} // Unique key for each render
+            key={uuidv4()}
             className={`w-14 h-14 p-4 bg-[#f7f7f7] rounded-lg inline-flex items-center ${
               hasError ? "border-2 border-primary-50" : ""
             } ${currentIndex === i ? "border-2 border-gray-950" : ""}`}
