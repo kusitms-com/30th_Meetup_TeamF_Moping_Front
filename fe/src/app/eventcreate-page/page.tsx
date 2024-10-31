@@ -18,19 +18,16 @@ function EventCreatePage() {
   const [uuid, setUuid] = useState<string | null>(null);
   const router = useRouter();
 
-  const adjustedPx = px ? px / 1e7 : null;
-  const adjustedPy = py ? py / 1e7 : null;
-
   useEffect(() => {
     setIsFormComplete(
       selectedLocation.trim() !== "" &&
         eventName.trim() !== "" &&
         eventName.length >= 1 &&
         eventName.length <= 20 &&
-        adjustedPx !== null &&
-        adjustedPy !== null
+        px !== null &&
+        py !== null
     );
-  }, [selectedLocation, eventName, adjustedPx, adjustedPy]);
+  }, [selectedLocation, eventName, px, py]);
 
   const handleLocationSelect = (place: {
     name: string;
@@ -59,8 +56,8 @@ function EventCreatePage() {
         },
         body: JSON.stringify({
           neighborhood: selectedLocation,
-          px: adjustedPx,
-          py: adjustedPy,
+          px,
+          py,
           eventName,
         }),
       });
