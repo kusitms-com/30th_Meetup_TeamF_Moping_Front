@@ -43,6 +43,8 @@ export default function BottomDrawer({
     "/profile/profil4.svg",
   ]);
 
+  const apiUrl = process.env.NEXT_PUBLIC_API_BASE_URL; // 환경 변수로부터 API URL 가져오기
+
   useEffect(() => {
     // 프로필 이미지 랜덤 할당
     const profiles = nonMembers.reduce(
@@ -63,9 +65,7 @@ export default function BottomDrawer({
     // 전체 pings 데이터를 처음 로드할 때 가져옴
     const fetchAllPings = async () => {
       try {
-        const response = await fetch(
-          `http://110.165.17.236:8081/api/v1/nonmembers/pings?uuid=${id}`
-        );
+        const response = await fetch(`${apiUrl}/nonmembers/pings?uuid=${id}`);
         if (response.ok) {
           const data = await response.json();
           setAllPings(data.pings || []);
@@ -76,7 +76,7 @@ export default function BottomDrawer({
       }
     };
     fetchAllPings();
-  }, [id, setCustomMarkers]);
+  }, [apiUrl, id, setCustomMarkers]);
 
   const handleLocationClick = () => {
     if (navigator.geolocation) {
@@ -102,7 +102,7 @@ export default function BottomDrawer({
       // 특정 nonMemberId에 대한 핑 요청
       try {
         const response = await fetch(
-          `http://110.165.17.236:8081/api/v1/nonmembers/pings/${nonMemberId}`,
+          `${apiUrl}/nonmembers/pings/${nonMemberId}`,
           { method: "GET", headers: { "Content-Type": "application/json" } }
         );
 
