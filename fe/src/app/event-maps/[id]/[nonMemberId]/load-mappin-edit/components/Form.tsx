@@ -10,7 +10,6 @@ export default function Form() {
   const [mapLinks, setMapLinks] = useState<string[]>([]);
   const [storeLinks, setStoreLinks] = useState<string[]>([]);
   const [isTooltipVisible, setIsTooltipVisible] = useState(true);
-  const [isFormComplete, setIsFormComplete] = useState(false);
   const router = useRouter();
   const { id } = useParams(); // Retrieve `id` from the route parameters
 
@@ -25,13 +24,6 @@ export default function Form() {
       );
     }
   }, [userData]);
-
-  // Check if form is complete whenever mapLinks or storeLinks change
-  useEffect(() => {
-    setIsFormComplete(
-      mapLinks.length > 0 && storeLinks.length > 0 // Check for non-empty lists
-    );
-  }, [mapLinks, storeLinks]);
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
@@ -94,13 +86,8 @@ export default function Form() {
         />
 
         <button
-          className={`w-full flex items-center text-lg font-200 justify-center h-[60px] rounded-small ${
-            isFormComplete
-              ? "bg-grayscale-90 text-white"
-              : "bg-grayscale-20 text-mediumGray"
-          }`}
+          className="w-full flex items-center text-lg font-200 justify-center h-[60px] rounded-small bg-grayscale-90 text-white "
           type="submit"
-          disabled={!isFormComplete}
         >
           확인
         </button>
