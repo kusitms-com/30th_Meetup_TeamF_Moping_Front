@@ -1,9 +1,10 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { nanoid } from "nanoid";
 import Image from "next/image";
+import { useUserDataStore } from "../../stores/useUserDataStore";
 
 interface LinkFieldProps {
-  label: string; // label 속성 추가
+  label: string;
   placeholder: string;
   value: string[];
   onChange: (value: string[]) => void;
@@ -19,9 +20,17 @@ export default function LinkField({
   showTooltip = true,
   onInfoClick,
 }: LinkFieldProps) {
+  const userData = useUserDataStore((state) => state.userData); // Use zustand's userData
   const [inputFields, setInputFields] = useState(
     value.map((val) => ({ id: nanoid(), text: val }))
   );
+
+  useEffect(() => {
+    // Update input fields with data from zustand if available
+    const initialData =
+      label === "맵핀 모음 링크" ? userData.bookmarkUrls : userData.storeUrls;
+    setInputFields(initialData.map((val) => ({ id: nanoid(), text: val })));
+  }, [label, userData]);
 
   const handleInputChange = (id: string, inputValue: string) => {
     const newInputs = inputFields.map((field) =>
