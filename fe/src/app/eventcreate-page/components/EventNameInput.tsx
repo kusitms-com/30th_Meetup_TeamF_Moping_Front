@@ -15,8 +15,8 @@ function EventNameInput({
   className,
   selectedLocation,
   onChange,
+  value,
 }: EventNameInputProps) {
-  const [eventName, setEventName] = useState("");
   const [isFocused, setIsFocused] = useState(false);
   const [hasUserEdited, setHasUserEdited] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
@@ -27,41 +27,38 @@ function EventNameInput({
       const newEventName = selectedLocation
         ? `${currentDate} ${selectedLocation} 모임`
         : `${currentDate} 모임`;
-      setEventName(newEventName);
       onChange(newEventName);
     }
-    setIsLoading(false); // 로딩 완료 상태로 변경
+    setIsLoading(false);
   }, [selectedLocation, currentDate, onChange, hasUserEdited]);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const newValue = e.target.value;
-    setEventName(newValue);
     setHasUserEdited(true);
     onChange(newValue);
   };
 
   const handleClear = () => {
-    setEventName("");
     setHasUserEdited(true);
     onChange("");
   };
 
   const borderClass = isFocused ? "border-[#2C2C2C]" : "border-transparent";
   const textColorClass =
-    eventName === `${currentDate} 모임` ||
-    eventName === `${currentDate} ${selectedLocation} 모임`
+    value === `${currentDate} 모임` ||
+    value === `${currentDate} ${selectedLocation} 모임`
       ? "text-mediumGray"
-      : "text-text-default";
+      : "text-[#8e8e8e]";
 
-  const charCount = eventName.length;
+  const charCount = value.length;
   const showWarning = charCount < 1 || charCount > 20;
   const isDefaultValue =
-    eventName === `${currentDate} 모임` ||
-    eventName === `${currentDate} ${selectedLocation} 모임`;
+    value === `${currentDate} 모임` ||
+    value === `${currentDate} ${selectedLocation} 모임`;
 
   return (
     <div className={`relative flex flex-col ${className}`}>
-      <div className="text-text-default text-xl font-semibold leading-loose mb-[12px]">
+      <div className="text-black text-xl font-semibold leading-loose mb-[12px]">
         이벤트 이름
       </div>
 
@@ -72,14 +69,14 @@ function EventNameInput({
       >
         <input
           type="text"
-          value={eventName}
+          value={value}
           onChange={handleInputChange}
           className={`bg-transparent border-none grow shrink basis-0 ${textColorClass} text-base font-medium font-['Pretendard'] leading-normal outline-none flex-1`}
           onFocus={() => setIsFocused(true)}
           onBlur={() => setIsFocused(false)}
         />
 
-        {eventName && !isDefaultValue && (
+        {value && !isDefaultValue && (
           <div
             role="button"
             tabIndex={0}
@@ -92,8 +89,8 @@ function EventNameInput({
             <Image
               src="/images/Cancel.svg"
               alt="삭제 아이콘"
-              layout="fill"
-              objectFit="cover"
+              width={24}
+              height={24}
             />
           </div>
         )}

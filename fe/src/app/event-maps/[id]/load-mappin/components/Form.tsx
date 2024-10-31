@@ -36,7 +36,7 @@ export default function Form({ uuid }: FormProps) {
 
     try {
       const response = await fetch(
-        "http://110.165.17.236:8081/api/v1/nonmembers/pings",
+        `${process.env.NEXT_PUBLIC_API_BASE_URL}/nonmembers/pings`,
         {
           method: "POST",
           headers: {

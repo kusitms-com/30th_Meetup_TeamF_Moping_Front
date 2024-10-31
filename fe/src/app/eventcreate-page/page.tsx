@@ -18,7 +18,6 @@ function EventCreatePage() {
   const [uuid, setUuid] = useState<string | null>(null);
   const router = useRouter();
 
-  // Adjust coordinates by dividing by 10^7 to match standard map coordinates
   const adjustedPx = px ? px / 1e7 : null;
   const adjustedPy = py ? py / 1e7 : null;
 
@@ -26,6 +25,8 @@ function EventCreatePage() {
     setIsFormComplete(
       selectedLocation.trim() !== "" &&
         eventName.trim() !== "" &&
+        eventName.length >= 1 &&
+        eventName.length <= 20 &&
         adjustedPx !== null &&
         adjustedPy !== null
     );
@@ -109,7 +110,7 @@ function EventCreatePage() {
         label={isSubmitting ? "처리 중..." : "다음"}
         type="start"
         onClick={createEvent}
-        className="w-[328px] h-[60px] py-[17px] rounded-lg"
+        className="w-[328px] h-[60px] py-[17px] rounded-lg text-base font-medium font-['Pretendard']"
         disabled={!isFormComplete || isSubmitting}
       />
     </div>

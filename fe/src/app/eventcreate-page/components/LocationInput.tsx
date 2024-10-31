@@ -1,13 +1,24 @@
 "use client";
 
 import React, { useState } from "react";
-import { LocationInputProps, Place } from "@/app/eventcreate-page/types/types"; // 최상단으로 이동
 import Image from "next/image";
 import SearchResults from "./SearchResults";
 
+interface LocationInputProps {
+  className?: string;
+  onSelect: (place: {
+    name: string;
+    address: string;
+    px?: number;
+    py?: number;
+  }) => void;
+}
+
 function LocationInput({ className, onSelect }: LocationInputProps) {
   const [location, setLocation] = useState<string>("");
-  const [results, setResults] = useState<Place[]>([]);
+  const [results, setResults] = useState<
+    { name: string; address: string; px?: number; py?: number }[]
+  >([]);
   const [isFetching, setIsFetching] = useState(false);
 
   const fetchPlacesBySearch = async (query: string) => {
@@ -45,7 +56,12 @@ function LocationInput({ className, onSelect }: LocationInputProps) {
     }
   };
 
-  const handleSelectPlace = (place: Place) => {
+  const handleSelectPlace = (place: {
+    name: string;
+    address: string;
+    px?: number;
+    py?: number;
+  }) => {
     setLocation(place.name);
     setResults([]);
     onSelect(place);
@@ -73,7 +89,7 @@ function LocationInput({ className, onSelect }: LocationInputProps) {
 
           const data = await response.json();
           if (data.data && data.data.length > 0) {
-            const selectedPlace: Place = { ...data.data[0], px, py };
+            const selectedPlace = { ...data.data[0], px, py };
             setResults(data.data);
             setLocation(selectedPlace.name);
             handleSelectPlace(selectedPlace);
@@ -93,15 +109,9 @@ function LocationInput({ className, onSelect }: LocationInputProps) {
     );
   };
 
-  const handleKeyDown = (e: React.KeyboardEvent) => {
-    if (e.key === "Enter" || e.key === " ") {
-      handleCurrentLocation();
-    }
-  };
-
   return (
     <div className={`relative flex flex-col ${className}`}>
-      <div className="text-text-default text-xl font-semibold leading-loose mb-[12px]">
+      <div className="text-black text-xl font-semibold leading-loose mb-[12px]">
         어떤 공간을 찾고 계신가요?
       </div>
       <div className="relative w-[328px] h-14 p-4 bg-background-light rounded-lg flex justify-between items-center">
@@ -117,7 +127,7 @@ function LocationInput({ className, onSelect }: LocationInputProps) {
             value={location}
             onChange={handleSearch}
             placeholder="장소를 입력해주세요"
-            className="bg-transparent border-none grow text-base placeholder-mediumGray outline-none"
+            className="bg-transparent border-none grow text-base text-[#8e8e8e] placeholder-[#8e8e8e] outline-none font-['Pretendard']"
           />
         </div>
         <div
@@ -125,7 +135,9 @@ function LocationInput({ className, onSelect }: LocationInputProps) {
           tabIndex={0}
           className="w-[38px] h-[38px] bg-darkGray rounded flex items-center justify-center cursor-pointer"
           onClick={handleCurrentLocation}
-          onKeyDown={handleKeyDown}
+          onKeyDown={(e) => {
+            if (e.key === "Enter") handleCurrentLocation();
+          }}
         >
           <Image
             src="/images/Location.svg"
