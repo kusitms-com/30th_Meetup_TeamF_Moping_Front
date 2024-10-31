@@ -1,3 +1,4 @@
+// EventCreatePage.tsx
 "use client";
 
 import React, { useState, useEffect } from "react";
@@ -23,9 +24,12 @@ function EventCreatePage() {
   const adjustedPy = py ? py / 1e7 : null;
 
   useEffect(() => {
+    // 이벤트 이름 길이 조건 추가: 1 - 20자 사이일 때만 폼이 완성된 것으로 간주
     setIsFormComplete(
       selectedLocation.trim() !== "" &&
         eventName.trim() !== "" &&
+        eventName.length >= 1 &&
+        eventName.length <= 20 && // 이벤트 이름 길이 조건
         adjustedPx !== null &&
         adjustedPy !== null
     );
