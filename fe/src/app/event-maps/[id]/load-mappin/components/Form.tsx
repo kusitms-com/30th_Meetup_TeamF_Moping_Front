@@ -17,12 +17,14 @@ export default function Form({ uuid }: FormProps) {
   const [storeLinks, setStoreLinks] = useState<string[]>([]);
   const [isFormComplete, setIsFormComplete] = useState(false);
   const [isTooltipVisible, setIsTooltipVisible] = useState(true);
+  const [nameErrorType, setNameErrorType] = useState<
+    "exists" | "invalid" | null
+  >(null);
   const router = useRouter();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    // 빈 문자열을 제거한 배열을 생성
     const filteredMapLinks = mapLinks.filter((link) => link.trim() !== "");
     const filteredStoreLinks = storeLinks.filter((link) => link.trim() !== "");
 
@@ -47,11 +49,11 @@ export default function Form({ uuid }: FormProps) {
       );
 
       if (response.ok) {
-        console.log(requestBody);
         console.log("성공적으로 처리되었습니다.");
         router.push(`/event-maps/${uuid}`);
+      } else if (response.status === 409) {
+        setNameErrorType("exists");
       } else {
-        console.log(requestBody);
         console.log("요청에 실패했습니다. 상태 코드:", response.status);
       }
     } catch (error) {
@@ -83,7 +85,7 @@ export default function Form({ uuid }: FormProps) {
   return (
     <div className="px-4">
       <form onSubmit={handleSubmit}>
-        <NameField value={name} onChange={setName} />
+        <NameField value={name} onChange={setName} errorType={nameErrorType} />
         <PinField value={pin} onChange={setPin} />
         <LinkField
           label="맵핀 모음 링크"

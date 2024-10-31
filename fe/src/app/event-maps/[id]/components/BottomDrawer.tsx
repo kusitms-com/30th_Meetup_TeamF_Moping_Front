@@ -33,7 +33,7 @@ export default function BottomDrawer({
     [key: number]: string;
   }>({});
   const [allPings, setAllPings] = useState<Ping[]>([]);
-  const { setCustomMarkers } = useMarkerStore(); // useMarkerStore에서 setCustomMarkers 가져오기
+  const { setCustomMarkers } = useMarkerStore();
   const moveToLocation = useLocationStore((state) => state.moveToLocation);
   const router = useRouter();
   const profileImagesRef = useRef([
@@ -43,10 +43,9 @@ export default function BottomDrawer({
     "/profile/profil4.svg",
   ]);
 
-  const apiUrl = process.env.NEXT_PUBLIC_API_BASE_URL; // 환경 변수로부터 API URL 가져오기
+  const apiUrl = process.env.NEXT_PUBLIC_API_BASE_URL;
 
   useEffect(() => {
-    // 프로필 이미지 랜덤 할당
     const profiles = nonMembers.reduce(
       (acc, member) => {
         const randomImage =
@@ -62,14 +61,13 @@ export default function BottomDrawer({
   }, [nonMembers]);
 
   useEffect(() => {
-    // 전체 pings 데이터를 처음 로드할 때 가져옴
     const fetchAllPings = async () => {
       try {
         const response = await fetch(`${apiUrl}/nonmembers/pings?uuid=${id}`);
         if (response.ok) {
           const data = await response.json();
           setAllPings(data.pings || []);
-          setCustomMarkers(data.pings || []); // 모든 핑을 setCustomMarkers에 설정
+          setCustomMarkers(data.pings || []);
         }
       } catch (error) {
         console.log("Error:", error);
@@ -91,15 +89,12 @@ export default function BottomDrawer({
   };
 
   const handleButtonClick = async (nonMemberId: number) => {
-    // 선택된 버튼 토글
     const isDeselect = selectedButton === nonMemberId;
     setSelectedButton(isDeselect ? null : nonMemberId);
 
     if (isDeselect) {
-      // 선택 해제 시 전체 핑 표시
       setCustomMarkers(allPings);
     } else {
-      // 특정 nonMemberId에 대한 핑 요청
       try {
         const response = await fetch(
           `${apiUrl}/nonmembers/pings/${nonMemberId}`,
@@ -110,10 +105,10 @@ export default function BottomDrawer({
           const data = await response.json();
           const filteredPings = data.pings.map((ping: Ping) => ({
             ...ping,
-            iconLevel: 1, // 선택된 nonMember에 대한 핑을 level1로 설정
+            iconLevel: 1,
           }));
           console.log(filteredPings);
-          setCustomMarkers(filteredPings); // 필터링된 핑을 setCustomMarkers에 설정
+          setCustomMarkers(filteredPings);
         } else {
           console.log("Failed to fetch data:", response.status);
         }
@@ -141,8 +136,20 @@ export default function BottomDrawer({
     }
   };
 
+  // 드로워 내부에서 이미지가 아닌 다른 요소 클릭 시 선택 해제
+  const handleDrawerClick = (event: React.MouseEvent<HTMLDivElement>) => {
+    const target = event.target as HTMLElement;
+    if (!target.closest("button")) {
+      setSelectedButton(null);
+      setCustomMarkers(allPings); // 선택 해제 시 전체 마커 표시
+    }
+  };
+
   return (
-    <div className="w-full h-[218px] bg-grayscale-90 z-10 rounded-t-xlarge">
+    <div
+      className="bottom-drawer w-full h-[218px] bg-grayscale-90 z-10 rounded-t-xlarge"
+      onClick={handleDrawerClick}
+    >
       <div className="absolute mr-[16px] right-0 -top-[120px] flex flex-col">
         <button
           type="button"
