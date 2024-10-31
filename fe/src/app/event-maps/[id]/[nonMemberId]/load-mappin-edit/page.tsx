@@ -3,7 +3,7 @@
 import React, { useState } from "react";
 import Image from "next/image";
 import { useRouter, useParams } from "next/navigation";
-import ExitModal from "@/app/components/common/ExitModal";
+import ExitModal from "@/app/event-maps/[id]/[nonMemberId]/components/PinExitModal";
 import Form from "./components/Form";
 
 export default function Page() {

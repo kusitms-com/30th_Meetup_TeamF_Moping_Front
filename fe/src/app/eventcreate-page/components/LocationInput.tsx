@@ -1,38 +1,25 @@
-// LocationInput.tsx
+"use client";
 
 import React, { useState } from "react";
+import { LocationInputProps, Place } from "@/app/eventcreate-page/types/types"; // 최상단으로 이동
 import Image from "next/image";
 import SearchResults from "./SearchResults";
 
-interface LocationInputProps {
-  className?: string;
-  onSelect: (place: { name: string; address: string }) => void; // 타입 수정
-}
-
 function LocationInput({ className, onSelect }: LocationInputProps) {
   const [location, setLocation] = useState<string>("");
-  const [results, setResults] = useState<{ name: string; address: string }[]>(
-    []
-  );
-  const [isFetching, setIsFetching] = useState(false); // 중복 요청 방지 상태
+  const [results, setResults] = useState<Place[]>([]);
+  const [isFetching, setIsFetching] = useState(false);
 
   const fetchPlacesBySearch = async (query: string) => {
     if (isFetching) return;
     setIsFetching(true);
 
     try {
-      const response = await fetch(
-        `${process.env.NEXT_PUBLIC_API_BASE_URL}/places/search?keyword=${encodeURIComponent(query)}`,
-        {
-          headers: { accept: "*/*" },
-        }
-      );
+      const apiUrl = `${process.env.NEXT_PUBLIC_API_BASE_URL}/places/search?keyword=${encodeURIComponent(query)}`;
+      const response = await fetch(apiUrl, { headers: { accept: "*/*" } });
 
-      if (!response.ok) {
-        const errorText = await response.text();
-        console.error("Error fetching search results:", errorText);
+      if (!response.ok)
         throw new Error(`HTTP error! status: ${response.status}`);
-      }
 
       const data = await response.json();
       if (data.code === 200) {
@@ -42,32 +29,26 @@ function LocationInput({ className, onSelect }: LocationInputProps) {
         alert(`장소 검색에 실패했습니다: ${data.message}`);
       }
     } catch (error) {
-      if (error instanceof Error) {
-        alert(`API 요청 중 오류가 발생했습니다: ${error.message}`);
-      } else {
-        alert("API 요청 중 알 수 없는 오류가 발생했습니다.");
-      }
+      alert("서버에서 오류가 발생했습니다. 잠시 후 다시 시도해주세요.");
     } finally {
       setIsFetching(false);
     }
   };
 
   const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { value } = e.target;
-    setLocation(value);
-
-    if (value.length > 0) {
-      fetchPlacesBySearch(value);
+    const inputValue = e.target.value;
+    setLocation(inputValue);
+    if (inputValue.length > 0) {
+      fetchPlacesBySearch(inputValue);
     } else {
       setResults([]);
     }
   };
 
-  const handleSelectPlace = (place: { name: string; address: string }) => {
-    // 매개변수 타입 수정
-    setLocation(place.name); // 입력 필드를 선택된 장소의 이름으로 업데이트
+  const handleSelectPlace = (place: Place) => {
+    setLocation(place.name);
     setResults([]);
-    onSelect(place); // place 객체 전달
+    onSelect(place);
   };
 
   const handleCurrentLocation = async () => {
@@ -83,34 +64,24 @@ function LocationInput({ className, onSelect }: LocationInputProps) {
     navigator.geolocation.getCurrentPosition(
       async ({ coords }) => {
         const { latitude: py, longitude: px } = coords;
+        const apiUrl = `${process.env.NEXT_PUBLIC_API_BASE_URL}/places/geocode?py=${py}&px=${px}`;
 
         try {
-          const response = await fetch(
-            `${process.env.NEXT_PUBLIC_API_BASE_URL}/places/geocode?py=${py}&px=${px}`,
-            {
-              headers: { accept: "*/*" },
-            }
-          );
-
-          if (!response.ok) {
-            const errorText = await response.text();
-            console.error("Error fetching places:", errorText);
+          const response = await fetch(apiUrl, { headers: { accept: "*/*" } });
+          if (!response.ok)
             throw new Error(`HTTP error! status: ${response.status}`);
-          }
 
           const data = await response.json();
-
           if (data.data && data.data.length > 0) {
-            const selectedPlace = data.data[0];
+            const selectedPlace: Place = { ...data.data[0], px, py };
             setResults(data.data);
             setLocation(selectedPlace.name);
-            handleSelectPlace(selectedPlace); // 선택된 장소를 전달
+            handleSelectPlace(selectedPlace);
           } else {
             alert("현재 위치에 대한 장소를 찾을 수 없습니다.");
           }
         } catch (error) {
-          console.error("Error fetching places:", error);
-          alert("위치 정보를 가져오는 중 오류가 발생했습니다.");
+          alert("서버에서 오류가 발생했습니다. 잠시 후 다시 시도해주세요.");
         } finally {
           setIsFetching(false);
         }
@@ -120,6 +91,12 @@ function LocationInput({ className, onSelect }: LocationInputProps) {
         setIsFetching(false);
       }
     );
+  };
+
+  const handleKeyDown = (e: React.KeyboardEvent) => {
+    if (e.key === "Enter" || e.key === " ") {
+      handleCurrentLocation();
+    }
   };
 
   return (
@@ -140,17 +117,15 @@ function LocationInput({ className, onSelect }: LocationInputProps) {
             value={location}
             onChange={handleSearch}
             placeholder="장소를 입력해주세요"
-            className="bg-transparent border-none grow shrink basis-0 text-text-default text-base font-medium font-['Pretendard'] leading-normal outline-none flex-1 placeholder-mediumGray"
+            className="bg-transparent border-none grow text-base placeholder-mediumGray outline-none"
           />
         </div>
         <div
           role="button"
           tabIndex={0}
-          className="w-[38px] h-[38px] bg-darkGray rounded flex justify-center items-center cursor-pointer"
+          className="w-[38px] h-[38px] bg-darkGray rounded flex items-center justify-center cursor-pointer"
           onClick={handleCurrentLocation}
-          onKeyDown={(e) => {
-            if (e.key === "Enter" || e.key === " ") handleCurrentLocation();
-          }}
+          onKeyDown={handleKeyDown}
         >
           <Image
             src="/images/Location.svg"
@@ -164,7 +139,7 @@ function LocationInput({ className, onSelect }: LocationInputProps) {
         <SearchResults
           results={results}
           searchTerm={location}
-          onSelect={handleSelectPlace} // 수정된 handleSelectPlace 함수 전달
+          onSelect={handleSelectPlace}
         />
       )}
     </div>

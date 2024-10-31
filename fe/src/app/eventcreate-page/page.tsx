@@ -9,21 +9,37 @@ import Button from "@/app/components/common/Button";
 
 function EventCreatePage() {
   const [selectedLocation, setSelectedLocation] = useState("");
+  const [px, setPx] = useState<number | null>(null);
+  const [py, setPy] = useState<number | null>(null);
   const [eventName, setEventName] = useState("");
   const [isFormComplete, setIsFormComplete] = useState(false);
-  const [isSubmitting, setIsSubmitting] = useState(false); // 중복 요청 방지 상태
-  const [isRedirecting, setIsRedirecting] = useState(false); // 중복 라우팅 방지 상태
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isRedirecting, setIsRedirecting] = useState(false);
   const [uuid, setUuid] = useState<string | null>(null);
   const router = useRouter();
 
+  // Adjust coordinates by dividing by 10^7 to match standard map coordinates
+  const adjustedPx = px ? px / 1e7 : null;
+  const adjustedPy = py ? py / 1e7 : null;
+
   useEffect(() => {
     setIsFormComplete(
-      selectedLocation.trim() !== "" && eventName.trim() !== ""
+      selectedLocation.trim() !== "" &&
+        eventName.trim() !== "" &&
+        adjustedPx !== null &&
+        adjustedPy !== null
     );
-  }, [selectedLocation, eventName]);
+  }, [selectedLocation, eventName, adjustedPx, adjustedPy]);
 
-  const handleLocationSelect = (place: { name: string; address: string }) => {
+  const handleLocationSelect = (place: {
+    name: string;
+    address: string;
+    px?: number;
+    py?: number;
+  }) => {
     setSelectedLocation(place.name);
+    if (place.px) setPx(place.px);
+    if (place.py) setPy(place.py);
   };
 
   const handleEventNameChange = (name: string) => {
@@ -31,10 +47,10 @@ function EventCreatePage() {
   };
 
   const createEvent = async () => {
-    if (!isFormComplete || isSubmitting) return; // 이미 요청 중이면 실행 방지
+    if (!isFormComplete || isSubmitting) return;
 
     try {
-      setIsSubmitting(true); // 요청 시작 시 상태 설정
+      setIsSubmitting(true);
       const response = await fetch("/api/event", {
         method: "POST",
         headers: {
@@ -42,8 +58,8 @@ function EventCreatePage() {
         },
         body: JSON.stringify({
           neighborhood: selectedLocation,
-          px: 126.978,
-          py: 37.5665,
+          px: adjustedPx,
+          py: adjustedPy,
           eventName,
         }),
       });
@@ -55,7 +71,7 @@ function EventCreatePage() {
       const data = await response.json();
       if (data.code === 200 && data.data?.shareUrl) {
         const extractedUuid = data.data.shareUrl.split("/").pop();
-        setUuid(extractedUuid); // UUID를 상태로 저장
+        setUuid(extractedUuid);
       } else {
         alert("이벤트 생성에 실패했습니다.");
       }
@@ -63,14 +79,13 @@ function EventCreatePage() {
       console.error("Event creation error:", error);
       alert("이벤트 생성 중 오류가 발생했습니다.");
     } finally {
-      setIsSubmitting(false); // 요청 완료 후 상태 초기화
+      setIsSubmitting(false);
     }
   };
 
-  // UUID가 설정되면 페이지 이동 (중복 이동 방지를 위해 isRedirecting 사용)
   useEffect(() => {
     if (uuid && !isRedirecting) {
-      setIsRedirecting(true); // 이동 시작 시 상태 설정
+      setIsRedirecting(true);
       router.push(`/event-maps/${uuid}`);
     }
   }, [uuid, isRedirecting, router]);
@@ -91,7 +106,7 @@ function EventCreatePage() {
         />
       </div>
       <Button
-        label="다음"
+        label={isSubmitting ? "처리 중..." : "다음"}
         type="start"
         onClick={createEvent}
         className="w-[328px] h-[60px] py-[17px] rounded-lg"

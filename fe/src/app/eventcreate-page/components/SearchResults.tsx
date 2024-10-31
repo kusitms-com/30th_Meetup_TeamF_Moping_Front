@@ -2,9 +2,14 @@ import React from "react";
 import SearchResultItem from "./SearchResultsItem";
 
 interface SearchResultsProps {
-  results: { name: string; address: string }[];
+  results: { name: string; address: string; px?: number; py?: number }[];
   searchTerm: string;
-  onSelect: (place: { name: string; address: string }) => void;
+  onSelect: (place: {
+    name: string;
+    address: string;
+    px?: number;
+    py?: number;
+  }) => void;
 }
 
 function SearchResults({ results, searchTerm, onSelect }: SearchResultsProps) {
