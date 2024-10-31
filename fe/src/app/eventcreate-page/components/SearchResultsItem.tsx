@@ -57,7 +57,7 @@ function SearchResultItem({
         height={24}
         className="text-gray-600"
       />
-      <div className="text-base font-pretendard">
+      <div className="text-base font-medium font-['Pretendard'] leading-normal">
         {highlightText(place.name, searchTerm)}
       </div>
     </button>

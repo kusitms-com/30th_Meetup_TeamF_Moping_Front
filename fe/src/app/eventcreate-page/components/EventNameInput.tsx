@@ -1,5 +1,3 @@
-// EventNameInput.tsx
-
 "use client";
 
 import React, { useEffect, useState } from "react";
@@ -17,7 +15,7 @@ function EventNameInput({
   className,
   selectedLocation,
   onChange,
-  value, // value prop 사용
+  value,
 }: EventNameInputProps) {
   const [isFocused, setIsFocused] = useState(false);
   const [hasUserEdited, setHasUserEdited] = useState(false);
@@ -31,7 +29,7 @@ function EventNameInput({
         : `${currentDate} 모임`;
       onChange(newEventName);
     }
-    setIsLoading(false); // 로딩 완료 상태로 변경
+    setIsLoading(false);
   }, [selectedLocation, currentDate, onChange, hasUserEdited]);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -50,7 +48,7 @@ function EventNameInput({
     value === `${currentDate} 모임` ||
     value === `${currentDate} ${selectedLocation} 모임`
       ? "text-mediumGray"
-      : "text-text-default";
+      : "text-[#8e8e8e]";
 
   const charCount = value.length;
   const showWarning = charCount < 1 || charCount > 20;
@@ -60,7 +58,7 @@ function EventNameInput({
 
   return (
     <div className={`relative flex flex-col ${className}`}>
-      <div className="text-text-default text-xl font-semibold leading-loose mb-[12px]">
+      <div className="text-black text-xl font-semibold leading-loose mb-[12px]">
         이벤트 이름
       </div>
 
@@ -71,7 +69,7 @@ function EventNameInput({
       >
         <input
           type="text"
-          value={value} // value prop 사용
+          value={value}
           onChange={handleInputChange}
           className={`bg-transparent border-none grow shrink basis-0 ${textColorClass} text-base font-medium font-['Pretendard'] leading-normal outline-none flex-1`}
           onFocus={() => setIsFocused(true)}
@@ -91,8 +89,8 @@ function EventNameInput({
             <Image
               src="/images/Cancel.svg"
               alt="삭제 아이콘"
-              layout="fill"
-              objectFit="cover"
+              width={24}
+              height={24}
             />
           </div>
         )}
