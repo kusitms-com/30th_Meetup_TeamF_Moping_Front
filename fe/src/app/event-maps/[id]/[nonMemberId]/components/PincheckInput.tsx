@@ -118,6 +118,7 @@ export default function PasswordInput() {
             />
           </div>
         ))}
+
       </div>
 
       {hasError && (
