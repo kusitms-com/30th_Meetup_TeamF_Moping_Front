@@ -25,7 +25,6 @@ export default function LinkField({
       : [{ id: nanoid(), text: "" }]
   );
 
-  // addInputField 함수를 useCallback으로 메모이제이션하여 종속성 문제 해결
   const addInputField = useCallback(() => {
     const newField = { id: nanoid(), text: "" };
     const updatedInputs = [...inputFields, newField];
@@ -34,7 +33,6 @@ export default function LinkField({
   }, [inputFields, onChange]);
 
   useEffect(() => {
-    // Ensure at least one field exists
     if (inputFields.length === 0) {
       addInputField();
     }
@@ -112,7 +110,7 @@ export default function LinkField({
               value={field.text}
               onChange={(e) => handleInputChange(field.id, e.target.value)}
               placeholder={placeholder}
-              className="w-full p-3 bg-gray-50 rounded-md focus:outline-none focus:ring-2 focus:ring-grayscale-80"
+              className="w-full p-3 pr-10 bg-gray-50 rounded-md focus:outline-none focus:ring-2 focus:ring-grayscale-80"
               style={{
                 border: "none",
               }}
