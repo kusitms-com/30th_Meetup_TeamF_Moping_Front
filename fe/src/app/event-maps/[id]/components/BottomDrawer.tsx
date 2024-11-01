@@ -270,7 +270,7 @@ export default function BottomDrawer({
             <button
               type="button"
               onClick={() => handleButtonClick(member.nonMemberId)}
-              className={`w-[68px] h-[68px] ${selectedButton === member.nonMemberId ? "border-2 rounded-lg border-primary-50" : ""}`}
+              className={`w-[72px] h-[72px] p-[2px] ${selectedButton === member.nonMemberId ? "border-2 rounded-lg border-primary-50" : ""}`}
             >
               <Image
                 src={
