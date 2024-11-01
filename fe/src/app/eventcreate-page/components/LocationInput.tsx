@@ -1,6 +1,5 @@
-"use client";
-
-import React, { useState } from "react";
+import React, { useState, useEffect, useCallback } from "react";
+import debounce from "lodash.debounce";
 import Image from "next/image";
 import SearchResults from "./SearchResults";
 
@@ -18,65 +17,76 @@ interface LocationInputProps {
 
 function LocationInput({ className, onSelect }: LocationInputProps) {
   const [location, setLocation] = useState<string>("");
-  const [results, setResults] = useState<
-    { name: string; address: string; px?: number; py?: number }[]
-  >([]);
+  const [results, setResults] = useState<Place[]>([]);
   const [isFetching, setIsFetching] = useState(false);
 
-  const fetchPlacesBySearch = async (query: string) => {
-    if (isFetching) return;
-    setIsFetching(true);
+  // 검색 API 호출 함수, useCallback으로 감싸서 의존성 안정화
+  const fetchPlacesBySearch = useCallback(
+    async (query: string) => {
+      if (isFetching) return;
+      setIsFetching(true);
 
-    try {
-      const apiUrl = `${process.env.NEXT_PUBLIC_API_BASE_URL}/places/search?keyword=${encodeURIComponent(query)}`;
-      const response = await fetch(apiUrl, { headers: { accept: "*/*" } });
+      try {
+        const apiUrl = `${process.env.NEXT_PUBLIC_API_BASE_URL}/places/search?keyword=${encodeURIComponent(
+          query
+        )}`;
+        const response = await fetch(apiUrl, { headers: { accept: "*/*" } });
 
-      if (!response.ok)
-        throw new Error(`HTTP error! status: ${response.status}`);
+        if (!response.ok)
+          throw new Error(`HTTP error! status: ${response.status}`);
 
-      const data = await response.json();
-      if (data.code === 200) {
-        const formattedResults = data.data.map((place: Place) => ({
-          ...place,
-          px: place.px ? parseFloat((place.px / 1e7).toFixed(7)) : undefined,
-          py: place.py ? parseFloat((place.py / 1e7).toFixed(7)) : undefined,
-        }));
-        setResults(formattedResults);
-      } else {
-        setResults([]);
-        alert(`장소 검색에 실패했습니다: ${data.message}`);
+        const data = await response.json();
+        if (data.code === 200) {
+          const formattedResults = data.data.map((place: Place) => ({
+            ...place,
+            px: place.px ? parseFloat((place.px / 1e7).toFixed(7)) : undefined,
+            py: place.py ? parseFloat((place.py / 1e7).toFixed(7)) : undefined,
+          }));
+          setResults(formattedResults);
+        } else {
+          setResults([]);
+          alert(`장소 검색에 실패했습니다: ${data.message}`);
+        }
+      } catch (error) {
+        alert("서버에서 오류가 발생했습니다. 잠시 후 다시 시도해주세요.");
+      } finally {
+        setIsFetching(false);
       }
-    } catch (error) {
-      alert("서버에서 오류가 발생했습니다. 잠시 후 다시 시도해주세요.");
-    } finally {
-      setIsFetching(false);
-    }
-  };
+    },
+    [isFetching]
+  );
 
-  const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const inputValue = e.target.value;
-    setLocation(inputValue);
+  // fetchPlacesBySearch에 debounce 적용
+  useEffect(() => {
+    const debouncedFetch = debounce((query: string) => {
+      fetchPlacesBySearch(query);
+    }, 300);
 
-    if (inputValue.length > 0) {
-      fetchPlacesBySearch(inputValue);
+    if (location.length > 0) {
+      debouncedFetch(location);
     } else {
-      // 입력이 비워질 경우 onSelect에 빈 객체 전달
       setResults([]);
       onSelect({ name: "", address: "", px: undefined, py: undefined });
     }
+
+    return () => {
+      debouncedFetch.cancel();
+    };
+  }, [location, fetchPlacesBySearch, onSelect]); // fetchPlacesBySearch 포함
+
+  // 검색 인풋 핸들러
+  const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setLocation(e.target.value);
   };
 
-  const handleSelectPlace = (place: {
-    name: string;
-    address: string;
-    px?: number;
-    py?: number;
-  }) => {
+  // 장소 선택 핸들러
+  const handleSelectPlace = (place: Place) => {
     setLocation(place.name);
     setResults([]);
     onSelect(place);
   };
 
+  // 현재 위치 핸들러
   const handleCurrentLocation = async () => {
     if (isFetching) return;
     setIsFetching(true);
