@@ -79,7 +79,7 @@ export default function LinkField({
             />
             {showTooltip && (
               <div
-                className="absolute left-1/2 -translate-x-[51%] bottom-full mb-2 bg-black text-white text-caption rounded px-[12px] py-[10px] w-[215px]"
+                className="absolute left-1/2 -translate-x-[48.7%] bottom-full mb-2 bg-black text-white text-caption rounded px-[12px] py-[10px] w-[215px]"
                 aria-hidden={!showTooltip}
               >
                 즐겨찾기 링크 복사 방법을 확인해보세요
