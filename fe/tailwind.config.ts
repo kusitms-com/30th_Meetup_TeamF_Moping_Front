@@ -9,6 +9,16 @@ const config: Config = {
   ],
   theme: {
     extend: {
+      keyframes: {
+        fadein: {
+          "0%": {
+            opacity: "0",
+          },
+          "100%": {
+            opacity: "1",
+          },
+        },
+      },
       colors: {
         gray: {
           30: "#F0F0F0",
@@ -157,6 +167,9 @@ const config: Config = {
         xlarge: "20px",
         full: "400px",
       },
+    },
+    animation: {
+      fadein: "fadein 2s ease-in-out",
     },
   },
   plugins: [require("tailwind-scrollbar-hide")],

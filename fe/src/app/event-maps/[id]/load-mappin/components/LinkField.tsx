@@ -24,6 +24,7 @@ export default function LinkField({
       ? value.map((val) => ({ id: nanoid(), text: val }))
       : [{ id: nanoid(), text: "" }]
   );
+  const [scrollPosition, setScrollPosition] = useState(0);
 
   const addInputField = useCallback(() => {
     const newField = { id: nanoid(), text: "" };
@@ -33,29 +34,68 @@ export default function LinkField({
   }, [inputFields, onChange]);
 
   useEffect(() => {
+    // Ensure at least one field exists
     if (inputFields.length === 0) {
       addInputField();
     }
   }, [inputFields, addInputField]);
 
   const handleNaverMove = () => {
-    window.location.href = "https://m.place.naver.com/my/place";
+    if (label === "가게 정보 링크") {
+      window.location.href = "https://m.map.naver.com/";
+    } else if (label === "맵핀 모음 링크") {
+      window.location.href = "https://m.place.naver.com/my/place";
+    }
+  };
+
+  const handlePasteFromClipboard = async (id: string) => {
+    try {
+      const clipboardText = await navigator.clipboard.readText();
+
+      const urlPattern = /(https?:\/\/[^\s]+)/g;
+      const match = clipboardText.match(urlPattern);
+      const extractedLink = match ? match[0] : clipboardText;
+
+      const newInputs = inputFields.map((field) =>
+        field.id === id ? { ...field, text: extractedLink } : field
+      );
+      setInputFields(newInputs);
+      onChange(
+        newInputs
+          .map((field) => field.text)
+          .filter((text) => text.trim() !== "")
+      );
+    } catch (error) {
+      console.error("Failed to read clipboard text:", error);
+    }
   };
 
   const handleInputChange = (id: string, inputValue: string) => {
+    const urlPattern = /(https?:\/\/[^\s]+)/g;
+    const match = inputValue.match(urlPattern);
+    const extractedLink = match ? match[0] : "";
+
     const newInputs = inputFields.map((field) =>
-      field.id === id ? { ...field, text: inputValue } : field
+      field.id === id ? { ...field, text: extractedLink } : field
     );
     setInputFields(newInputs);
-    onChange(newInputs.map((field) => field.text));
+    onChange(
+      newInputs.map((field) => field.text).filter((text) => text.trim() !== "")
+    );
   };
-
+  const handleScrollPosition = () => {
+    setScrollPosition(window.scrollY); // 현재 스크롤 위치 저장
+  };
   const clearInput = (id: string) => {
+    handleScrollPosition(); // 스크롤 위치 저장
     const newInputs = inputFields.map((field) =>
       field.id === id ? { ...field, text: "" } : field
     );
     setInputFields(newInputs);
     onChange(newInputs.map((field) => field.text));
+
+    // 저장된 스크롤 위치로 이동하여 화면 위치 유지
+    window.scrollTo(0, scrollPosition);
   };
 
   return (
@@ -79,7 +119,7 @@ export default function LinkField({
             />
             {showTooltip && (
               <div
-                className="absolute left-1/2 -translate-x-[48.7%] bottom-full mb-2 bg-black text-white text-caption rounded px-[12px] py-[10px] w-[215px]"
+                className="animate-fadein absolute left-1/2 -translate-x-[48.7%] bottom-full mb-2 bg-black text-white text-caption rounded px-[12px] py-[10px] w-[215px]"
                 aria-hidden={!showTooltip}
               >
                 즐겨찾기 링크 복사 방법을 확인해보세요
@@ -108,9 +148,10 @@ export default function LinkField({
             <input
               type="text"
               value={field.text}
+              onClick={() => handlePasteFromClipboard(field.id)}
               onChange={(e) => handleInputChange(field.id, e.target.value)}
               placeholder={placeholder}
-              className="w-full p-3 pr-10 bg-gray-50 rounded-md focus:outline-none focus:ring-2 focus:ring-grayscale-80"
+              className="w-full p-3 bg-gray-50 rounded-md focus:outline-none focus:ring-2 focus:ring-grayscale-80"
               style={{
                 border: "none",
               }}
