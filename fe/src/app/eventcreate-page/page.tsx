@@ -37,11 +37,10 @@ function EventCreatePage() {
     setLocation(place);
   };
 
+  // 장소가 선택되어 입력된 경우에만 버튼 활성화
   useEffect(() => {
-    setIsFormComplete(
-      selectedLocation?.name?.trim() !== "" && eventName.trim() !== ""
-    );
-  }, [selectedLocation, eventName]);
+    setIsFormComplete(!!selectedLocation?.name?.trim());
+  }, [selectedLocation]);
 
   const handleNextClick = async () => {
     if (!isFormComplete || isSubmitting) return;
