@@ -39,7 +39,7 @@ export default function Page() {
   const { id } = useParams();
   const parsedId = Array.isArray(id) ? id[0] : id;
   const [data, setData] = useState<Data | null>(null);
-  const [isModalOpen, setIsModalOpen] = useState(false); // 모달 열림 상태 추가
+  const [isModalOpen, setIsModalOpen] = useState(false);
   const moveToLocation = useLocationStore((state) => state.moveToLocation);
   const setCustomMarkers = useMarkerStore((state) => state.setCustomMarkers);
   const router = useRouter();
@@ -91,16 +91,16 @@ export default function Page() {
   }, [id, data, moveToLocation, setCustomMarkers]);
 
   const handleBackbtn = () => {
-    setIsModalOpen(true); // 뒤로 가기 버튼 클릭 시 모달 열기
+    setIsModalOpen(true);
   };
 
   const handleExit = () => {
     setIsModalOpen(false);
-    router.replace("/eventcreate-page"); // UUID 초기화 후 이벤트 생성 페이지로 이동
+    router.replace("/eventcreate-page");
   };
 
   const handleCancel = () => {
-    setIsModalOpen(false); // 모달 닫기
+    setIsModalOpen(false);
   };
 
   const bind = useDrag(
@@ -149,7 +149,6 @@ export default function Page() {
           </a.div>
         </>
       )}
-      {/* isModalOpen 상태에 따라 모달을 조건부 렌더링 */}
       {isModalOpen && <ExitModal onCancel={handleCancel} onExit={handleExit} />}
     </div>
   );

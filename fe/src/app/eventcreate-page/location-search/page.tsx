@@ -1,5 +1,3 @@
-// src/app/eventcreate-page/location-search/page.tsx
-
 "use client";
 
 import React, { useState, useEffect, useCallback } from "react";
@@ -17,7 +15,6 @@ interface Place {
 }
 
 function LocationSearch() {
-  // 화살표 함수 대신 일반 함수 선언
   const [location, setLocation] = useState<string>("");
   const [results, setResults] = useState<Place[]>([]);
   const [isFetching, setIsFetching] = useState(false);
@@ -81,8 +78,8 @@ function LocationSearch() {
   };
 
   const handleSelectPlace = (place: Place) => {
-    setStoreLocation(place); // 선택된 위치를 저장
-    router.push("/eventcreate-page"); // EventCreatePage로 이동
+    setStoreLocation(place);
+    router.push("/eventcreate-page");
   };
 
   const handleClearLocation = () => {

@@ -16,7 +16,7 @@ export default function Page() {
           <button
             type="button"
             className="w-[24px] h-[24px]"
-            onClick={() => router.back()} // 뒤로 가기 기능
+            onClick={() => router.back()}
           >
             <Image
               src="/images/ArrowBack.svg"

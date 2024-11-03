@@ -1,5 +1,3 @@
-// components/SearchResults.tsx
-
 import React from "react";
 import SearchResultItem from "@/app/eventcreate-page/components/SearchResultsItem";
 

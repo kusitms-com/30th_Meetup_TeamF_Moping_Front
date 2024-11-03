@@ -12,7 +12,6 @@ function SearchResultItem({
   searchTerm,
   onClick,
 }: SearchResultItemProps) {
-  // Function to highlight matching text in blue
   const highlightText = (text: string, highlight: string) => {
     if (!highlight.trim()) return text;
 
@@ -29,10 +28,10 @@ function SearchResultItem({
                 isHighlighted
                   ? `highlight-${part}-${index}`
                   : `text-${part}-${index}`
-              } // Use a combination of part and index for keys
+              }
               style={
                 isHighlighted ? { color: "#3a91ea" } : { color: "#4a4a4a" }
-              } // Use a gray color for non-highlighted text
+              }
               className={isHighlighted ? "font-semibold" : "text-gray-800"}
             >
               {part}

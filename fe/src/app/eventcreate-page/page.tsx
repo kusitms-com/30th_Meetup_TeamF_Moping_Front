@@ -1,5 +1,3 @@
-// src/app/eventcreate-page/page.tsx
-
 "use client";
 
 import React, { useEffect, useState } from "react";
@@ -12,7 +10,7 @@ import { useLocationStore } from "@/app/eventcreate-page/stores/useLocationStore
 
 function EventCreatePage() {
   const router = useRouter();
-  const { selectedLocation, setLocation } = useLocationStore(); // Get location info from useLocationStore
+  const { selectedLocation, setLocation } = useLocationStore();
   const [eventName, setEventName] = useState("");
   const [isFormComplete, setIsFormComplete] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -36,7 +34,7 @@ function EventCreatePage() {
     px?: number;
     py?: number;
   }) => {
-    setLocation(place); // Save the selected location to LocationStore
+    setLocation(place);
   };
 
   useEffect(() => {
@@ -91,7 +89,7 @@ function EventCreatePage() {
   }, [uuid, router]);
 
   const handleBackClick = () => {
-    router.push("/"); // 메인 페이지로 이동
+    router.push("/");
   };
 
   return (
