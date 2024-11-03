@@ -76,7 +76,6 @@ function EventCreatePage() {
         alert("이벤트 생성에 실패했습니다.");
       }
     } catch (error) {
-      // console.error("Event creation error:", error); // Commenting out to avoid warning
       alert("이벤트 생성 중 오류가 발생했습니다.");
     } finally {
       setIsSubmitting(false);
@@ -89,9 +88,13 @@ function EventCreatePage() {
     }
   }, [uuid, router]);
 
+  const handleBackClick = () => {
+    router.push("/"); // 메인 페이지로 이동
+  };
+
   return (
     <div className="w-[360px] h-screen bg-white mx-auto flex flex-col">
-      <Navigation showBackButton />
+      <Navigation showBackButton onBack={handleBackClick} />
       <div className="flex-1 mt-4 px-4 overflow-auto pt-[56px]">
         <LocationInput
           onSelect={handleLocationSelect}
