@@ -63,7 +63,9 @@ export default function LinkField({
           .map((field) => field.text)
           .filter((text) => text.trim() !== "")
       );
-    } catch (error) {}
+    } catch (error) {
+      console.error("Failed to read clipboard text:", error);
+    }
   };
 
   const handleInputChange = (id: string, inputValue: string) => {
@@ -136,7 +138,7 @@ export default function LinkField({
             />
             {showTooltip && (
               <div
-                className="absolute left-1/2 -translate-x-[48.9%] bottom-full mb-2 bg-black text-white text-caption rounded px-[12px] py-[10px] w-[215px]"
+                className="animate-fadein absolute left-1/2 -translate-x-[48.7%] bottom-full mb-2 bg-black text-white text-caption rounded px-[12px] py-[10px] w-[215px]"
                 aria-hidden={!showTooltip}
               >
                 즐겨찾기 링크 복사 방법을 확인해보세요

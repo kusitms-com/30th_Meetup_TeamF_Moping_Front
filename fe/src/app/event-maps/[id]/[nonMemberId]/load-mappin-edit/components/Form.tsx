@@ -61,7 +61,21 @@ export default function Form() {
       console.error("서버 오류 발생:", error);
     }
   };
+  useEffect(() => {
+    const hideTooltip = (e: MouseEvent) => {
+      if ((e.target as HTMLElement).closest(".group") === null) {
+        setIsTooltipVisible(false);
+      }
+    };
 
+    if (isTooltipVisible) {
+      window.addEventListener("click", hideTooltip);
+    }
+
+    return () => {
+      window.removeEventListener("click", hideTooltip);
+    };
+  }, [isTooltipVisible]);
   return (
     <div className="px-4">
       <form onSubmit={handleSubmit}>
