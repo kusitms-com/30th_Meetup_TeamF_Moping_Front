@@ -1,130 +1,49 @@
-import React, { useState, useEffect, useCallback } from "react";
-import debounce from "lodash.debounce";
+"use client";
+
+import React, { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
 import Image from "next/image";
-import SearchResults from "./SearchResults";
+import { useLocationStore } from "@/app/eventcreate-page/stores/useLocationStore";
+import { LocationInputProps } from "@/app/eventcreate-page/types/types"; // Place 임포트 제거
 
-interface Place {
-  name: string;
-  address: string;
-  px?: number;
-  py?: number;
-}
+function LocationInput({
+  className,
+  value = "",
+  onSelect,
+}: LocationInputProps) {
+  const router = useRouter();
+  const { selectedLocation } = useLocationStore();
+  const [location, setLocationState] = useState(value);
 
-interface LocationInputProps {
-  className?: string;
-  onSelect: (place: Place) => void;
-}
-
-function LocationInput({ className, onSelect }: LocationInputProps) {
-  const [location, setLocation] = useState<string>("");
-  const [results, setResults] = useState<Place[]>([]);
-  const [isFetching, setIsFetching] = useState(false);
-
-  // 검색 API 호출 함수, useCallback으로 감싸서 의존성 안정화
-  const fetchPlacesBySearch = useCallback(
-    async (query: string) => {
-      if (isFetching) return;
-      setIsFetching(true);
-
-      try {
-        const apiUrl = `${process.env.NEXT_PUBLIC_API_BASE_URL}/places/search?keyword=${encodeURIComponent(
-          query
-        )}`;
-        const response = await fetch(apiUrl, { headers: { accept: "*/*" } });
-
-        if (!response.ok)
-          throw new Error(`HTTP error! status: ${response.status}`);
-
-        const data = await response.json();
-        if (data.code === 200) {
-          const formattedResults = data.data.map((place: Place) => ({
-            ...place,
-            px: place.px ? parseFloat((place.px / 1e7).toFixed(7)) : undefined,
-            py: place.py ? parseFloat((place.py / 1e7).toFixed(7)) : undefined,
-          }));
-          setResults(formattedResults);
-        } else {
-          setResults([]);
-          alert(`장소 검색에 실패했습니다: ${data.message}`);
-        }
-      } catch (error) {
-        alert("서버에서 오류가 발생했습니다. 잠시 후 다시 시도해주세요.");
-      } finally {
-        setIsFetching(false);
-      }
-    },
-    [isFetching]
-  );
-
-  // fetchPlacesBySearch에 debounce 적용
+  // selectedLocation이 변경될 때 location 상태를 업데이트
   useEffect(() => {
-    const debouncedFetch = debounce((query: string) => {
-      fetchPlacesBySearch(query);
-    }, 300);
-
-    if (location.length > 0) {
-      debouncedFetch(location);
-    } else {
-      setResults([]);
-      onSelect({ name: "", address: "", px: undefined, py: undefined });
-    }
-
-    return () => {
-      debouncedFetch.cancel();
-    };
-  }, [location, fetchPlacesBySearch, onSelect]); // fetchPlacesBySearch 포함
-
-  // 검색 인풋 핸들러
-  const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setLocation(e.target.value);
-  };
-
-  // 장소 선택 핸들러
-  const handleSelectPlace = (place: Place) => {
-    setLocation(place.name);
-    setResults([]);
-    onSelect(place);
-  };
-
-  // 현재 위치 핸들러
-  const handleCurrentLocation = async () => {
-    if (isFetching) return;
-    setIsFetching(true);
-
-    if (!navigator.geolocation) {
-      alert("현재 위치를 지원하지 않는 브라우저입니다.");
-      setIsFetching(false);
-      return;
-    }
-
-    navigator.geolocation.getCurrentPosition(
-      ({ coords }) => {
-        const { latitude: py, longitude: px } = coords;
-        const coordinatesString = `위도: ${py}, 경도: ${px}`;
-        setLocation(coordinatesString);
-
-        onSelect({
-          name: coordinatesString,
-          address: coordinatesString,
-          px,
-          py,
-        });
-
-        setIsFetching(false);
-      },
-      () => {
-        alert("위치 정보를 가져오는 중 오류가 발생했습니다.");
-        setIsFetching(false);
+    if (selectedLocation && selectedLocation.name !== location) {
+      setLocationState(selectedLocation.name);
+      if (onSelect) {
+        onSelect(selectedLocation); // selectedLocation을 상위 컴포넌트로 전달
       }
-    );
+    }
+  }, [selectedLocation, onSelect, location]);
+
+  // input 필드의 value가 변경될 때 상태를 업데이트
+  useEffect(() => {
+    setLocationState(value);
+  }, [value]);
+
+  const handleLocationInputClick = () => {
+    router.push("/eventcreate-page/location-search");
   };
 
   return (
-    <div className={`relative flex flex-col ${className}`}>
-      <div className="text-black text-xl font-semibold leading-loose mb-[12px]">
+    <div className={`relative flex flex-col ${className} mt-4`}>
+      <div className="text-[#2c2c2c] text-xl font-semibold font-['Pretendard'] leading-loose mb-4">
         어떤 공간을 찾고 계신가요?
       </div>
-      <div className="relative w-[328px] h-14 p-4 bg-background-light rounded-lg flex items-center">
+      <button
+        type="button"
+        className="relative w-[328px] h-14 px-4 bg-[#f7f7f7] rounded-lg flex items-center mb-4 cursor-pointer"
+        onClick={handleLocationInputClick}
+      >
         <Image
           src="/images/Search.svg"
           alt="돋보기 아이콘"
@@ -135,34 +54,11 @@ function LocationInput({ className, onSelect }: LocationInputProps) {
         <input
           type="text"
           value={location}
-          onChange={handleSearch}
           placeholder="장소를 입력해주세요"
-          className="bg-transparent border-none flex-grow text-base font-medium font-['Pretendard'] text-[#2c2c2c] placeholder-[#8e8e8e] outline-none"
+          className="bg-transparent border-none flex-grow text-[#2c2c2c] text-base font-medium font-['Pretendard'] leading-normal outline-none"
+          readOnly
         />
-        <div
-          role="button"
-          tabIndex={0}
-          className="w-[38px] h-[38px] bg-darkGray rounded flex items-center justify-center cursor-pointer ml-3"
-          onClick={handleCurrentLocation}
-          onKeyDown={(e) => {
-            if (e.key === "Enter") handleCurrentLocation();
-          }}
-        >
-          <Image
-            src="/images/Location.svg"
-            alt="위치 아이콘"
-            width={34}
-            height={34}
-          />
-        </div>
-      </div>
-      {results.length > 0 && (
-        <SearchResults
-          results={results}
-          searchTerm={location}
-          onSelect={handleSelectPlace}
-        />
-      )}
+      </button>
     </div>
   );
 }

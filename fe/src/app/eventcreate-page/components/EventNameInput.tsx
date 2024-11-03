@@ -1,10 +1,11 @@
+// components/EventNameInput.tsx
+
 "use client";
 
 import React, { useEffect, useState } from "react";
 import Image from "next/image";
 import { EventNameInputProps } from "@/app/eventcreate-page/types/types";
 
-// 현재 날짜를 "MM.DD" 형식으로 반환하는 함수
 const getCurrentDate = () => {
   const today = new Date();
   const month = String(today.getMonth() + 1).padStart(2, "0");
@@ -18,19 +19,16 @@ function EventNameInput({
   onChange,
   value,
 }: EventNameInputProps) {
-  const [isFocused, setIsFocused] = useState(false);
   const [hasUserEdited, setHasUserEdited] = useState(false);
-  const [isLoading, setIsLoading] = useState(true);
   const currentDate = getCurrentDate();
 
   useEffect(() => {
-    if (!hasUserEdited) {
-      const newEventName = selectedLocation
-        ? `${currentDate} ${selectedLocation} 모임`
-        : `${currentDate} 모임`;
+    if (!hasUserEdited && selectedLocation) {
+      const newEventName = `${currentDate} ${selectedLocation} 모임`;
       onChange(newEventName);
+    } else if (!selectedLocation && !hasUserEdited) {
+      onChange("");
     }
-    setIsLoading(false);
   }, [selectedLocation, currentDate, onChange, hasUserEdited]);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -44,42 +42,29 @@ function EventNameInput({
     onChange("");
   };
 
-  const borderClass = isFocused ? "border-[#2C2C2C]" : "border-transparent";
-
-  // 기본 값일 때는 #8e8e8e 색상으로, 그렇지 않을 경우 #2c2c2c 색상으로 설정
-  const textColorClass =
-    value === `${currentDate} 모임` ||
-    value === `${currentDate} ${selectedLocation} 모임`
-      ? "text-[#8e8e8e]"
-      : "text-[#2c2c2c]";
-
-  const charCount = value.length;
-  const showWarning = charCount < 1 || charCount > 20;
-  const isDefaultValue =
-    value === `${currentDate} 모임` ||
-    value === `${currentDate} ${selectedLocation} 모임`;
+  const borderClass = "border-transparent";
+  const showWarning = hasUserEdited && value.trim().length < 1;
 
   return (
-    <div className={`relative flex flex-col ${className}`}>
-      <div className="text-black text-xl font-semibold leading-loose mb-[12px]">
+    <div className={`relative flex flex-col ${className} mt-4`}>
+      <div className="text-[#2c2c2c] text-lg font-semibold font-['Pretendard'] leading-relaxed mb-2">
         이벤트 이름
       </div>
 
       <div
-        className={`relative w-[328px] h-14 p-4 bg-background-light rounded-lg flex justify-between items-center border-2 ${
-          showWarning && !isLoading ? "border-danger-base" : borderClass
+        className={`relative w-[328px] h-14 p-4 bg-[#f7f7f7] rounded-lg flex justify-between items-center border-2 ${
+          showWarning ? "border-danger-base" : borderClass
         }`}
       >
         <input
           type="text"
           value={value}
           onChange={handleInputChange}
-          className={`bg-transparent border-none grow shrink basis-0 ${textColorClass} text-base font-medium font-['Pretendard'] leading-normal outline-none flex-1`}
-          onFocus={() => setIsFocused(true)}
-          onBlur={() => setIsFocused(false)}
+          placeholder={`${currentDate} 모임`}
+          className="bg-transparent border-none grow shrink basis-0 text-[#2c2c2c] text-base font-medium font-['Pretendard'] leading-normal outline-none flex-1"
         />
 
-        {value && !isDefaultValue && (
+        {value && (
           <div
             role="button"
             tabIndex={0}
@@ -99,20 +84,10 @@ function EventNameInput({
         )}
       </div>
 
-      {!isLoading && (
-        <>
-          {showWarning ? (
-            <div className="text-danger-base text-sm font-medium font-['Pretendard'] leading-tight mt-2">
-              글자 수는 1 - 20자 사이로 입력해주세요
-            </div>
-          ) : (
-            !isDefaultValue && (
-              <div className="text-right text-mediumGray text-sm font-medium font-['Pretendard'] leading-tight mt-2">
-                {charCount}/20
-              </div>
-            )
-          )}
-        </>
+      {showWarning && (
+        <div className="text-danger-base text-sm font-medium font-['Pretendard'] leading-tight mt-2">
+          모임명은 1자 이상 작성 가능해요
+        </div>
       )}
     </div>
   );
