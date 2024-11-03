@@ -37,14 +37,12 @@ function EventCreatePage() {
     setLocation(place);
   };
 
-  useEffect(() => {
-    setIsFormComplete(
-      selectedLocation?.name?.trim() !== "" &&
-        eventName.trim() !== "" &&
-        eventName.length >= 1 &&
-        eventName.length <= 20
-    );
-  }, [selectedLocation, eventName]);
+useEffect(() => {
+  setIsFormComplete(
+    selectedLocation?.name?.trim() !== "" &&
+    eventName.trim() !== ""
+  );
+}, [selectedLocation, eventName]);
 
   const handleNextClick = async () => {
     if (!isFormComplete || isSubmitting) return;
