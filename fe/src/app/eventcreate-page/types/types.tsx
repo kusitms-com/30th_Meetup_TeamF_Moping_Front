@@ -26,6 +26,13 @@ export interface LocationInputProps {
   onSelect: (place: Place) => void;
 }
 
+// Navigation 컴포넌트의 Props 타입
+export interface NavigationProps {
+  showBackButton?: boolean;
+  title?: string;
+  onBack?: () => void; // Optional onBack function for handling back navigation
+}
+
 export interface NavigationProps {
   showBackButton?: boolean;
   title?: string;

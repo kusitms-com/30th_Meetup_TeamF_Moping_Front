@@ -12,6 +12,7 @@ function SearchResultItem({
   searchTerm,
   onClick,
 }: SearchResultItemProps) {
+  // Function to highlight matching text in blue
   const highlightText = (text: string, highlight: string) => {
     if (!highlight.trim()) return text;
 

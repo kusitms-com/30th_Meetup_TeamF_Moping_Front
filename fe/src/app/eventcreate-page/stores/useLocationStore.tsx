@@ -1,3 +1,5 @@
+// src/app/eventcreate-page/stores/useLocationStore.ts
+
 import { create } from "zustand";
 
 interface Place {
