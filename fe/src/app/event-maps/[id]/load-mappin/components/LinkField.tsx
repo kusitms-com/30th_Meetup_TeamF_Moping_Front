@@ -39,7 +39,7 @@ export default function LinkField({
   }, [inputFields, addInputField]);
 
   const handleNaverMove = () => {
-    window.open("https://m.place.naver.com/my/place");
+    window.location.href = "https://m.place.naver.com/my/place";
   };
 
   const handleInputChange = (id: string, inputValue: string) => {

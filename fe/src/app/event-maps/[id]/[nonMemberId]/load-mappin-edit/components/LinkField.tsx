@@ -77,7 +77,7 @@ export default function LinkField({
   };
 
   const handleNaverMove = () => {
-    window.open("https://m.place.naver.com/my/place");
+    window.location.href = "https://m.place.naver.com/my/place";
   };
 
   return (
