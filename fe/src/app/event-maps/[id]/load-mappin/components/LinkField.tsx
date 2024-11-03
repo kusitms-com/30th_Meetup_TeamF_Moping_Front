@@ -41,15 +41,25 @@ export default function LinkField({
   }, [inputFields, addInputField]);
 
   const handleNaverMove = () => {
-    window.location.href = "https://m.place.naver.com/my/place";
+    if (label === "가게 정보 링크") {
+      window.location.href = "https://m.map.naver.com/";
+    } else if (label === "맵핀 모음 링크") {
+      window.location.href = "https://m.place.naver.com/my/place";
+    }
   };
 
   const handleInputChange = (id: string, inputValue: string) => {
+    const urlPattern = /(https?:\/\/[^\s]+)/g;
+    const match = inputValue.match(urlPattern);
+    const extractedLink = match ? match[0] : "";
+
     const newInputs = inputFields.map((field) =>
-      field.id === id ? { ...field, text: inputValue } : field
+      field.id === id ? { ...field, text: extractedLink } : field
     );
     setInputFields(newInputs);
-    onChange(newInputs.map((field) => field.text));
+    onChange(
+      newInputs.map((field) => field.text).filter((text) => text.trim() !== "")
+    );
   };
 
   const clearInput = (id: string) => {

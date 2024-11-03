@@ -77,7 +77,11 @@ export default function LinkField({
   };
 
   const handleNaverMove = () => {
-    window.location.href = "https://m.place.naver.com/my/place";
+    if (label === "가게 정보 링크") {
+      window.location.href = "https://m.map.naver.com/";
+    } else if (label === "맵핀 모음 링크") {
+      window.location.href = "https://m.place.naver.com/my/place";
+    }
   };
 
   return (
