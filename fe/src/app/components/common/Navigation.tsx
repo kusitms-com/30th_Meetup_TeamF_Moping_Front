@@ -3,29 +3,47 @@
 import React from "react";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
-import { NavigationProps } from "@/types/types";
 
-function Navigation({ showBackButton = true }: NavigationProps) {
+// Directly define NavigationProps in this file
+interface NavigationProps {
+  showBackButton?: boolean;
+  title?: string;
+  onBack?: () => void;
+}
+
+function Navigation({
+  showBackButton = true,
+  title = "",
+  onBack,
+}: NavigationProps) {
   const router = useRouter();
 
   const handleBackClick = () => {
-    router.back();
+    if (onBack) {
+      onBack(); // Use the provided onBack function if available
+    } else {
+      router.back(); // Otherwise, use router.back()
+    }
   };
 
   return (
-    <header className="nav-bar sticky top-[36px] z-10">
+    <header className="fixed top-0 left-1/2 transform -translate-x-1/2 w-[360px] h-[56px] bg-white flex items-center justify-between px-4 z-10">
       {showBackButton && (
-        <div className="absolute left-0">
-          <button type="button" onClick={handleBackClick} className="p-2">
-            <Image
-              src="/images/ArrowBack.svg"
-              alt="뒤로가기"
-              width={24}
-              height={24}
-            />
-          </button>
-        </div>
+        <button type="button" onClick={handleBackClick} className="p-2">
+          <Image
+            src="/images/ArrowBack.svg"
+            alt="뒤로가기"
+            width={24}
+            height={24}
+          />
+        </button>
       )}
+      <h1
+        className="text-lg font-semibold text-[#2c2c2c] mx-auto"
+        style={{ width: "320px", textAlign: "center" }}
+      >
+        {title}
+      </h1>
     </header>
   );
 }

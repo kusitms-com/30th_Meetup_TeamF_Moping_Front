@@ -12,6 +12,7 @@ function SearchResultItem({
   searchTerm,
   onClick,
 }: SearchResultItemProps) {
+  // Function to highlight matching text in blue
   const highlightText = (text: string, highlight: string) => {
     if (!highlight.trim()) return text;
 
@@ -20,20 +21,24 @@ function SearchResultItem({
 
     return (
       <>
-        {parts.map((part) =>
-          part.toLowerCase() === highlight.toLowerCase() ? (
+        {parts.map((part, index) => {
+          const isHighlighted = part.toLowerCase() === highlight.toLowerCase();
+          return (
             <span
-              key={part + text}
-              className="text-blue hover:text-gray-600 transition-colors duration-200"
+              key={
+                isHighlighted
+                  ? `highlight-${part}-${index}`
+                  : `text-${part}-${index}`
+              } // Use a combination of part and index for keys
+              style={
+                isHighlighted ? { color: "#3a91ea" } : { color: "#4a4a4a" }
+              } // Use a gray color for non-highlighted text
+              className={isHighlighted ? "font-semibold" : "text-gray-800"}
             >
               {part}
             </span>
-          ) : (
-            <span key={part + text} className="text-gray-600">
-              {part}
-            </span>
-          )
-        )}
+          );
+        })}
       </>
     );
   };
@@ -41,23 +46,18 @@ function SearchResultItem({
   return (
     <button
       type="button"
-      className="cursor-pointer flex items-center gap-2 bg-gray-50 hover:bg-gray-100 transition-colors duration-200"
       onClick={onClick}
-      style={{
-        padding: "10px 16px",
-        margin: "16px 0",
-        width: "328px",
-        height: "44px",
-      }}
+      className="w-full h-11 px-4 py-2.5 bg-white flex items-center gap-2 hover:bg-gray-100 transition-colors duration-200"
     >
-      <Image
-        src="/images/LocationPin.svg"
-        alt="위치 핀"
-        width={24}
-        height={24}
-        className="text-gray-600"
-      />
-      <div className="text-base font-medium font-['Pretendard'] leading-normal">
+      <div className="w-6 h-6 flex-shrink-0">
+        <Image
+          src="/images/LocationPin.svg"
+          alt="위치 핀"
+          width={24}
+          height={24}
+        />
+      </div>
+      <div className="text-base font-medium font-['Pretendard'] text-gray-800 leading-none truncate">
         {highlightText(place.name, searchTerm)}
       </div>
     </button>

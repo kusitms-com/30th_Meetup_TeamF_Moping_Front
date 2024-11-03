@@ -1,33 +1,35 @@
+// components/SearchResults.tsx
+
 import React from "react";
-import SearchResultItem from "./SearchResultsItem";
+import SearchResultItem from "@/app/eventcreate-page/components/SearchResultsItem";
+
+interface Place {
+  name: string;
+  address: string;
+  px?: number;
+  py?: number;
+}
 
 interface SearchResultsProps {
-  results: { name: string; address: string; px?: number; py?: number }[];
+  results: Place[];
   searchTerm: string;
-  onSelect: (place: {
-    name: string;
-    address: string;
-    px?: number;
-    py?: number;
-  }) => void;
+  onSelect: (place: Place) => void;
 }
 
 function SearchResults({ results, searchTerm, onSelect }: SearchResultsProps) {
   if (!results || results.length === 0) return null;
 
   return (
-    <div className="relative">
-      <ul className="absolute top-full left-0 mt-2 w-full bg-background-light shadow-lg z-10 rounded-lg">
-        {results.map((place) => (
-          <SearchResultItem
-            key={place.name}
-            place={place}
-            searchTerm={searchTerm}
-            onClick={() => onSelect(place)}
-          />
-        ))}
-      </ul>
-    </div>
+    <ul className="w-full max-w-[360px] max-h-[240px] overflow-y-auto bg-white mt-2">
+      {results.map((place) => (
+        <SearchResultItem
+          key={place.name}
+          place={place}
+          searchTerm={searchTerm}
+          onClick={() => onSelect(place)}
+        />
+      ))}
+    </ul>
   );
 }
 
