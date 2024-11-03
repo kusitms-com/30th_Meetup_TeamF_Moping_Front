@@ -44,10 +44,35 @@ export default function LinkField({
       setInputFields([{ id: nanoid(), text: "" }]);
     }
   }, [inputFields]);
+  const [scrollPosition, setScrollPosition] = useState(0);
+
+  const handlePasteFromClipboard = async (id: string) => {
+    try {
+      const clipboardText = await navigator.clipboard.readText();
+
+      const urlPattern = /(https?:\/\/[^\s]+)/g;
+      const match = clipboardText.match(urlPattern);
+      const extractedLink = match ? match[0] : clipboardText;
+
+      const newInputs = inputFields.map((field) =>
+        field.id === id ? { ...field, text: extractedLink } : field
+      );
+      setInputFields(newInputs);
+      onChange(
+        newInputs
+          .map((field) => field.text)
+          .filter((text) => text.trim() !== "")
+      );
+    } catch (error) {}
+  };
 
   const handleInputChange = (id: string, inputValue: string) => {
+    const urlPattern = /(https?:\/\/[^\s]+)/g;
+    const match = inputValue.match(urlPattern);
+    const extractedLink = match ? match[0] : "";
+
     const newInputs = inputFields.map((field) =>
-      field.id === id ? { ...field, text: inputValue } : field
+      field.id === id ? { ...field, text: extractedLink } : field
     );
     setInputFields(newInputs);
     onChange(
@@ -55,14 +80,20 @@ export default function LinkField({
     );
   };
 
+  const handleScrollPosition = () => {
+    setScrollPosition(window.scrollY); // 현재 스크롤 위치 저장
+  };
+
   const clearInput = (id: string) => {
+    handleScrollPosition(); // 스크롤 위치 저장
     const newInputs = inputFields.map((field) =>
       field.id === id ? { ...field, text: "" } : field
     );
     setInputFields(newInputs);
-    onChange(
-      newInputs.map((field) => field.text).filter((text) => text.trim() !== "")
-    );
+    onChange(newInputs.map((field) => field.text));
+
+    // 저장된 스크롤 위치로 이동하여 화면 위치 유지
+    window.scrollTo(0, scrollPosition);
   };
 
   const addInputField = () => {
@@ -134,6 +165,7 @@ export default function LinkField({
             <input
               type="text"
               value={field.text}
+              onClick={() => handlePasteFromClipboard(field.id)}
               onChange={(e) => handleInputChange(field.id, e.target.value)}
               placeholder={placeholder}
               className="w-full p-3 pr-10 bg-gray-50 rounded-md focus:outline-none focus:ring-2 focus:ring-grayscale-80"
