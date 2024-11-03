@@ -15,7 +15,6 @@ export default function NameField({
   const [localErrorType, setLocalErrorType] = useState<"invalid" | null>(null);
 
   useEffect(() => {
-    // 공백, 특수문자, 숫자 불가 오류가 없을 경우만 `exists` 오류를 표시
     if (errorType === "exists" && !localErrorType) {
       setLocalErrorType(null);
     }
@@ -24,15 +23,14 @@ export default function NameField({
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const inputValue = e.target.value;
 
-    // 글자 수가 6자 이하이며 유효한 입력일 때만 상태 업데이트
     if (/^[ㄱ-ㅎ가-힣a-zA-Z]*$/.test(inputValue) && inputValue.length <= 6) {
-      setLocalErrorType(null); // Clear local error if valid input
+      setLocalErrorType(null);
       onChange(inputValue);
     } else if (
       inputValue.length <= 6 &&
       !/^[ㄱ-ㅎ가-힣a-zA-Z]*$/.test(inputValue)
     ) {
-      setLocalErrorType("invalid"); // Set error type only if input is invalid
+      setLocalErrorType("invalid");
     }
   };
 
@@ -48,7 +46,6 @@ export default function NameField({
     return "focus:ring-grayscale-80";
   };
 
-  // 조건에 따라 표시할 메시지 설정
   let message = null;
   if (errorType === "exists" && !localErrorType) {
     message = <div className="text-danger-base">이미 존재하는 이름이에요</div>;

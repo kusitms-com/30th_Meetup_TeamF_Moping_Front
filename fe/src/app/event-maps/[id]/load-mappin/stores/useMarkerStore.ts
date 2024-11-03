@@ -9,17 +9,16 @@ interface Ping {
   nonMembers: { nonMemberId: number; name: string }[];
 }
 
-// nonMembers가 없는 Ping 타입
 export type PingWithoutNonMembers = Omit<Ping, "nonMembers">;
 
 interface MarkerStoreState {
   customMarkers: Ping[];
-  setCustomMarkers: (pings: Ping[] | PingWithoutNonMembers[]) => void; // PingWithoutNonMembers[]도 허용
+  setCustomMarkers: (pings: Ping[] | PingWithoutNonMembers[]) => void;
   resetMarkers: () => void;
 }
 
 export const useMarkerStore = create<MarkerStoreState>((set) => ({
   customMarkers: [],
-  setCustomMarkers: (pings) => set({ customMarkers: pings as Ping[] }), // 타입 단언을 사용하여 맞춤 마커 설정
+  setCustomMarkers: (pings) => set({ customMarkers: pings as Ping[] }),
   resetMarkers: () => set({ customMarkers: [] }),
 }));

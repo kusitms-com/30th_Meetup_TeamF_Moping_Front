@@ -1,6 +1,5 @@
 import { create } from "zustand";
 
-// 데이터 형식을 정의
 interface NonMember {
   nonMemberId: number;
   name: string;
@@ -12,10 +11,9 @@ interface Data {
   password: string;
   bookmarkUrls: string[];
   storeUrls: string[];
-  nonMembers: NonMember[]; // nonMembers 추가
+  nonMembers: NonMember[];
 }
 
-// 스토어 타입 정의
 interface DataStore {
   data: Data | null;
   setData: (data: Data) => void;

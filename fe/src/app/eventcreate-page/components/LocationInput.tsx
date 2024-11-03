@@ -4,7 +4,7 @@ import React, { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
 import { useLocationStore } from "@/app/eventcreate-page/stores/useLocationStore";
-import { LocationInputProps } from "@/app/eventcreate-page/types/types"; // Place 임포트 제거
+import { LocationInputProps } from "@/app/eventcreate-page/types/types";
 
 function LocationInput({
   className,
@@ -15,17 +15,15 @@ function LocationInput({
   const { selectedLocation } = useLocationStore();
   const [location, setLocationState] = useState(value);
 
-  // selectedLocation이 변경될 때 location 상태를 업데이트
   useEffect(() => {
     if (selectedLocation && selectedLocation.name !== location) {
       setLocationState(selectedLocation.name);
       if (onSelect) {
-        onSelect(selectedLocation); // selectedLocation을 상위 컴포넌트로 전달
+        onSelect(selectedLocation);
       }
     }
   }, [selectedLocation, onSelect, location]);
 
-  // input 필드의 value가 변경될 때 상태를 업데이트
   useEffect(() => {
     setLocationState(value);
   }, [value]);
