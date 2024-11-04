@@ -14,6 +14,7 @@ export interface LocationState {
 }
 
 export interface Place {
+  id?: string;
   name: string;
   address: string;
   px?: number;
@@ -30,4 +31,16 @@ export interface NavigationProps {
   showBackButton?: boolean;
   title?: string;
   onBack?: () => void;
+}
+
+export interface SearchResultsProps {
+  results: Place[];
+  searchTerm: string;
+  onSelect: (place: Place) => void;
+}
+
+export interface SearchResultItemProps {
+  place: Place;
+  searchTerm: string;
+  onClick: () => void;
 }

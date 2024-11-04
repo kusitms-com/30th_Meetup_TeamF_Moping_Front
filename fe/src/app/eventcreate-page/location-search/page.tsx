@@ -1,18 +1,12 @@
 "use client";
 
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useState, useEffect, useCallback, useMemo } from "react";
 import debounce from "lodash.debounce";
 import Image from "next/image";
 import SearchResults from "@/app/eventcreate-page/components/SearchResults";
 import { useRouter } from "next/navigation";
 import { useLocationStore } from "@/app/eventcreate-page/stores/useLocationStore";
-
-interface Place {
-  name: string;
-  address: string;
-  px?: number;
-  py?: number;
-}
+import { Place } from "@/app/eventcreate-page/types/types";
 
 function LocationSearch() {
   const [location, setLocation] = useState<string>("");
@@ -57,21 +51,21 @@ function LocationSearch() {
     [isFetching]
   );
 
-  useEffect(() => {
-    const debouncedFetch = debounce((query: string) => {
-      fetchPlacesBySearch(query);
-    }, 300);
+  const debouncedFetch = useMemo(
+    () => debounce(fetchPlacesBySearch, 300),
+    [fetchPlacesBySearch]
+  );
 
-    if (location.length > 0) {
+  useEffect(() => {
+    if (location.trim()) {
       debouncedFetch(location);
     } else {
       setResults([]);
     }
-
     return () => {
       debouncedFetch.cancel();
     };
-  }, [location, fetchPlacesBySearch]);
+  }, [location, debouncedFetch]);
 
   const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
     setLocation(e.target.value);
@@ -100,6 +94,7 @@ function LocationSearch() {
             alt="뒤로가기"
             width={24}
             height={24}
+            className="mr-2"
           />
         </button>
         <div className="flex items-center w-full h-12 px-4 bg-[#f7f7f7] rounded-lg ml-2">

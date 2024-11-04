@@ -12,68 +12,45 @@ function EventCreatePage() {
   const router = useRouter();
   const { selectedLocation, setLocation } = useLocationStore();
   const [eventName, setEventName] = useState("");
-  const [isFormComplete, setIsFormComplete] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [uuid, setUuid] = useState<string | null>(null);
 
   useEffect(() => {
     if (selectedLocation) {
-      const today = new Date();
-      const formattedDate = `${today.getMonth() + 1}.${today.getDate()}`;
+      const formattedDate = new Date().toLocaleDateString("ko-KR", {
+        month: "2-digit",
+        day: "2-digit",
+      });
       setEventName(`${formattedDate} ${selectedLocation.name} 모임`);
     }
   }, [selectedLocation]);
 
-  const handleEventNameChange = (name: string) => {
-    setEventName(name);
-  };
-
-  const handleLocationSelect = (place: {
-    name: string;
-    address: string;
-    px?: number;
-    py?: number;
-  }) => {
-    setLocation(place);
-  };
-
-  // 장소와 이벤트 이름이 모두 입력된 경우에만 버튼 활성화
-  useEffect(() => {
-    const isLocationValid = !!selectedLocation?.name?.trim();
-    const isEventNameValid = eventName.trim().length > 0;
-    setIsFormComplete(isLocationValid && isEventNameValid);
-  }, [selectedLocation, eventName]);
+  const isFormComplete = selectedLocation?.name && eventName.trim();
 
   const handleNextClick = async () => {
     if (!isFormComplete || isSubmitting) return;
+    setIsSubmitting(true);
 
     try {
-      setIsSubmitting(true);
       const response = await fetch("/api/event", {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          neighborhood: selectedLocation?.name ?? "",
+          neighborhood: selectedLocation?.name,
           px: selectedLocation?.px ?? 0,
           py: selectedLocation?.py ?? 0,
           eventName,
         }),
       });
 
-      if (!response.ok) {
-        throw new Error(`Failed to create event: ${response.status}`);
-      }
-
       const data = await response.json();
-      if (data.code === 200 && data.data?.shareUrl) {
+      if (response.ok && data.code === 200 && data.data?.shareUrl) {
         const extractedUuid = data.data.shareUrl.split("/").pop();
         setUuid(extractedUuid);
       } else {
         alert("이벤트 생성에 실패했습니다.");
       }
-    } catch (error) {
+    } catch {
       alert("이벤트 생성 중 오류가 발생했습니다.");
     } finally {
       setIsSubmitting(false);
@@ -81,21 +58,15 @@ function EventCreatePage() {
   };
 
   useEffect(() => {
-    if (uuid) {
-      router.push(`/event-maps/${uuid}`);
-    }
+    if (uuid) router.push(`/event-maps/${uuid}`);
   }, [uuid, router]);
-
-  const handleBackClick = () => {
-    router.push("/");
-  };
 
   return (
     <div className="w-[360px] h-screen bg-white mx-auto flex flex-col">
-      <Navigation showBackButton onBack={handleBackClick} />
+      <Navigation showBackButton onBack={() => router.push("/")} />
       <div className="flex-1 mt-4 px-4 overflow-auto pt-[56px]">
         <LocationInput
-          onSelect={handleLocationSelect}
+          onSelect={setLocation}
           className="mt-[12px] w-full"
           value={selectedLocation?.name || ""}
         />
@@ -103,7 +74,7 @@ function EventCreatePage() {
           className="mt-[20px] w-full"
           value={eventName}
           selectedLocation={selectedLocation?.name || ""}
-          onChange={handleEventNameChange}
+          onChange={setEventName}
         />
       </div>
       <div className="w-full fixed bottom-[45px] left-0 flex justify-center">

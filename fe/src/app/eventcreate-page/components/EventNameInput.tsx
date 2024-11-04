@@ -1,8 +1,4 @@
-// components/EventNameInput.tsx
-
-"use client";
-
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import Image from "next/image";
 import { EventNameInputProps } from "@/app/eventcreate-page/types/types";
 
@@ -21,39 +17,39 @@ function EventNameInput({
 }: EventNameInputProps) {
   const [hasUserEdited, setHasUserEdited] = useState(false);
   const currentDate = getCurrentDate();
+  const showWarning = hasUserEdited && value.trim().length < 1;
 
   useEffect(() => {
-    if (!hasUserEdited && selectedLocation) {
-      const newEventName = `${currentDate} ${selectedLocation} 모임`;
+    if (!hasUserEdited) {
+      const newEventName = selectedLocation
+        ? `${currentDate} ${selectedLocation} 모임`
+        : "";
       onChange(newEventName);
-    } else if (!selectedLocation && !hasUserEdited) {
-      onChange("");
     }
   }, [selectedLocation, currentDate, onChange, hasUserEdited]);
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const newValue = e.target.value;
-    setHasUserEdited(true);
-    onChange(newValue);
-  };
+  const handleInputChange = useCallback(
+    (e: React.ChangeEvent<HTMLInputElement>) => {
+      setHasUserEdited(true);
+      onChange(e.target.value);
+    },
+    [onChange]
+  );
 
-  const handleClear = () => {
+  const handleClear = useCallback(() => {
     setHasUserEdited(true);
     onChange("");
-  };
-
-  const borderClass = "border-transparent";
-  const showWarning = hasUserEdited && value.trim().length < 1;
+  }, [onChange]);
 
   return (
-    <div className={`relative flex flex-col ${className} mt-4`}>
-      <div className="text-[#2c2c2c] text-lg font-semibold font-['Pretendard'] leading-relaxed mb-2">
+    <div className={`relative flex flex-col mt-4 ${className}`}>
+      <label className="text-[#2c2c2c] text-lg font-semibold leading-relaxed mb-2">
         이벤트 이름
-      </div>
+      </label>
 
       <div
         className={`relative w-[328px] h-14 p-4 bg-[#f7f7f7] rounded-lg flex justify-between items-center border-2 ${
-          showWarning ? "border-danger-base" : borderClass
+          showWarning ? "border-danger-base" : "border-transparent"
         }`}
       >
         <input
@@ -61,18 +57,16 @@ function EventNameInput({
           value={value}
           onChange={handleInputChange}
           placeholder={`${currentDate} 모임`}
-          className="bg-transparent border-none grow shrink basis-0 text-[#2c2c2c] text-base font-medium font-['Pretendard'] leading-normal outline-none flex-1"
+          className="bg-transparent text-[#2c2c2c] text-base font-medium outline-none flex-grow"
+          aria-label="이벤트 이름 입력"
         />
 
         {value && (
-          <div
-            role="button"
-            tabIndex={0}
+          <button
+            type="button" // 명시적으로 type 속성을 추가하여 오류 해결
             onClick={handleClear}
-            onKeyDown={(e) => {
-              if (e.key === "Enter" || e.key === " ") handleClear();
-            }}
-            className="w-5 h-5 relative cursor-pointer"
+            className="w-5 h-5 cursor-pointer"
+            aria-label="이름 삭제"
           >
             <Image
               src="/images/Cancel.svg"
@@ -80,14 +74,14 @@ function EventNameInput({
               width={24}
               height={24}
             />
-          </div>
+          </button>
         )}
       </div>
 
       {showWarning && (
-        <div className="text-danger-base text-sm font-medium font-['Pretendard'] leading-tight mt-2">
+        <p className="text-danger-base text-sm font-medium mt-2">
           모임명은 1자 이상 작성 가능해요
-        </div>
+        </p>
       )}
     </div>
   );

@@ -14,8 +14,7 @@ function LoadingPage() {
 
   return (
     <div className="bg-primary-50 h-screen w-full flex flex-col items-center relative">
-      {/* 로고 영역 */}
-      <div className="w-full sticky top-0 z-10 flex justify-center overflow-hidden bg-primary-50">
+      <div className="w-full sticky top-0 z-10 flex justify-center bg-primary-50">
         <div className="w-full h-[89px] flex justify-center">
           <Image
             src="/images/loadinglogo.svg"
@@ -27,45 +26,22 @@ function LoadingPage() {
           />
         </div>
       </div>
-
-      <div
-        className="flex flex-col items-center absolute left-0 right-0"
-        style={{ top: "327px" }}
-      >
-        <div
-          className="text-text-default text-[62px] leading-[62px] font-black font-pretendard text-center"
-          style={{
-            textShadow:
-              "1px 1px 0 #000, -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000",
-            color: "#000",
-          }}
-        >
+      <div className="flex flex-col items-center absolute inset-x-0 top-[327px] text-center">
+        <h1 className="text-text-default text-[62px] leading-[62px] font-black font-pretendard text-shadow-lg">
           MOPING
-        </div>
-
-        <div className="w-full flex justify-center text-center mt-2">
-          <div className="text-center">
-            <span className="text-grayscale-0 text-xl font-black font-pretendard">
-              MIX
-            </span>
-            <span className="text-text-default text-xl font-black font-pretendard">
-              {" "}
-              OUR PINS,
-              <br />
-            </span>
-            <span className="text-grayscale-0 text-xl font-black font-pretendard">
-              SHARE
-            </span>
-            <span className="text-text-default text-xl font-black font-pretendard">
-              {" "}
-              OUR PLACES
-            </span>
-          </div>
+        </h1>
+        <div className="w-full mt-2">
+          <p className="text-grayscale-0 text-xl font-black font-pretendard">
+            MIX
+            <span className="text-text-default"> OUR PINS,</span>
+            <br />
+            SHARE
+            <span className="text-text-default"> OUR PLACES</span>
+          </p>
         </div>
       </div>
 
-      {/* 시작하기 버튼 */}
-      <div className="w-full fixed bottom-[45px] left-0 right-0 flex justify-center px-4">
+      <div className="fixed bottom-[45px] w-full flex justify-center px-4">
         <Button
           label="시작하기"
           onClick={handleStartClick}
