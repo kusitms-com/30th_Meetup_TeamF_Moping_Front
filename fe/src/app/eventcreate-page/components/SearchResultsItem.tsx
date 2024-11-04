@@ -1,5 +1,6 @@
 import React, { useMemo, useCallback } from "react";
 import Image from "next/image";
+import { v4 as uuidv4 } from "uuid";
 import { SearchResultItemProps } from "@/app/eventcreate-page/types/types";
 
 function SearchResultItem({
@@ -7,7 +8,8 @@ function SearchResultItem({
   searchTerm,
   onClick,
 }: SearchResultItemProps) {
-  // useMemo와 useCallback 훅을 최상위에서 호출
+  const placeId = useMemo(() => place.id || uuidv4(), [place.id]);
+
   const highlightText = useCallback(
     (text: string, highlight: string) => {
       if (!highlight.trim()) return text;
@@ -19,7 +21,7 @@ function SearchResultItem({
         <>
           {parts.map((part) => (
             <span
-              key={`${place.id}-${part}`} // 고유한 place.id와 part 조합
+              key={`${placeId}-${part}`}
               style={{
                 color:
                   part.toLowerCase() === highlight.toLowerCase()
@@ -38,16 +40,13 @@ function SearchResultItem({
         </>
       );
     },
-    [place.id]
+    [placeId]
   );
 
   const highlightedText = useMemo(
     () => highlightText(place.name, searchTerm),
     [place.name, searchTerm, highlightText]
   );
-
-  // 훅 호출 이후에 조건부 렌더링을 수행
-  if (!place.id) return null;
 
   return (
     <button
