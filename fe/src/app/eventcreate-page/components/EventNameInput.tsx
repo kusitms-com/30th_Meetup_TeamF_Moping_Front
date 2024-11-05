@@ -63,7 +63,7 @@ function EventNameInput({
 
         {value && (
           <button
-            type="button" // 명시적으로 type 속성을 추가하여 오류 해결
+            type="button"
             onClick={handleClear}
             className="w-5 h-5 cursor-pointer"
             aria-label="이름 삭제"
