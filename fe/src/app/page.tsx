@@ -28,7 +28,7 @@ function LoadingPage() {
         {/* MOPING 텍스트 */}
         <div className="mt-[27px]">
           <Image
-            src="/images/MOPING.svg" // MOPING 텍스트 이미지
+            src="/images/MOPING.svg"
             alt="Moping Text"
             width={193}
             height={27}

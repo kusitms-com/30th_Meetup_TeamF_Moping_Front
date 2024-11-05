@@ -14,9 +14,7 @@ function Button({
 
   if (!disabled) {
     buttonStyle =
-      type === "start"
-        ? "bg-[#F73A2C] text-white" // 시작하기 버튼 색상 변경
-        : "bg-gray-500 text-grayscale-0";
+      type === "start" ? "bg-[#F73A2C] text-white" : "bg-[#1D1D1D] text-white";
   }
 
   return (

@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import Navigation from "@/app/components/common/Navigation";
 import LocationInput from "@/app/eventcreate-page/components/LocationInput";
@@ -14,16 +14,6 @@ function EventCreatePage() {
   const [eventName, setEventName] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [uuid, setUuid] = useState<string | null>(null);
-
-  useEffect(() => {
-    if (selectedLocation) {
-      const formattedDate = new Date().toLocaleDateString("ko-KR", {
-        month: "2-digit",
-        day: "2-digit",
-      });
-      setEventName(`${formattedDate} ${selectedLocation.name} 모임`);
-    }
-  }, [selectedLocation]);
 
   const isFormComplete = selectedLocation?.name && eventName.trim();
 
@@ -80,7 +70,7 @@ function EventCreatePage() {
       <div className="w-full fixed bottom-[45px] left-0 flex justify-center">
         <Button
           label={isSubmitting ? "처리 중..." : "다음"}
-          type="start"
+          type="next"
           onClick={handleNextClick}
           className="w-[328px] h-[60px] py-[17px] rounded-lg text-base font-medium font-['Pretendard']"
           disabled={!isFormComplete || isSubmitting}
