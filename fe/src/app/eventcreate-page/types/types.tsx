@@ -1,3 +1,11 @@
+export interface Place {
+  id?: string;
+  name: string;
+  address: string;
+  px?: number;
+  py?: number;
+}
+
 export interface EventNameInputProps {
   value: string;
   onChange: (name: string) => void;
@@ -11,14 +19,6 @@ export interface LocationState {
     longitude: number;
   };
   moveToLocation: (latitude: number, longitude: number) => void;
-}
-
-export interface Place {
-  id?: string;
-  name: string;
-  address: string;
-  px?: number;
-  py?: number;
 }
 
 export interface LocationInputProps {
