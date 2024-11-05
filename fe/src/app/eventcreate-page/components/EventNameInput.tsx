@@ -2,13 +2,6 @@ import React, { useEffect, useState, useCallback } from "react";
 import Image from "next/image";
 import { EventNameInputProps } from "@/app/eventcreate-page/types/types";
 
-const getCurrentDate = () => {
-  const today = new Date();
-  const month = String(today.getMonth() + 1).padStart(2, "0");
-  const day = String(today.getDate()).padStart(2, "0");
-  return `${month}.${day}`;
-};
-
 function EventNameInput({
   className,
   selectedLocation,
@@ -16,17 +9,14 @@ function EventNameInput({
   value,
 }: EventNameInputProps) {
   const [hasUserEdited, setHasUserEdited] = useState(false);
-  const currentDate = getCurrentDate();
   const showWarning = hasUserEdited && value.trim().length < 1;
 
   useEffect(() => {
     if (!hasUserEdited) {
-      const newEventName = selectedLocation
-        ? `${currentDate} ${selectedLocation} 모임`
-        : "";
+      const newEventName = selectedLocation ? `${selectedLocation} 모임` : "";
       onChange(newEventName);
     }
-  }, [selectedLocation, currentDate, onChange, hasUserEdited]);
+  }, [selectedLocation, onChange, hasUserEdited]);
 
   const handleInputChange = useCallback(
     (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -44,7 +34,7 @@ function EventNameInput({
   return (
     <div className={`relative flex flex-col mt-4 ${className}`}>
       <label className="text-[#2c2c2c] text-lg font-semibold leading-relaxed mb-2">
-        이벤트 이름
+        우리의 모임 이름은?
       </label>
 
       <div
@@ -56,7 +46,7 @@ function EventNameInput({
           type="text"
           value={value}
           onChange={handleInputChange}
-          placeholder={`${currentDate} 모임`}
+          placeholder="모임"
           className="bg-transparent text-[#2c2c2c] text-base font-medium outline-none flex-grow"
           aria-label="이벤트 이름 입력"
         />

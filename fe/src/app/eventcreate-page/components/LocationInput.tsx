@@ -4,7 +4,7 @@ import React, { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
 import { useLocationStore } from "@/app/eventcreate-page/stores/useLocationStore";
-import { LocationInputProps } from "@/app/eventcreate-page/types/types"; // 'Place'를 삭제
+import { LocationInputProps } from "@/app/eventcreate-page/types/types";
 
 function LocationInput({
   className,
@@ -25,7 +25,7 @@ function LocationInput({
   return (
     <div className={`relative flex flex-col ${className} mt-4`}>
       <label className="text-[#2c2c2c] text-xl font-semibold font-['Pretendard'] leading-loose mb-4">
-        어떤 공간을 찾고 계신가요?
+        어디서 모여요?
       </label>
       <button
         type="button"
