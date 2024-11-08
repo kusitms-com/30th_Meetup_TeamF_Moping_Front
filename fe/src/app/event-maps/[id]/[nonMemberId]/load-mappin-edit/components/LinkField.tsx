@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useRef, useEffect, useState } from "react";
 import { nanoid } from "nanoid";
 import Image from "next/image";
 import { useUserDataStore } from "../../stores/useUserDataStore";
@@ -29,52 +29,39 @@ export default function LinkField({
       : [{ id: nanoid(), text: "" }]
   );
 
+  // Load data from localStorage when the component mounts
   useEffect(() => {
     const initialData =
       label === "맵핀 모음 링크" ? userData.bookmarkUrls : userData.storeUrls;
-    setInputFields(
-      initialData.length > 0
-        ? initialData.map((val) => ({ id: nanoid(), text: val }))
-        : [{ id: nanoid(), text: "" }]
-    );
+
+    const storedLinks = localStorage.getItem(label);
+    if (storedLinks) {
+      const linksArray = JSON.parse(storedLinks);
+      setInputFields(
+        linksArray.length > 0
+          ? linksArray.map((val: string) => ({ id: nanoid(), text: val }))
+          : [{ id: nanoid(), text: "" }]
+      );
+    } else {
+      setInputFields(
+        initialData.length > 0
+          ? initialData.map((val) => ({ id: nanoid(), text: val }))
+          : [{ id: nanoid(), text: "" }]
+      );
+    }
   }, [label, userData]);
 
+  // Save links to localStorage when inputFields change
   useEffect(() => {
-    if (inputFields.length === 0) {
-      setInputFields([{ id: nanoid(), text: "" }]);
-    }
-  }, [inputFields]);
-  const [scrollPosition, setScrollPosition] = useState(0);
-
-  const handlePasteFromClipboard = async (id: string) => {
-    try {
-      const clipboardText = await navigator.clipboard.readText();
-
-      const urlPattern = /(https?:\/\/[^\s]+)/g;
-      const match = clipboardText.match(urlPattern);
-      const extractedLink = match ? match[0] : clipboardText;
-
-      const newInputs = inputFields.map((field) =>
-        field.id === id ? { ...field, text: extractedLink } : field
-      );
-      setInputFields(newInputs);
-      onChange(
-        newInputs
-          .map((field) => field.text)
-          .filter((text) => text.trim() !== "")
-      );
-    } catch (error) {
-      console.error("Failed to read clipboard text:", error);
-    }
-  };
+    localStorage.setItem(
+      label,
+      JSON.stringify(inputFields.map((field) => field.text))
+    );
+  }, [inputFields, label]);
 
   const handleInputChange = (id: string, inputValue: string) => {
-    const urlPattern = /(https?:\/\/[^\s]+)/g;
-    const match = inputValue.match(urlPattern);
-    const extractedLink = match ? match[0] : "";
-
     const newInputs = inputFields.map((field) =>
-      field.id === id ? { ...field, text: extractedLink } : field
+      field.id === id ? { ...field, text: inputValue } : field
     );
     setInputFields(newInputs);
     onChange(
@@ -82,20 +69,14 @@ export default function LinkField({
     );
   };
 
-  const handleScrollPosition = () => {
-    setScrollPosition(window.scrollY); // 현재 스크롤 위치 저장
-  };
-
   const clearInput = (id: string) => {
-    handleScrollPosition(); // 스크롤 위치 저장
     const newInputs = inputFields.map((field) =>
       field.id === id ? { ...field, text: "" } : field
     );
     setInputFields(newInputs);
-    onChange(newInputs.map((field) => field.text));
-
-    // 저장된 스크롤 위치로 이동하여 화면 위치 유지
-    window.scrollTo(0, scrollPosition);
+    onChange(
+      newInputs.map((field) => field.text).filter((text) => text.trim() !== "")
+    );
   };
 
   const addInputField = () => {
@@ -107,14 +88,6 @@ export default function LinkField({
         .map((field) => field.text)
         .filter((text) => text.trim() !== "")
     );
-  };
-
-  const handleNaverMove = () => {
-    if (label === "가게 정보 링크") {
-      window.location.href = "https://m.map.naver.com/";
-    } else if (label === "맵핀 모음 링크") {
-      window.location.href = "https://m.place.naver.com/my/place";
-    }
   };
 
   return (
@@ -147,19 +120,6 @@ export default function LinkField({
             )}
           </div>
         )}
-        <button
-          type="button"
-          className="mr-0 ml-auto text-grayscale-50 flex items-center text-text-sm1"
-          onClick={handleNaverMove}
-        >
-          네이버 지도
-          <Image
-            src="/svg/rightArrow.svg"
-            alt="rightArrow"
-            width={12}
-            height={24}
-          />
-        </button>
       </label>
       <div className="flex flex-col items-center border-grayscale-10 border p-[16px] gap-[16px] rounded-medium">
         {inputFields.map((field) => (
@@ -167,7 +127,6 @@ export default function LinkField({
             <input
               type="text"
               value={field.text}
-              onClick={() => handlePasteFromClipboard(field.id)}
               onChange={(e) => handleInputChange(field.id, e.target.value)}
               placeholder={placeholder}
               className="w-full p-3 pr-10 bg-gray-50 rounded-md focus:outline-none focus:ring-2 focus:ring-grayscale-80"

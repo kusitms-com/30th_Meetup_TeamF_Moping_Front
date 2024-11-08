@@ -14,6 +14,15 @@ export default function NameField({
 }: NameFieldProps) {
   const [localErrorType, setLocalErrorType] = useState<"invalid" | null>(null);
 
+  // 컴포넌트가 마운트될 때 localStorage에서 이름 불러오기
+  useEffect(() => {
+    const storedName = localStorage.getItem("userName");
+    if (storedName) {
+      onChange(storedName); // 로드된 이름으로 상태 업데이트
+    }
+  }, [onChange]);
+
+  // errorType 변화에 따른 localErrorType 업데이트
   useEffect(() => {
     if (errorType === "exists" && !localErrorType) {
       setLocalErrorType(null);
@@ -23,9 +32,11 @@ export default function NameField({
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const inputValue = e.target.value;
 
+    // 유효성 검사
     if (/^[ㄱ-ㅎ가-힣a-zA-Z]*$/.test(inputValue) && inputValue.length <= 6) {
       setLocalErrorType(null);
       onChange(inputValue);
+      localStorage.setItem("userName", inputValue); // localStorage에 저장
     } else if (
       inputValue.length <= 6 &&
       !/^[ㄱ-ㅎ가-힣a-zA-Z]*$/.test(inputValue)
@@ -36,6 +47,7 @@ export default function NameField({
 
   const clearInput = () => {
     onChange("");
+    localStorage.removeItem("userName"); // localStorage에서 삭제
     setLocalErrorType(null);
   };
 
@@ -71,12 +83,6 @@ export default function NameField({
           onChange={handleChange}
           placeholder="이름"
           className={`w-full p-3 bg-gray-50 rounded-md focus:outline-none focus:ring-2 ${getInputBorderClass()}`}
-          style={{
-            border:
-              errorType === "exists" && !localErrorType
-                ? "1px solid #DC2626"
-                : "none",
-          }}
         />
         {value && (
           <button
