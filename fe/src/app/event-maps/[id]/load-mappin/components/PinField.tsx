@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useRef } from "react";
+import React, { useRef, useEffect } from "react";
 
 interface PinFieldProps {
   value: string[];
@@ -14,6 +14,20 @@ export default function PinField({ value, onChange }: PinFieldProps) {
     useRef<HTMLInputElement>(null),
     useRef<HTMLInputElement>(null),
   ];
+
+  // 컴포넌트가 마운트될 때 localStorage에서 PIN 로드
+  useEffect(() => {
+    const storedPin = localStorage.getItem("userPin");
+    if (storedPin) {
+      const pinArray = storedPin.split("") as string[];
+      onChange(pinArray);
+    }
+  }, [onChange]);
+
+  // PIN 변경 시 localStorage에 저장
+  useEffect(() => {
+    localStorage.setItem("userPin", value.join(""));
+  }, [value]);
 
   const handlePINChange = (
     e: React.ChangeEvent<HTMLInputElement>,
@@ -40,15 +54,17 @@ export default function PinField({ value, onChange }: PinFieldProps) {
       const newPin = [...value];
 
       if (newPin[index]) {
-        newPin[index] = "";
+        newPin[index] = ""; // 현재 입력 필드를 지웁니다.
+        onChange(newPin);
       } else if (index > 0) {
-        newPin[index - 1] = "";
+        newPin[index - 1] = ""; // 이전 필드 지우고 포커스 이동
+        onChange(newPin);
         pinRefs[index - 1].current?.focus();
       }
-      onChange(newPin);
     }
   };
 
+  // 입력 필드 렌더링
   return (
     <div className="mb-[52px]">
       <label htmlFor="pin" className="block text-gray-700 font-medium mb-1">

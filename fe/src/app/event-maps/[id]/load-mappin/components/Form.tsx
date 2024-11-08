@@ -50,6 +50,11 @@ export default function Form({ uuid }: FormProps) {
 
       if (response.ok) {
         console.log("성공적으로 처리되었습니다.");
+        // 로컬 스토리지 리셋
+        localStorage.removeItem("userPin");
+        localStorage.removeItem("userName"); // 추가: 이름도 리셋
+        localStorage.removeItem("mapLinks"); // 추가: 맵핀 링크 리셋
+        localStorage.removeItem("storeLinks"); // 추가: 가게 링크 리셋
         router.push(`/event-maps/${uuid}`);
       } else if (response.status === 409) {
         setNameErrorType("exists");
