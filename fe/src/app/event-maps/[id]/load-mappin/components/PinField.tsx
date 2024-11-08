@@ -1,7 +1,6 @@
 "use client";
 
 import React, { useRef, useEffect } from "react";
-import { nanoid } from "nanoid"; // Import nanoid for generating unique IDs
 
 interface PinFieldProps {
   value: string[];
@@ -41,7 +40,6 @@ export default function PinField({ value, onChange }: PinFieldProps) {
       newPin[index] = inputValue;
       onChange(newPin);
 
-      // 다음 입력 필드로 포커스 이동
       if (inputValue && index < pinRefs.length - 1) {
         pinRefs[index + 1].current?.focus();
       }
@@ -56,38 +54,67 @@ export default function PinField({ value, onChange }: PinFieldProps) {
       const newPin = [...value];
 
       if (newPin[index]) {
-        newPin[index] = ""; // 현재 입력 필드 지우기
+        newPin[index] = ""; // 현재 입력 필드를 지웁니다.
+        onChange(newPin);
       } else if (index > 0) {
         newPin[index - 1] = ""; // 이전 필드 지우고 포커스 이동
+        onChange(newPin);
         pinRefs[index - 1].current?.focus();
       }
-      onChange(newPin);
     }
   };
 
-  // Create an array of unique IDs for the input fields
-  const inputFieldIds = Array.from({ length: 4 }, () => nanoid());
-
+  // 입력 필드 렌더링
   return (
     <div className="mb-[52px]">
       <label htmlFor="pin" className="block text-gray-700 font-medium mb-1">
         비밀번호(PIN) <span className="text-red-500">*</span>
       </label>
       <div className="flex space-x-3">
-        {inputFieldIds.map((id, index) => (
-          <input
-            key={id} // Use unique ID as key
-            type="text"
-            inputMode="numeric"
-            maxLength={1}
-            ref={pinRefs[index]}
-            value={value[index]}
-            onChange={(e) => handlePINChange(e, index)}
-            onKeyDown={(e) => handleKeyDown(e, index)}
-            className="w-1/4 p-3 text-center rounded-md bg-gray-50 focus:outline-none focus:ring-2 focus:ring-grayscale-80"
-            style={{ border: "none" }}
-          />
-        ))}
+        <input
+          type="text"
+          inputMode="numeric"
+          maxLength={1}
+          ref={pinRefs[0]}
+          value={value[0]}
+          onChange={(e) => handlePINChange(e, 0)}
+          onKeyDown={(e) => handleKeyDown(e, 0)}
+          className="w-1/4 p-3 text-center rounded-md bg-gray-50 focus:outline-none focus:ring-2 focus:ring-grayscale-80"
+          style={{ border: "none" }}
+        />
+        <input
+          type="text"
+          inputMode="numeric"
+          maxLength={1}
+          ref={pinRefs[1]}
+          value={value[1]}
+          onChange={(e) => handlePINChange(e, 1)}
+          onKeyDown={(e) => handleKeyDown(e, 1)}
+          className="w-1/4 p-3 text-center rounded-md bg-gray-50 focus:outline-none focus:ring-2 focus:ring-grayscale-80"
+          style={{ border: "none" }}
+        />
+        <input
+          type="text"
+          inputMode="numeric"
+          maxLength={1}
+          ref={pinRefs[2]}
+          value={value[2]}
+          onChange={(e) => handlePINChange(e, 2)}
+          onKeyDown={(e) => handleKeyDown(e, 2)}
+          className="w-1/4 p-3 text-center rounded-md bg-gray-50 focus:outline-none focus:ring-2 focus:ring-grayscale-80"
+          style={{ border: "none" }}
+        />
+        <input
+          type="text"
+          inputMode="numeric"
+          maxLength={1}
+          ref={pinRefs[3]}
+          value={value[3]}
+          onChange={(e) => handlePINChange(e, 3)}
+          onKeyDown={(e) => handleKeyDown(e, 3)}
+          className="w-1/4 p-3 text-center rounded-md bg-gray-50 focus:outline-none focus:ring-2 focus:ring-grayscale-80"
+          style={{ border: "none" }}
+        />
       </div>
     </div>
   );
