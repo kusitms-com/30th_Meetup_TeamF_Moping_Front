@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useRef, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { nanoid } from "nanoid";
 import Image from "next/image";
 import { useUserDataStore } from "../../stores/useUserDataStore";

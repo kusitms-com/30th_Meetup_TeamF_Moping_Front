@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useRef, useEffect } from "react";
+import { nanoid } from "nanoid"; // Import nanoid for generating unique IDs
 
 interface PinFieldProps {
   value: string[];
@@ -64,19 +65,22 @@ export default function PinField({ value, onChange }: PinFieldProps) {
     }
   };
 
+  // Create an array of unique IDs for the input fields
+  const inputFieldIds = Array.from({ length: 4 }, () => nanoid());
+
   return (
     <div className="mb-[52px]">
       <label htmlFor="pin" className="block text-gray-700 font-medium mb-1">
         비밀번호(PIN) <span className="text-red-500">*</span>
       </label>
       <div className="flex space-x-3">
-        {pinRefs.map((ref, index) => (
+        {inputFieldIds.map((id, index) => (
           <input
-            key={index}
+            key={id} // Use unique ID as key
             type="text"
             inputMode="numeric"
             maxLength={1}
-            ref={ref}
+            ref={pinRefs[index]}
             value={value[index]}
             onChange={(e) => handlePINChange(e, index)}
             onKeyDown={(e) => handleKeyDown(e, index)}
