@@ -1,6 +1,12 @@
 "use client";
 
-import React, { useState, useEffect, useCallback, useMemo } from "react";
+import React, {
+  useState,
+  useEffect,
+  useCallback,
+  useMemo,
+  useRef,
+} from "react";
 import debounce from "lodash.debounce";
 import Image from "next/image";
 import SearchResults from "@/app/eventcreate-page/components/SearchResults";
@@ -14,6 +20,7 @@ function LocationSearch() {
   const [isFetching, setIsFetching] = useState(false);
   const router = useRouter();
   const { setLocation: setStoreLocation } = useLocationStore();
+  const inputRef = useRef<HTMLInputElement>(null); // 인풋 참조
 
   const fetchPlacesBySearch = useCallback(
     async (query: string) => {
@@ -21,9 +28,7 @@ function LocationSearch() {
       setIsFetching(true);
 
       try {
-        const apiUrl = `${process.env.NEXT_PUBLIC_API_BASE_URL}/places/search?keyword=${encodeURIComponent(
-          query
-        )}`;
+        const apiUrl = `${process.env.NEXT_PUBLIC_API_BASE_URL}/places/search?keyword=${encodeURIComponent(query)}`;
         const response = await fetch(apiUrl, { headers: { accept: "*/*" } });
 
         if (!response.ok) {
@@ -67,6 +72,14 @@ function LocationSearch() {
     };
   }, [location, debouncedFetch]);
 
+  useEffect(() => {
+    // 컴포넌트가 마운트될 때 인풋에 포커스를 주고 키보드를 열리게 합니다.
+    if (inputRef.current) {
+      inputRef.current.focus();
+      inputRef.current.select(); // 전체 선택하여 키보드가 열리게 함
+    }
+  }, []);
+
   const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
     setLocation(e.target.value);
   };
@@ -107,6 +120,7 @@ function LocationSearch() {
           />
           <input
             type="text"
+            ref={inputRef} // 인풋 참조 추가
             value={location}
             onChange={handleSearch}
             placeholder="장소를 입력해주세요"
