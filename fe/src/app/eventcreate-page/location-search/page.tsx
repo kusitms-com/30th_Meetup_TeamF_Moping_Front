@@ -1,12 +1,6 @@
 "use client";
 
-import React, {
-  useState,
-  useEffect,
-  useCallback,
-  useMemo,
-  useRef,
-} from "react";
+import React, { useState, useEffect, useCallback, useRef } from "react";
 import debounce from "lodash.debounce";
 import Image from "next/image";
 import SearchResults from "@/app/eventcreate-page/components/SearchResults";
@@ -22,6 +16,7 @@ function LocationSearch() {
   const { setLocation: setStoreLocation } = useLocationStore();
   const inputRef = useRef<HTMLInputElement>(null); // 인풋 참조
 
+  // 장소 검색 함수
   const fetchPlacesBySearch = useCallback(
     async (query: string) => {
       if (isFetching) return;
@@ -53,13 +48,10 @@ function LocationSearch() {
         setIsFetching(false);
       }
     },
-    [isFetching]
+    [isFetching] // 의존성 배열에 isFetching 추가
   );
 
-  const debouncedFetch = useMemo(
-    () => debounce(fetchPlacesBySearch, 300),
-    [fetchPlacesBySearch]
-  );
+  const debouncedFetch = useRef(debounce(fetchPlacesBySearch, 300)).current; // debouncedFetch를 ref로 설정
 
   useEffect(() => {
     if (location.trim()) {
@@ -75,8 +67,9 @@ function LocationSearch() {
   useEffect(() => {
     // 컴포넌트가 마운트될 때 인풋에 포커스를 주고 키보드를 열리게 합니다.
     if (inputRef.current) {
-      inputRef.current.focus();
-      inputRef.current.select(); // 전체 선택하여 키보드가 열리게 함
+      setTimeout(() => {
+        inputRef.current?.focus();
+      }, 100); // 100ms 지연 후 포커스
     }
   }, []);
 
