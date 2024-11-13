@@ -7,6 +7,53 @@ interface MapComponentProps {
   py: number;
 }
 
+interface NonMember {
+  nonMemberId: number;
+  name: string;
+  profileSvg: string;
+}
+
+interface PingData {
+  placeName: string;
+  url: string;
+  nonMembers: NonMember[];
+}
+
+const transformPingData = (ping: any): PingData => ({
+  placeName: ping.placeName,
+  url: ping.url,
+  nonMembers: ping.nonMembers.map(
+    (member: { profileSvg: string; nonMemberId: number; name: string }) => ({
+      ...member,
+      profileSvg: member.profileSvg || "https://default-image.svg", // 기본 이미지 URL 추가
+    })
+  ),
+});
+
+const setupToggleDropdown = (): void => {
+  window.toggleDropdown = (): void => {
+    const dropdown: HTMLElement | null =
+      document.getElementById("dropdownExtended");
+    const dropdownIcon: HTMLImageElement | null = document.querySelector(
+      'img[src="/svg/dropdown.svg"]'
+    );
+    const namesShort: HTMLElement | null =
+      document.querySelector(".names-short");
+
+    if (!dropdown || !dropdownIcon || !namesShort) return; // 요소가 없으면 함수를 실행하지 않습니다.
+
+    if (dropdown.style.display === "none") {
+      dropdown.style.display = "block";
+      dropdownIcon.style.transform = "rotate(0deg)";
+      namesShort.style.opacity = "0"; // CSS 속성은 문자열로 처리해야 합니다.
+    } else {
+      dropdown.style.display = "none";
+      dropdownIcon.style.transform = "rotate(180deg)";
+      namesShort.style.opacity = "1"; // CSS 속성은 문자열로 처리해야 합니다.
+    }
+  };
+};
+
 export default function MapComponent({ px, py }: MapComponentProps) {
   const mapRef = useRef<HTMLDivElement | null>(null);
   const mapInstanceRef = useRef<naver.maps.Map | null>(null);
@@ -23,7 +70,8 @@ export default function MapComponent({ px, py }: MapComponentProps) {
     placeName: string,
     isSelected: boolean = false
   ) => {
-    const iconSize = isSelected ? 44 : 36;
+    const iconSize_w = isSelected ? 35 : 28;
+    const iconSize_h = isSelected ? 40 : 32;
     let textColor, textShadow;
 
     if (level === 1) {
@@ -37,15 +85,20 @@ export default function MapComponent({ px, py }: MapComponentProps) {
     }
 
     return {
-      content: `<div style="position: relative; width: ${iconSize}px; height: ${iconSize}px; background: url('/pin/level${level}.svg') no-repeat center center; background-size: contain;">
-                <div style="position: absolute; top: ${iconSize / 1.2}px; left: 50%; transform: translateX(-50%); white-space: nowrap; color: ${textColor}; font-size: 12px; text-align: center; text-shadow: ${textShadow}; padding: 2px 4px; border-radius: 4px;">
+      content: `<div style="position: relative; width: ${iconSize_w}px; height: ${iconSize_h}px; background: url('/pin/level${level}.svg') no-repeat center center; background-size: contain;">
+                <div style="position: absolute; top: ${iconSize_w / 1.2}px; left: 50%; transform: translateX(-50%); white-space: nowrap; color: ${textColor}; font-size: 12px; text-align: center; text-shadow: ${textShadow}; padding: 2px 4px; border-radius: 4px;">
                   ${placeName}
                 </div>
               </div>`,
-      size: new window.naver.maps.Size(iconSize, iconSize),
-      anchor: new window.naver.maps.Point(iconSize / 2, iconSize + 15), // 라벨이 포함되므로 앵커 포지션 조정
+      size: new window.naver.maps.Size(iconSize_w, iconSize_h),
+      anchor: new window.naver.maps.Point(iconSize_w / 2, iconSize_h + 15), // 라벨이 포함되므로 앵커 포지션 조정
     };
   };
+
+  useEffect(() => {
+    setupToggleDropdown();
+    // 마커와 이벤트 리스너 생성 코드 이하 생략
+  }, []);
 
   useEffect(() => {
     const initializeMap = () => {
@@ -82,7 +135,8 @@ export default function MapComponent({ px, py }: MapComponentProps) {
     markersRef.current = [];
 
     customMarkers.forEach((ping, index) => {
-      const markerOptions: naver.maps.MarkerOptions = {
+      const transformedPing = transformPingData(ping);
+      const markerOptions = {
         position: new window.naver.maps.LatLng(ping.py, ping.px),
         map: mapInstanceRef.current as naver.maps.Map,
         icon: getHtmlIconByLevel(ping.iconLevel, ping.placeName, false),
@@ -115,14 +169,136 @@ export default function MapComponent({ px, py }: MapComponentProps) {
         if (infoWindowRef.current) {
           infoWindowRef.current.close();
         }
+        const infoWindowContent = (data: PingData) => `
+  <div
+    style="
+      width: 256px;
+      background: #1d1d1d;
+      border-radius: 4px;
+      padding: 12px;
+    "
+  >
+    <div style="margin-left: 4px; margin-right: 4px; margin-bottom: 12px">
+      <div
+        style="
+          color: #8e8e8e;
+          font-size: 12px;
+          display: flex;
+          justify-content: space-between;
+        "
+      >
+        <div>${data.placeName}</div>
+        <div style="display: flex; align-items: center;">
+  <a href="${data.url}" target="_blank" style="color: inherit; text-decoration: none; display: flex; align-items: center;">
+    더보기 <img src="/svg/seeMore.svg" style="margin-left: 4px;" />
+  </a>
+</div>
+      </div>
+      <div
+        style="
+          color: white;
+          font-size: 16px;
+          width: 127px;
+          white-space: nowrap;
+          overflow: hidden;
+          text-overflow: ellipsis;
+        "
+      >
+        ${data.nonMembers.map((member) => member.name).join(", ")}
+      </div>
+    </div>
+    <!-- 드롭다운 열리기 전 -->
+    <div
+      style="
+        padding: 8px;
+        background-color: #2d2d2d;
+        display: flex;
+        justify-content: space-evenly;
+        align-items: center;
+        gap: 12px;
+      "
+    >
+      <div
+        style="
+          background-color: #f73a2c;
+          width: 41px;
+          height: 24px;
+          border-radius: 2px;
+          display: flex;
+          justify-content: center;
+          align-items: center;
+        "
+      >
+        <img src="/svg/people.svg" />
+        ${data.nonMembers.length}
+      </div>
+      <div
+        class="names-short"
+        style="
+          width: 127px;
+          font-size: 12px;
+          white-space: nowrap;
+          overflow: hidden;
+          text-overflow: ellipsis;
+          color: white;
+          opacity: 1;
+        "
+      >
+        ${data.nonMembers.map((member) => member.name).join(", ")}
+      </div>
+      <img
+        src="/svg/dropdown.svg"
+        style="transform: rotate(180deg); cursor: pointer"
+        onclick="window.toggleDropdown()"
+      />
+    </div>
+    <!-- 드롭다운 열린 후 -->
+    <div
+      id="dropdownExtended"
+      style="padding: 8px; background-color: #2d2d2d; display: none"
+    >
+      <div
+        style="
+          display: flex;
+          flex-wrap: wrap;
+          gap: 8px;
+          font-size: 14px;
+          width: 216px;
+          margin-left: 8px;
+          margin-right: 8px;
+        "
+      >
+        ${data.nonMembers
+          .map(
+            (member) => `
+          <div
+            style="
+              background-color: #1d1d1d;
+              padding-left: 8px;
+              padding-right: 8px;
+              padding-top: 2px;
+              padding-bottom: 2px;
+              color: white;
+              border-radius: 2px;
+            "
+          >
+            ${member.name}
+          </div>
+        `
+          )
+          .join("")}
+      </div>
+    </div>
+  </div>
+`;
+
         const infoWindow = new window.naver.maps.InfoWindow({
-          content: `<div style="padding: 8px; background: white; border-radius: 4px;">
-                      <strong>${ping.placeName}</strong><br/>
-                    </div>`,
+          content: infoWindowContent(transformedPing), // API에서 받은 데이터를 infoWindowContent 함수에 전달
           borderWidth: 0,
           backgroundColor: "transparent",
           disableAnchor: true,
         });
+
         if (mapInstanceRef.current) {
           infoWindow.open(mapInstanceRef.current, marker);
         }
