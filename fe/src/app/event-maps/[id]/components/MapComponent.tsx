@@ -24,12 +24,24 @@ export default function MapComponent({ px, py }: MapComponentProps) {
     isSelected: boolean = false
   ) => {
     const iconSize = isSelected ? 44 : 36;
+    let textColor, textShadow;
+
+    if (level === 1) {
+      textColor = "#000000"; // 검정색 글씨
+      textShadow =
+        "-1px 0px #FFFFFF, 0px 1px #FFFFFF, 1px 0px #FFFFFF, 0px -1px #FFFFFF"; // 흰색 텍스트 쉐도우 테두리
+    } else {
+      textColor = "#FA8980"; // 살구색 글씨
+      textShadow =
+        "-1px 0px #FFFFFF, 0px 1px #FFFFFF, 1px 0px #FFFFFF, 0px -1px #FFFFFF"; // 흰색 텍스트 쉐도우 테두리
+    }
+
     return {
       content: `<div style="position: relative; width: ${iconSize}px; height: ${iconSize}px; background: url('/pin/level${level}.svg') no-repeat center center; background-size: contain;">
-                  <div style="position: absolute; top: ${iconSize}px; left: 50%; transform: translateX(-50%); white-space: nowrap; color: #000; font-size: 12px; text-align: center;">
-                    ${placeName}
-                  </div>
-                </div>`,
+                <div style="position: absolute; top: ${iconSize / 1.2}px; left: 50%; transform: translateX(-50%); white-space: nowrap; color: ${textColor}; font-size: 12px; text-align: center; text-shadow: ${textShadow}; padding: 2px 4px; border-radius: 4px;">
+                  ${placeName}
+                </div>
+              </div>`,
       size: new window.naver.maps.Size(iconSize, iconSize),
       anchor: new window.naver.maps.Point(iconSize / 2, iconSize + 15), // 라벨이 포함되므로 앵커 포지션 조정
     };
