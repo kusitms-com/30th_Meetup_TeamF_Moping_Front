@@ -15,6 +15,7 @@ import ExitModal from "./components/EventMapExitModal";
 interface NonMember {
   nonMemberId: number;
   name: string;
+  profileSvg?: string;
 }
 
 interface Ping {
@@ -91,7 +92,7 @@ export default function Page() {
   }, [id, data, moveToLocation, setCustomMarkers]);
 
   const handleBackbtn = () => {
-    setIsModalOpen(true);
+    router.replace("/eventcreate-page");
   };
 
   const handleExit = () => {
@@ -124,13 +125,13 @@ export default function Page() {
 
   return (
     <div>
-      <div className="w-[100%] h-[56px] px-[16px] py-[8px] fixed z-10">
+      <div className="w-[100%] h-[56px] px-[16px] py-[16px] fixed z-10 flex justify-end">
         <button
           type="button"
-          className="w-[40px] h-[40px]"
+          className="w-[84px] h-[38px] text-white bg-[#2d2d2d] rounded-[8px]"
           onClick={handleBackbtn}
         >
-          <Image src="/svg/arrow-back.svg" alt="icon" width={40} height={40} />
+          + 새 모임
         </button>
       </div>
       {data && (
@@ -142,7 +143,10 @@ export default function Page() {
             className="w-full h-[218px] fixed bottom-0 z-10"
           >
             <BottomDrawer
-              nonMembers={data.nonMembers}
+              nonMembers={data.nonMembers.map((member) => ({
+                ...member,
+                profileSvg: member.profileSvg || "https://default-image.svg", // 기본값 추가
+              }))}
               eventName={data.eventName}
               id={parsedId}
             />

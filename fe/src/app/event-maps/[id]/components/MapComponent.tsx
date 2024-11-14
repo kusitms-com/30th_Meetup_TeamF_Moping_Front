@@ -22,8 +22,8 @@ interface PingData {
 const transformPingData = (ping: any): PingData => ({
   placeName: ping.placeName,
   url: ping.url,
-  nonMembers: ping.nonMembers.map(
-    (member: { profileSvg: string; nonMemberId: number; name: string }) => ({
+  nonMembers: (ping.nonMembers || []).map(
+    (member: { profileSvg?: string; nonMemberId: number; name: string }) => ({
       ...member,
       profileSvg: member.profileSvg || "https://default-image.svg", // 기본 이미지 URL 추가
     })

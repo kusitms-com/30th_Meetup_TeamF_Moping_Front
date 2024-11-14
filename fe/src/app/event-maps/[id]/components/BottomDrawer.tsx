@@ -7,6 +7,7 @@ import { useMarkerStore } from "../load-mappin/stores/useMarkerStore";
 interface NonMember {
   nonMemberId: number;
   name: string;
+  profileSvg: string;
 }
 
 interface Ping {
@@ -31,36 +32,12 @@ export default function BottomDrawer({
   const [eventName, setEventName] = useState(initialEventName);
   const [selectedButton, setSelectedButton] = useState<number | null>(null);
   const [nonMembers, setNonMembers] = useState<NonMember[]>(initialNonMembers);
-  const [memberProfiles, setMemberProfiles] = useState<{
-    [key: number]: string;
-  }>({});
   const [allPings, setAllPings] = useState<Ping[]>([]);
   const { setCustomMarkers } = useMarkerStore();
   const moveToLocation = useLocationStore((state) => state.moveToLocation);
   const router = useRouter();
-  const profileImagesRef = useRef([
-    "/profile/profil1.svg",
-    "/profile/profil2.svg",
-    "/profile/profil3.svg",
-    "/profile/profil4.svg",
-  ]);
 
   const apiUrl = process.env.NEXT_PUBLIC_API_BASE_URL;
-
-  useEffect(() => {
-    const profiles = nonMembers.reduce(
-      (acc, member) => {
-        const randomImage =
-          profileImagesRef.current[
-            Math.floor(Math.random() * profileImagesRef.current.length)
-          ];
-        acc[member.nonMemberId] = randomImage;
-        return acc;
-      },
-      {} as { [key: number]: string }
-    );
-    setMemberProfiles(profiles);
-  }, [nonMembers]);
 
   useEffect(() => {
     const fetchAllPings = async () => {
@@ -68,8 +45,10 @@ export default function BottomDrawer({
         const response = await fetch(`${apiUrl}/nonmembers/pings?uuid=${id}`);
         if (response.ok) {
           const data = await response.json();
-          setAllPings(data.pings || []);
-          setCustomMarkers(data.pings || []);
+          setEventName(data.eventName || ""); // eventName이 없는 경우 빈 문자열 설정
+          setNonMembers(data.nonMembers || []); // nonMembers가 없는 경우 빈 배열 설정
+          setAllPings(data.pings || []); // pings가 없는 경우 빈 배열 설정
+          setCustomMarkers(data.pings || []); // customMarkers가 없는 경우 빈 배열 설정
         }
       } catch (error) {
         console.log("Error:", error);
@@ -149,7 +128,6 @@ export default function BottomDrawer({
 
       if (response.ok) {
         const data = await response.json();
-        console.log(data);
         setEventName(data.eventName);
         setNonMembers(data.nonMembers);
         setAllPings(data.pings || []);
@@ -195,14 +173,17 @@ export default function BottomDrawer({
         }
       }}
     >
-      <div className="absolute mr-[16px] right-0 -top-[120px] flex flex-col">
+      <div className="absolute ml-[16px] left-0 -top-[60px] flex">
         <button
           type="button"
-          className="w-[48px] h-[48px] mb-[12px] shadow-medium"
-          onClick={handleShare}
+          className="w-[179px] h-[48px] shadow-medium bg-[#2d2d2d] flex justify-center items-center gap-[4px] text-white rounded-[6px]"
+          onClick={handleLocationClick}
         >
-          <Image src="/svg/share.svg" alt="share" width={48} height={48} />
+          <Image src="/svg/bulb.svg" alt="bulb" width={30} height={30} />
+          다른 모핑 몰래보기
         </button>
+      </div>
+      <div className="absolute mr-[16px] right-0 -top-[60px] flex flex-col">
         <button
           type="button"
           className="w-[48px] h-[48px] shadow-medium"
@@ -226,8 +207,15 @@ export default function BottomDrawer({
         />
       </div>
       <div className="h-[62px] w-full pt-[16px] pb-[14px] pl-[20px] pr-[16px] flex justify-between text-lg text-grayscale-0 font-300">
-        <div className="truncate max-w-[210px]">{eventName}</div>
+        <div className="truncate max-w-[169px]">{eventName}</div>
         <div>
+          <button
+            type="button"
+            className="w-[32px] h-[32px] mb-[12px] shadow-medium mr-[12px]"
+            onClick={handleShare}
+          >
+            <Image src="/svg/share.svg" alt="share" width={48} height={48} />
+          </button>
           {selectedButton !== null ? (
             <button
               type="button"
@@ -270,12 +258,14 @@ export default function BottomDrawer({
             <button
               type="button"
               onClick={() => handleButtonClick(member.nonMemberId)}
-              className={`w-[72px] h-[72px] p-[2px] ${selectedButton === member.nonMemberId ? "border-2 rounded-lg border-primary-50" : ""}`}
+              className={`w-[72px] h-[72px] p-[2px] ${
+                selectedButton === member.nonMemberId
+                  ? "border-2 rounded-lg border-primary-50"
+                  : ""
+              }`}
             >
               <Image
-                src={
-                  memberProfiles[member.nonMemberId] || "/profile/default.svg"
-                }
+                src={member.profileSvg || "/profile/default.svg"}
                 alt="profile"
                 width={68}
                 height={68}
