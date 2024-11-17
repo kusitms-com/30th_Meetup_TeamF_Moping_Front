@@ -165,7 +165,7 @@ export default function BottomDrawer({
     <div
       role="button"
       tabIndex={0}
-      className="bottom-drawer w-full h-[218px] bg-grayscale-90 z-10 rounded-t-xlarge"
+      className="bottom-drawer w-full h-[760px] bg-grayscale-90 z-10 rounded-t-xlarge"
       onClick={handleDrawerClick}
       onKeyDown={(e) => {
         if (e.key === "Enter" || e.key === " ") {
