@@ -17,6 +17,7 @@ interface PingData {
   placeName: string;
   url: string;
   nonMembers: NonMember[];
+  type: string;
 }
 
 const transformPingData = (ping: any): PingData => ({
@@ -28,6 +29,7 @@ const transformPingData = (ping: any): PingData => ({
       profileSvg: member.profileSvg || "https://default-image.svg", // 기본 이미지 URL 추가
     })
   ),
+  type: ping.type,
 });
 
 const setupToggleDropdown = (): void => {
@@ -187,7 +189,7 @@ export default function MapComponent({ px, py }: MapComponentProps) {
           justify-content: space-between;
         "
       >
-        <div>${data.placeName}</div>
+        <div>${data.type}</div>
         <div style="display: flex; align-items: center;">
   <a href="${data.url}" target="_blank" style="color: inherit; text-decoration: none; display: flex; align-items: center;">
     더보기 <img src="/svg/seeMore.svg" style="margin-left: 4px;" />
@@ -204,7 +206,7 @@ export default function MapComponent({ px, py }: MapComponentProps) {
           text-overflow: ellipsis;
         "
       >
-        ${data.nonMembers.map((member) => member.name).join(", ")}
+      ${data.placeName}
       </div>
     </div>
     <!-- 드롭다운 열리기 전 -->
