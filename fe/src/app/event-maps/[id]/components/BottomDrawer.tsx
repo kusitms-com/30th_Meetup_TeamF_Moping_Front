@@ -11,6 +11,7 @@ import {
   MemberButton,
 } from "./ButtonComponents";
 import StoreItem from "./StoreItem";
+import LocationButton from "./LocationButton";
 
 interface NonMember {
   nonMemberId: number;
@@ -77,6 +78,18 @@ const BottomDrawer: React.FC<BottomDrawerProps> = ({
     }
   };
 
+  const handleRecommendClick = () => {
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(
+        (position) => {
+          const { latitude, longitude } = position.coords;
+          moveToLocation(latitude, longitude);
+        },
+        () => alert("현재 위치 정보를 가져올 수 없습니다.")
+      );
+    }
+  };
+
   const handleButtonClick = (nonMemberId: number) => {
     const isSelected = selectedButton === nonMemberId;
     setSelectedButton(isSelected ? null : nonMemberId);
@@ -116,7 +129,10 @@ const BottomDrawer: React.FC<BottomDrawerProps> = ({
       onKeyDown={(event: React.KeyboardEvent<HTMLDivElement>) => {}}
     >
       <div className="absolute ml-[16px] left-0 -top-[60px] flex">
-        <RecommendButton onClick={handleLocationClick} />
+        <RecommendButton onClick={handleRecommendClick} />
+      </div>
+      <div className="absolute mr-[16px] right-0 -top-[60px] flex">
+        <LocationButton onClick={handleLocationClick} />
       </div>
       <div className="w-full h-[20px] flex justify-center">
         <Image

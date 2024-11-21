@@ -8,10 +8,10 @@ interface ButtonProps {
 const LocationButton: React.FC<ButtonProps> = ({ onClick }) => (
   <button
     type="button"
-    className="w-[179px] h-[48px] shadow-medium bg-[#2d2d2d] flex justify-center items-center gap-[4px] text-white rounded-[6px]"
+    className="w-[48px] h-[48px] shadow-medium"
     onClick={onClick}
   >
-    <Image src="/svg/bulb.svg" alt="bulb" width={30} height={30} />
+    <Image src="/svg/my-location.svg" alt="location" width={48} height={48} />
   </button>
 );
 
