@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useSpring } from "@react-spring/web";
 
 const useDrawer = () => {
-  const stopPoints = [-540, 0, 130]; // Top, middle, and bottom positions
+  const stopPoints = [-500, 20, 130]; // Top, middle, and bottom positions
   const [isOpen, setIsOpen] = useState(false);
   const [{ y }, api] = useSpring(() => ({ y: stopPoints[2] })); // Initialize at closed position
 

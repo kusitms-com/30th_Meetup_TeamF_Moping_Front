@@ -1,8 +1,16 @@
-import React, { useState, useEffect, useRef } from "react";
-import Image from "next/image";
+import React, { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
+import Image from "next/image";
 import { useLocationStore } from "../stores/useLocationStore";
 import { useMarkerStore } from "../load-mappin/stores/useMarkerStore";
+import RecommendButton from "./RecommendButton";
+import {
+  ShareButton,
+  RefreshButton,
+  EditButton,
+  MemberButton,
+} from "./ButtonComponents";
+import StoreItem from "./StoreItem";
 
 interface NonMember {
   nonMemberId: number;
@@ -24,12 +32,12 @@ interface BottomDrawerProps {
   id: string;
 }
 
-export default function BottomDrawer({
+const BottomDrawer: React.FC<BottomDrawerProps> = ({
   nonMembers: initialNonMembers,
   eventName: initialEventName,
   id,
-}: BottomDrawerProps) {
-  const [eventName, setEventName] = useState(initialEventName);
+}) => {
+  const [eventName, setEventName] = useState<string>(initialEventName);
   const [selectedButton, setSelectedButton] = useState<number | null>(null);
   const [nonMembers, setNonMembers] = useState<NonMember[]>(initialNonMembers);
   const [allPings, setAllPings] = useState<Ping[]>([]);
@@ -45,10 +53,10 @@ export default function BottomDrawer({
         const response = await fetch(`${apiUrl}/nonmembers/pings?uuid=${id}`);
         if (response.ok) {
           const data = await response.json();
-          setEventName(data.eventName || ""); // eventName이 없는 경우 빈 문자열 설정
-          setNonMembers(data.nonMembers || []); // nonMembers가 없는 경우 빈 배열 설정
-          setAllPings(data.pings || []); // pings가 없는 경우 빈 배열 설정
-          setCustomMarkers(data.pings || []); // customMarkers가 없는 경우 빈 배열 설정
+          setEventName(data.eventName || "");
+          setNonMembers(data.nonMembers || []);
+          setAllPings(data.pings || []);
+          setCustomMarkers(data.pings || []);
         }
       } catch (error) {
         console.log("Error:", error);
@@ -69,63 +77,22 @@ export default function BottomDrawer({
     }
   };
 
-  const handleButtonClick = async (nonMemberId: number) => {
-    const isDeselect = selectedButton === nonMemberId;
-    setSelectedButton(isDeselect ? null : nonMemberId);
-
-    if (isDeselect) {
-      setCustomMarkers(allPings);
-    } else {
-      try {
-        const response = await fetch(
-          `${apiUrl}/nonmembers/pings/${nonMemberId}`,
-          { method: "GET", headers: { "Content-Type": "application/json" } }
-        );
-
-        if (response.ok) {
-          const data = await response.json();
-          const filteredPings = data.pings.map((ping: Ping) => ({
-            ...ping,
-            iconLevel: 1,
-          }));
-          setCustomMarkers(filteredPings);
-        } else {
-          console.log("Failed to fetch data:", response.status);
-        }
-      } catch (error) {
-        console.log("Error:", error);
-      }
-    }
+  const handleButtonClick = (nonMemberId: number) => {
+    const isSelected = selectedButton === nonMemberId;
+    setSelectedButton(isSelected ? null : nonMemberId);
+    const pingsToShow = isSelected
+      ? allPings
+      : allPings.filter((ping) => ping.iconLevel === 1);
+    setCustomMarkers(pingsToShow);
   };
-
   const handleAddButtonClick = () => {
     router.push(`/event-maps/${id}/load-mappin`);
   };
-
-  const handleEditBtn = () => {
-    if (selectedButton !== null) {
-      router.push(`/event-maps/${id}/${selectedButton}`);
-    }
-  };
-
-  const handleShare = () => {
-    if (navigator.share) {
-      navigator.share({ url: window.location.href }).then().catch();
-    } else {
-      alert("이 브라우저에서는 공유 기능을 지원하지 않습니다.");
-    }
-  };
-
   const handleRefresh = async () => {
     try {
       const response = await fetch(
-        `${apiUrl}/nonmembers/pings/refresh-all?uuid=${id}`,
-        {
-          method: "GET",
-          headers: { "Content-Type": "application/json" },
-        }
+        `${apiUrl}/nonmembers/pings/refresh?uuid=${id}`
       );
-
       if (response.ok) {
         const data = await response.json();
         setEventName(data.eventName);
@@ -140,62 +107,16 @@ export default function BottomDrawer({
     }
   };
 
-  const handleDrawerClick = (
-    event:
-      | React.MouseEvent<HTMLDivElement>
-      | React.KeyboardEvent<HTMLDivElement>
-  ) => {
-    if (event.type === "keydown") {
-      const keyboardEvent = event as React.KeyboardEvent<HTMLDivElement>;
-      if (keyboardEvent.key === "Enter" || keyboardEvent.key === " ") {
-        setSelectedButton(null);
-        setCustomMarkers(allPings);
-      }
-    } else if (event.type === "click") {
-      const mouseEvent = event as React.MouseEvent<HTMLDivElement>;
-      const target = mouseEvent.target as HTMLElement;
-      if (!target.closest("button")) {
-        setSelectedButton(null);
-        setCustomMarkers(allPings);
-      }
-    }
-  };
-
   return (
     <div
       role="button"
       tabIndex={0}
       className="bottom-drawer w-full h-[760px] bg-grayscale-90 z-10 rounded-t-xlarge"
-      onClick={handleDrawerClick}
-      onKeyDown={(e) => {
-        if (e.key === "Enter" || e.key === " ") {
-          handleDrawerClick(e);
-        }
-      }}
+      onClick={(event: React.MouseEvent<HTMLDivElement>) => {}}
+      onKeyDown={(event: React.KeyboardEvent<HTMLDivElement>) => {}}
     >
       <div className="absolute ml-[16px] left-0 -top-[60px] flex">
-        <button
-          type="button"
-          className="w-[179px] h-[48px] shadow-medium bg-[#2d2d2d] flex justify-center items-center gap-[4px] text-white rounded-[6px]"
-          onClick={handleLocationClick}
-        >
-          <Image src="/svg/bulb.svg" alt="bulb" width={30} height={30} />
-          다른 모핑 몰래보기
-        </button>
-      </div>
-      <div className="absolute mr-[16px] right-0 -top-[60px] flex flex-col">
-        <button
-          type="button"
-          className="w-[48px] h-[48px] shadow-medium"
-          onClick={handleLocationClick}
-        >
-          <Image
-            src="/svg/my-location.svg"
-            alt="location"
-            width={48}
-            height={48}
-          />
-        </button>
+        <RecommendButton onClick={handleLocationClick} />
       </div>
       <div className="w-full h-[20px] flex justify-center">
         <Image
@@ -209,34 +130,15 @@ export default function BottomDrawer({
       <div className="h-[62px] w-full pt-[16px] pb-[14px] pl-[20px] pr-[16px] flex justify-between text-lg text-grayscale-0 font-300">
         <div className="truncate max-w-[169px]">{eventName}</div>
         <div>
-          <button
-            type="button"
-            className="w-[32px] h-[32px] mb-[12px] shadow-medium mr-[12px]"
-            onClick={handleShare}
-          >
-            <Image src="/svg/share.svg" alt="share" width={48} height={48} />
-          </button>
+          <ShareButton
+            onClick={() => navigator.share({ url: window.location.href })}
+          />
           {selectedButton !== null ? (
-            <button
-              type="button"
-              className="w-[32px] h-[32px]"
-              onClick={handleEditBtn}
-            >
-              <Image src="/svg/edit.svg" alt="edit" width={32} height={32} />
-            </button>
+            <EditButton
+              onClick={() => router.push(`/edit-event/${id}/${selectedButton}`)}
+            />
           ) : (
-            <button
-              type="button"
-              className="w-[32px] h-[32px]"
-              onClick={handleRefresh}
-            >
-              <Image
-                src="/svg/refresh.svg"
-                alt="refresh"
-                width={32}
-                height={32}
-              />
-            </button>
+            <RefreshButton onClick={handleRefresh} />
           )}
         </div>
       </div>
@@ -255,26 +157,23 @@ export default function BottomDrawer({
             key={member.nonMemberId}
             className="w-[68px] h-[90px] flex flex-col justify-between shrink-0"
           >
-            <button
-              type="button"
-              onClick={() => handleButtonClick(member.nonMemberId)}
-              className={`w-[72px] h-[72px] p-[2px] ${
-                selectedButton === member.nonMemberId
-                  ? "border-2 rounded-lg border-primary-50"
-                  : ""
-              }`}
-            >
-              <Image
-                src={member.profileSvg || "/profile/default.svg"}
-                alt="profile"
-                width={68}
-                height={68}
-              />
-            </button>
+            <MemberButton
+              member={member}
+              isSelected={selectedButton === member.nonMemberId}
+              onClick={handleButtonClick}
+            />
             <div className="text-center">{member.name}</div>
           </div>
         ))}
       </div>
+      {/* Infinite scroll area */}
+      <div className="h-[484px] flex flex-col gap-[12px] p-[20px]">
+        {allPings.map((ping, index) => (
+          <StoreItem key={index} name={ping.placeName} type="Store Type Here" />
+        ))}
+      </div>
     </div>
   );
-}
+};
+
+export default BottomDrawer;
