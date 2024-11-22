@@ -171,6 +171,15 @@ const config: Config = {
     animation: {
       fadein: "fadein 2s ease-in-out",
     },
+    scrollbarHide: {
+      "&::-webkit-scrollbar": {
+        display: "none",
+      },
+      "&": {
+        "-ms-overflow-style": "none",
+        "scrollbar-width": "none",
+      },
+    },
   },
   plugins: [require("tailwind-scrollbar-hide")],
 };

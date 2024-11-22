@@ -1,17 +1,12 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
 import { useLocationStore } from "../stores/useLocationStore";
 import { useMarkerStore } from "../load-mappin/stores/useMarkerStore";
 import RecommendButton from "./RecommendButton";
-import {
-  ShareButton,
-  RefreshButton,
-  EditButton,
-  MemberButton,
-} from "./ButtonComponents";
-import StoreItem from "./StoreItem";
+import RecommendInActive from "./RecommendInActive";
 import LocationButton from "./LocationButton";
+import RecommendActive from "./RecommendActive";
 
 interface NonMember {
   nonMemberId: number;
@@ -25,6 +20,7 @@ interface Ping {
   px: number;
   py: number;
   url: string;
+  type: string;
 }
 
 interface BottomDrawerProps {
@@ -42,9 +38,16 @@ const BottomDrawer: React.FC<BottomDrawerProps> = ({
   const [selectedButton, setSelectedButton] = useState<number | null>(null);
   const [nonMembers, setNonMembers] = useState<NonMember[]>(initialNonMembers);
   const [allPings, setAllPings] = useState<Ping[]>([]);
+  const [isRecommend, setIsRecommend] = useState<boolean>(false);
+  const [neighborhood, setNeighborhood] = useState<string>("");
+  const [recommendPings, setRecommendPings] = useState([]);
+
   const { setCustomMarkers } = useMarkerStore();
   const moveToLocation = useLocationStore((state) => state.moveToLocation);
+
   const router = useRouter();
+  const observer = useRef<IntersectionObserver>();
+  const lastPingElementRef = useRef(null);
 
   const apiUrl = process.env.NEXT_PUBLIC_API_BASE_URL;
 
@@ -54,10 +57,12 @@ const BottomDrawer: React.FC<BottomDrawerProps> = ({
         const response = await fetch(`${apiUrl}/nonmembers/pings?uuid=${id}`);
         if (response.ok) {
           const data = await response.json();
+          console.log(data);
           setEventName(data.eventName || "");
           setNonMembers(data.nonMembers || []);
           setAllPings(data.pings || []);
           setCustomMarkers(data.pings || []);
+          setNeighborhood(data.neighborhood);
         }
       } catch (error) {
         console.log("Error:", error);
@@ -78,18 +83,64 @@ const BottomDrawer: React.FC<BottomDrawerProps> = ({
     }
   };
 
-  const handleRecommendClick = () => {
-    if (navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition(
-        (position) => {
-          const { latitude, longitude } = position.coords;
-          moveToLocation(latitude, longitude);
-        },
-        () => alert("현재 위치 정보를 가져올 수 없습니다.")
-      );
+  const handleRecommendClick = async () => {
+    let Km = 1.0;
+    let found = false;
+
+    while (Km <= 5.0) {
+      try {
+        const response = await fetch(
+          `${apiUrl}/nonmembers/pings/recommend?uuid=${id}&radiusInKm=${Km}`,
+          { method: "GET" }
+        );
+        if (response.ok) {
+          const data = await response.json();
+          console.log(
+            `Recommended data fetched successfully for ${Km} km:`,
+            data
+          );
+
+          if (data.recommendPings && data.recommendPings.length >= 5) {
+            console.log(
+              "Found more than or equal to 5 pings at radius:",
+              Km,
+              "km"
+            );
+            setRecommendPings(data.recommendPings); // 데이터를 상태에 저장
+            found = true;
+            break;
+          }
+        } else {
+          console.error(
+            "Failed to fetch recommended data, status:",
+            response.status
+          );
+        }
+      } catch (error) {
+        console.error("Error fetching recommended data:", error);
+      }
+
+      Km += 1.0;
+    }
+
+    setIsRecommend(found); // 상태 업데이트는 검색 결과에 따라 결정
+  };
+
+  const handleAddToMorphing = () => {
+    console.log("앙");
+    if (recommendPings.length > 0) {
+      console.log("Adding selected pings to morphing...", recommendPings);
+      console.log("버튼눌림");
+      setCustomMarkers(recommendPings);
+      setIsRecommend(false);
+    } else {
+      console.log("No pings available to add to morphing.");
     }
   };
 
+  const handleRecommendCancle = () => {
+    setIsRecommend(false);
+  };
   const handleButtonClick = (nonMemberId: number) => {
     const isSelected = selectedButton === nonMemberId;
     setSelectedButton(isSelected ? null : nonMemberId);
@@ -101,6 +152,7 @@ const BottomDrawer: React.FC<BottomDrawerProps> = ({
   const handleAddButtonClick = () => {
     router.push(`/event-maps/${id}/load-mappin`);
   };
+
   const handleRefresh = async () => {
     try {
       const response = await fetch(
@@ -108,6 +160,7 @@ const BottomDrawer: React.FC<BottomDrawerProps> = ({
       );
       if (response.ok) {
         const data = await response.json();
+        console.log(data);
         setEventName(data.eventName);
         setNonMembers(data.nonMembers);
         setAllPings(data.pings || []);
@@ -128,9 +181,11 @@ const BottomDrawer: React.FC<BottomDrawerProps> = ({
       onClick={(event: React.MouseEvent<HTMLDivElement>) => {}}
       onKeyDown={(event: React.KeyboardEvent<HTMLDivElement>) => {}}
     >
-      <div className="absolute ml-[16px] left-0 -top-[60px] flex">
-        <RecommendButton onClick={handleRecommendClick} />
-      </div>
+      {!isRecommend && (
+        <div className="absolute ml-[16px] left-0 -top-[60px] flex">
+          <RecommendButton onClick={handleRecommendClick} />
+        </div>
+      )}
       <div className="absolute mr-[16px] right-0 -top-[60px] flex">
         <LocationButton onClick={handleLocationClick} />
       </div>
@@ -143,51 +198,26 @@ const BottomDrawer: React.FC<BottomDrawerProps> = ({
           className="mt-[12px]"
         />
       </div>
-      <div className="h-[62px] w-full pt-[16px] pb-[14px] pl-[20px] pr-[16px] flex justify-between text-lg text-grayscale-0 font-300">
-        <div className="truncate max-w-[169px]">{eventName}</div>
-        <div>
-          <ShareButton
-            onClick={() => navigator.share({ url: window.location.href })}
-          />
-          {selectedButton !== null ? (
-            <EditButton
-              onClick={() => router.push(`/edit-event/${id}/${selectedButton}`)}
-            />
-          ) : (
-            <RefreshButton onClick={handleRefresh} />
-          )}
-        </div>
-      </div>
-      <div className="h-[96px] w-full flex pt-[6px] px-[16px] text-caption font-200 text-grayscale-20 overflow-x-auto scrollbar-hide gap-[12px]">
-        <div className="w-[68px] h-[90px] flex flex-col justify-between shrink-0">
-          <button
-            type="button"
-            onClick={handleAddButtonClick}
-            className="w-[68px] h-[68px] rounded-lg"
-          >
-            <Image src="/svg/add.svg" alt="add" width={68} height={68} />
-          </button>
-        </div>
-        {nonMembers.map((member) => (
-          <div
-            key={member.nonMemberId}
-            className="w-[68px] h-[90px] flex flex-col justify-between shrink-0"
-          >
-            <MemberButton
-              member={member}
-              isSelected={selectedButton === member.nonMemberId}
-              onClick={handleButtonClick}
-            />
-            <div className="text-center">{member.name}</div>
-          </div>
-        ))}
-      </div>
-      {/* Infinite scroll area */}
-      <div className="h-[484px] flex flex-col gap-[12px] p-[20px]">
-        {allPings.map((ping, index) => (
-          <StoreItem key={index} name={ping.placeName} type="Store Type Here" />
-        ))}
-      </div>
+      {isRecommend ? (
+        <RecommendActive
+          neighborhood={neighborhood}
+          handleRecommendCancle={handleRecommendCancle}
+          handleAddToMorphing={handleAddToMorphing}
+        />
+      ) : (
+        <RecommendInActive
+          nonMembers={nonMembers}
+          handleButtonClick={handleButtonClick}
+          handleAddButtonClick={handleAddButtonClick}
+          allPings={allPings}
+          lastPingElementRef={lastPingElementRef}
+          selectedButton={selectedButton}
+          handleRefresh={handleRefresh}
+          eventName={eventName}
+          id={id}
+          router={router}
+        />
+      )}
     </div>
   );
 };
