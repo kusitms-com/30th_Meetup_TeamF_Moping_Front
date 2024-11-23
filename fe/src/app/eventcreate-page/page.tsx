@@ -53,7 +53,7 @@ function EventCreatePage() {
 
   return (
     <div className="w-[360px] h-screen bg-white mx-auto flex flex-col">
-      <Navigation showBackButton onBack={() => router.push("/")} />
+      <Navigation onBack={() => router.push("/")} />
       <div className="flex-1 mt-4 px-4 overflow-auto pt-[56px]">
         <LocationInput
           onSelect={setLocation}
@@ -61,18 +61,18 @@ function EventCreatePage() {
           value={selectedLocation?.name || ""}
         />
         <EventNameInput
-          className="mt-[20px] w-full"
+          className="mt-[40px] w-full"
           value={eventName}
           selectedLocation={selectedLocation?.name || ""}
           onChange={setEventName}
         />
       </div>
-      <div className="w-full fixed bottom-[45px] left-0 flex justify-center">
+      <div className="w-fix fixed bottom-[45px] left-0 flex justify-center">
         <Button
-          label={isSubmitting ? "처리 중..." : "다음"}
+          label="다음"
           type="next"
           onClick={handleNextClick}
-          className="w-[328px] h-[60px] py-[17px] rounded-lg text-base font-medium font-['Pretendard']"
+          className="w-[328px] h-[60px] py-[17px] rounded-lg text-[#8e8e8e] text-lg font-['Pretendard'] font-medium"
           disabled={!isFormComplete || isSubmitting}
         />
       </div>
