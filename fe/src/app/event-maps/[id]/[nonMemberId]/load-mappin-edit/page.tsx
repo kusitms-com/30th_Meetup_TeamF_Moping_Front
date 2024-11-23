@@ -168,14 +168,21 @@ export default function LinkEditPage() {
       </div>
 
       {/* 하단 저장 버튼 */}
-      <div className="w-full px-[16px] bg-white sticky bottom-0 border-t border-[#f0f0f0]">
+      <div
+        className="w-full px-[16px] bg-white fixed bottom-0 left-0 border-t border-[#f0f0f0]"
+        style={{ zIndex: 50 }}
+      >
         <Button
           label="저장"
-          className="w-fix h-[60px] py-[17px] rounded-lg bg-black text-white disabled:bg-[#e0e0e0]"
+          className={`w-fixl h-[60px] py-[17px] rounded-lg text-base font-medium text-white ${
+            isSaveButtonEnabled ? "bg-black" : "bg-[#e0e0e0] cursor-not-allowed"
+          }`}
           onClick={handleSubmit}
           disabled={!isSaveButtonEnabled}
         />
       </div>
+
+      {/* Exit Modal */}
       {showExitModal && (
         <ExitModal onCancel={handleCancel} onExit={handleExit} />
       )}
