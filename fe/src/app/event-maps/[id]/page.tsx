@@ -2,11 +2,10 @@
 
 import React, { useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
-import Image from "next/image";
 import { a } from "@react-spring/web";
 import { useDrag } from "@use-gesture/react";
 import MapComponent from "./components/MapComponent";
-import BottomDrawer from "./components/BottomDrawer";
+import { BottomDrawer } from "./components/BottomDrawer";
 import useDrawer from "./hooks/useDrawer";
 import { useLocationStore } from "./stores/useLocationStore";
 import { useMarkerStore } from "./load-mappin/stores/useMarkerStore";
@@ -15,6 +14,7 @@ import ExitModal from "./components/EventMapExitModal";
 interface NonMember {
   nonMemberId: number;
   name: string;
+  profileSvg?: string;
 }
 
 interface Ping {
@@ -35,7 +35,7 @@ interface Data {
 }
 
 export default function Page() {
-  const { y, openDrawer, closeDrawer, setPosition } = useDrawer();
+  const { y, openDrawer, closeDrawer, setPosition, stopPoints } = useDrawer();
   const { id } = useParams();
   const parsedId = Array.isArray(id) ? id[0] : id;
   const [data, setData] = useState<Data | null>(null);
@@ -45,12 +45,8 @@ export default function Page() {
   const router = useRouter();
 
   useEffect(() => {
-    console.log("useEffect triggered with id:", id);
-
     const fetchData = async () => {
       try {
-        console.log("Fetching data for id:", id);
-
         const response = await fetch(
           `${process.env.NEXT_PUBLIC_API_BASE_URL}/nonmembers/pings?uuid=${id}`,
           {
@@ -64,14 +60,11 @@ export default function Page() {
         if (response.ok) {
           const result = await response.json();
           setData(result);
-          console.log("API Response Data:", JSON.stringify(result, null, 2));
           if (result.px && result.py) {
-            console.log("Moving to location:", result.py, result.px);
             moveToLocation(result.py, result.px);
           }
 
           if (result.pings) {
-            console.log("Setting custom markers:", result.pings);
             setCustomMarkers(result.pings);
           }
         } else {
@@ -91,7 +84,7 @@ export default function Page() {
   }, [id, data, moveToLocation, setCustomMarkers]);
 
   const handleBackbtn = () => {
-    setIsModalOpen(true);
+    router.replace("/eventcreate-page");
   };
 
   const handleExit = () => {
@@ -106,10 +99,16 @@ export default function Page() {
   const bind = useDrag(
     ({ last, movement: [, my], memo = y.get() }) => {
       if (last) {
-        if (my + memo > 100) {
-          closeDrawer();
-        } else {
+        const newY = my + memo;
+        const closestStopPoint = stopPoints.reduce((prev, curr) =>
+          Math.abs(curr - newY) < Math.abs(prev - newY) ? curr : prev
+        );
+        setPosition(closestStopPoint);
+
+        if (closestStopPoint === stopPoints[0]) {
           openDrawer();
+        } else if (closestStopPoint === stopPoints[2]) {
+          closeDrawer();
         }
       } else {
         setPosition(my + memo);
@@ -124,13 +123,13 @@ export default function Page() {
 
   return (
     <div>
-      <div className="w-[100%] h-[56px] px-[16px] py-[8px] fixed z-10">
+      <div className="w-[100%] h-[56px] px-[16px] py-[16px] fixed z-10 flex justify-end">
         <button
           type="button"
-          className="w-[40px] h-[40px]"
+          className="w-[84px] h-[38px] text-white bg-[#2d2d2d] rounded-[8px]"
           onClick={handleBackbtn}
         >
-          <Image src="/svg/arrow-back.svg" alt="icon" width={40} height={40} />
+          + 새 모임
         </button>
       </div>
       {data && (
@@ -138,11 +137,17 @@ export default function Page() {
           <MapComponent px={data.px} py={data.py} />
           <a.div
             {...bind()}
-            style={{ y, touchAction: "none" }}
-            className="w-full h-[218px] fixed bottom-0 z-10"
+            style={{
+              transform: y.to((val) => `translateY(${val}px)`), // Use translateY from y value
+              touchAction: "none",
+            }}
+            className="w-full h-[218px] fixed bottom-0 z-10 bg-white shadow-lg rounded-t-lg"
           >
             <BottomDrawer
-              nonMembers={data.nonMembers}
+              nonMembers={data.nonMembers.map((member) => ({
+                ...member,
+                profileSvg: member.profileSvg || "/profile/default.svg",
+              }))}
               eventName={data.eventName}
               id={parsedId}
             />

@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef } from "react";
 import { useLocationStore } from "../stores/useLocationStore";
 import { useMarkerStore } from "../load-mappin/stores/useMarkerStore";
 
@@ -7,22 +7,84 @@ interface MapComponentProps {
   py: number;
 }
 
-export default function MapComponent({ px, py }: MapComponentProps) {
+interface NonMember {
+  nonMemberId: number;
+  name: string;
+  profileSvg: string;
+}
+
+interface Ping {
+  placeName: string;
+  url: string;
+  nonMembers: NonMember[];
+  type: string;
+  px: number;
+  py: number;
+  iconLevel: number;
+}
+
+const transformPingData = (ping: unknown): Ping => {
+  if (typeof ping !== "object" || ping === null) {
+    throw new Error("Invalid ping data");
+  }
+
+  const {
+    placeName = "Unknown Place",
+    url = "#",
+    nonMembers = [],
+    type = "Unknown",
+    px = 0,
+    py = 0,
+    iconLevel = 1,
+  } = ping as Partial<Ping>;
+
+  return {
+    placeName,
+    url,
+    nonMembers: (nonMembers as NonMember[]).map((member) => ({
+      ...member,
+      profileSvg: member.profileSvg || "https://default-image.svg",
+    })),
+    type,
+    px,
+    py,
+    iconLevel,
+  };
+};
+
+export default function MapComponent({
+  px,
+  py,
+}: MapComponentProps): JSX.Element {
   const mapRef = useRef<HTMLDivElement | null>(null);
   const mapInstanceRef = useRef<naver.maps.Map | null>(null);
   const { customMarkers } = useMarkerStore();
   const { center } = useLocationStore();
-  const [selectedMarker, setSelectedMarker] = useState<number | null>(null);
-  const markersRef = useRef<naver.maps.Marker[]>([]); // 초기값을 빈 배열로 설정
+  const markersRef = useRef<naver.maps.Marker[]>([]);
+  const infoWindowRef = useRef<naver.maps.InfoWindow | null>(null);
+  const previousMarkerIndexRef = useRef<number | null>(null);
 
-  const getIconByLevel = (level: number, isSelected: boolean = false) => {
-    const size = isSelected ? 44 : 36;
+  const getHtmlIconByLevel = (
+    level: number,
+    placeName: string,
+    isSelected = false
+  ) => {
+    const iconWidth = isSelected ? 35 : 28;
+    const iconHeight = isSelected ? 40 : 32;
+    const textColor = level === 1 || level === 10 ? "#000000" : "#FA8980";
+    const textShadow =
+      "-1px 0px #FFFFFF, 0px 1px #FFFFFF, 1px 0px #FFFFFF, 0px -1px #FFFFFF";
+
     return {
-      url: `/pin/level${level}.svg`,
-      size: new window.naver.maps.Size(size, size),
-      scaledSize: new window.naver.maps.Size(size, size),
-      origin: new window.naver.maps.Point(0, 0),
-      anchor: new window.naver.maps.Point(size / 2, size),
+      content: `<div style="position: relative; width: ${iconWidth}px; height: ${iconHeight}px; background: url('${
+        level === 10 ? "/pin/recommendPing.svg" : `/pin/level${level}.svg`
+      }') no-repeat center center; background-size: contain;">
+        <div style="position: absolute; top: ${iconWidth}px; left: 50%; transform: translateX(-50%); white-space: nowrap; color: ${textColor}; font-size: 12px; text-align: center; text-shadow: ${textShadow}; padding: 2px 4px; border-radius: 4px;">
+          ${placeName}
+        </div>
+      </div>`,
+      size: new window.naver.maps.Size(iconWidth, iconHeight),
+      anchor: new window.naver.maps.Point(iconWidth / 2, iconHeight + 15),
     };
   };
 
@@ -55,75 +117,230 @@ export default function MapComponent({ px, py }: MapComponentProps) {
   }, [px, py]);
 
   useEffect(() => {
-    if (!mapInstanceRef.current || !customMarkers) return;
+    if (!mapInstanceRef.current) return;
 
-    // 이전 마커 제거
-    (markersRef.current || []).forEach((marker) => marker.setMap(null));
+    markersRef.current.forEach((marker) => marker.setMap(null));
     markersRef.current = [];
 
-    // 새로운 마커 추가
     customMarkers.forEach((ping, index) => {
-      const marker = new window.naver.maps.Marker({
-        position: new window.naver.maps.LatLng(ping.py, ping.px),
-        map: mapInstanceRef.current!,
-        icon: getIconByLevel(ping.iconLevel),
-      });
+      const transformedPing = transformPingData(ping);
+
+      const markerOptions: naver.maps.MarkerOptions = {
+        position: new window.naver.maps.LatLng(
+          transformedPing.py,
+          transformedPing.px
+        ),
+        map: mapInstanceRef.current || undefined,
+        icon: getHtmlIconByLevel(
+          transformedPing.iconLevel,
+          transformedPing.placeName,
+          false
+        ),
+        clickable: true,
+      };
+
+      const marker = new window.naver.maps.Marker(markerOptions);
       markersRef.current.push(marker);
 
-      const nonMemberNames = (ping.nonMembers || [])
-        .map((member) => member.name)
-        .join(", ");
-
-      const infoWindowContent = `
-        <div style="position: relative; padding: 8px; background: black; color: white; border-radius: 8px; font-size: 14px; max-width: 200px;">
-          <strong>${nonMemberNames}</strong><br/>
-          <a href="${ping.url}" target="_self" style="color: white; text-decoration: none; font-size: 12px;">
-            가게 정보 바로 보기 &rsaquo;
-          </a>
-          <div style="position: absolute; bottom: -5px; left: 50%; transform: translateX(-50%); width: 0; height: 0; border-left: 10px solid transparent; border-right: 10px solid transparent; border-top: 10px solid black;"></div>
-        </div>
-      `;
-
-      const infoWindow = new window.naver.maps.InfoWindow({
-        content: infoWindowContent,
-        borderWidth: 0,
-        disableAnchor: true,
-        backgroundColor: "transparent",
-      });
-
       window.naver.maps.Event.addListener(marker, "click", () => {
-        if (selectedMarker !== null && selectedMarker !== index) {
-          markersRef.current[selectedMarker].setIcon(
-            getIconByLevel(customMarkers[selectedMarker].iconLevel)
+        if (
+          previousMarkerIndexRef.current !== null &&
+          previousMarkerIndexRef.current !== index
+        ) {
+          markersRef.current[previousMarkerIndexRef.current].setIcon(
+            getHtmlIconByLevel(
+              customMarkers[previousMarkerIndexRef.current].iconLevel,
+              customMarkers[previousMarkerIndexRef.current].placeName,
+              false
+            )
           );
         }
 
-        setSelectedMarker(index);
-        marker.setIcon(getIconByLevel(ping.iconLevel, true));
-        infoWindow.open(mapInstanceRef.current!, marker);
-      });
+        marker.setIcon(
+          getHtmlIconByLevel(
+            transformedPing.iconLevel,
+            transformedPing.placeName,
+            true
+          )
+        );
+        previousMarkerIndexRef.current = index;
 
-      window.naver.maps.Event.addListener(
-        mapInstanceRef.current!,
-        "click",
-        () => {
-          if (selectedMarker !== null) {
-            markersRef.current[selectedMarker].setIcon(
-              getIconByLevel(customMarkers[selectedMarker].iconLevel)
-            );
-            setSelectedMarker(null);
-            infoWindow.close();
-          }
+        if (infoWindowRef.current) {
+          infoWindowRef.current.close();
         }
-      );
+
+        const infoWindow = new window.naver.maps.InfoWindow({
+          content: `
+            <div
+              style="
+                width: 256px;
+                background: #1d1d1d;
+                border-radius: 4px;
+                padding: 12px;
+              "
+            >
+              <div style="margin-left: 4px; margin-right: 4px; margin-bottom: 12px">
+                <div
+                  style="
+                    color: #8e8e8e;
+                    font-size: 12px;
+                    display: flex;
+                    justify-content: space-between;
+                  "
+                >
+                  <div>${transformedPing.type}</div>
+                  <div style="display: flex; align-items: center;">
+                    <a href="${transformedPing.url}" target="_blank" style="color: inherit; text-decoration: none; display: flex; align-items: center;">
+                      더보기 <img src="/svg/seeMore.svg" style="margin-left: 4px;" />
+                    </a>
+                  </div>
+                </div>
+                <div
+                  style="
+                    color: white;
+                    font-size: 16px;
+                    width: 127px;
+                    white-space: nowrap;
+                    overflow: hidden;
+                    text-overflow: ellipsis;
+                  "
+                >
+                  ${transformedPing.placeName}
+                </div>
+              </div>
+              <!-- 드롭다운 열리기 전 -->
+              <div
+                style="
+                  padding: 8px;
+                  background-color: #2d2d2d;
+                  display: flex;
+                  justify-content: space-evenly;
+                  align-items: center;
+                  gap: 12px;
+                "
+              >
+                <div
+                  style="
+                    background-color: #f73a2c;
+                    width: 41px;
+                    height: 24px;
+                    border-radius: 2px;
+                    display: flex;
+                    justify-content: center;
+                    align-items: center;
+                  "
+                >
+                  <img src="/svg/people.svg" />
+                  ${transformedPing.nonMembers.length}
+                </div>
+                <div
+                  class="names-short"
+                  style="
+                    width: 127px;
+                    font-size: 12px;
+                    white-space: nowrap;
+                    overflow: hidden;
+                    text-overflow: ellipsis;
+                    color: white;
+                    opacity: 1;
+                  "
+                >
+                  ${transformedPing.nonMembers.map((member) => member.name).join(", ")}
+                </div>
+                <img
+                  src="/svg/dropdown.svg"
+                  style="transform: rotate(180deg); cursor: pointer"
+                  onclick="window.toggleDropdown()"
+                />
+              </div>
+              <!-- 드롭다운 열린 후 -->
+              <div
+                id="dropdownExtended"
+                style="padding: 8px; background-color: #2d2d2d; display: none"
+              >
+                <div
+                  style="
+                    display: flex;
+                    flex-wrap: wrap;
+                    gap: 8px;
+                    font-size: 14px;
+                    width: 216px;
+                    margin-left: 8px;
+                    margin-right: 8px;
+                  "
+                >
+                  ${transformedPing.nonMembers
+                    .map(
+                      (member) => `
+                    <div
+                      style="
+                        background-color: #1d1d1d;
+                        padding-left: 8px;
+                        padding-right: 8px;
+                        padding-top: 2px;
+                        padding-bottom: 2px;
+                        color: white;
+                        border-radius: 2px;
+                      "
+                    >
+                      ${member.name}
+                    </div>
+                  `
+                    )
+                    .join("")}
+                </div>
+              </div>
+            </div>
+          `,
+          borderWidth: 0, // 보더 제거
+          backgroundColor: "transparent", // 백그라운드 설정
+          disableAnchor: true, // 앵커 비활성화
+        });
+
+        if (mapInstanceRef.current) {
+          infoWindow.open(mapInstanceRef.current, marker);
+        }
+        infoWindowRef.current = infoWindow;
+      });
     });
-  }, [customMarkers, selectedMarker]);
+  }, [customMarkers]);
 
   useEffect(() => {
     if (mapInstanceRef.current) {
-      mapInstanceRef.current.setCenter(
-        new window.naver.maps.LatLng(center.latitude, center.longitude)
+      window.naver.maps.Event.addListener(
+        mapInstanceRef.current,
+        "click",
+        () => {
+          if (previousMarkerIndexRef.current !== null) {
+            markersRef.current[previousMarkerIndexRef.current].setIcon(
+              getHtmlIconByLevel(
+                customMarkers[previousMarkerIndexRef.current].iconLevel,
+                customMarkers[previousMarkerIndexRef.current].placeName,
+                false
+              )
+            );
+            previousMarkerIndexRef.current = null;
+          }
+
+          if (infoWindowRef.current) {
+            infoWindowRef.current.close();
+          }
+        }
       );
+    }
+  }, [customMarkers]);
+
+  useEffect(() => {
+    if (mapInstanceRef.current) {
+      const currentCenter = mapInstanceRef.current.getCenter();
+      const targetCenter = new window.naver.maps.LatLng(
+        center.latitude,
+        center.longitude
+      );
+
+      if (!currentCenter.equals(targetCenter)) {
+        mapInstanceRef.current.setCenter(targetCenter);
+      }
     }
   }, [center]);
 

@@ -1,3 +1,9 @@
+declare global {
+  interface Window {
+    toggleDropdown: () => void;
+  }
+}
+
 export interface Location {
   latitude: number;
   longitude: number;

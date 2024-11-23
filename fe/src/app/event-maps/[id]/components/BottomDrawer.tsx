@@ -1,12 +1,18 @@
 import React, { useState, useEffect, useRef } from "react";
-import Image from "next/image";
 import { useRouter } from "next/navigation";
+
+import Image from "next/image";
 import { useLocationStore } from "../stores/useLocationStore";
 import { useMarkerStore } from "../load-mappin/stores/useMarkerStore";
+import { RecommendButton } from "./RecommendButton";
+import { RecommendInActive } from "./RecommendInActive";
+import LocationButton from "./LocationButton";
+import { RecommendActive } from "./RecommendActive";
 
 interface NonMember {
   nonMemberId: number;
   name: string;
+  profileSvg: string;
 }
 
 interface Ping {
@@ -15,6 +21,8 @@ interface Ping {
   px: number;
   py: number;
   url: string;
+  type: string;
+  nonMembers: NonMember[];
 }
 
 interface BottomDrawerProps {
@@ -23,44 +31,37 @@ interface BottomDrawerProps {
   id: string;
 }
 
-export default function BottomDrawer({
+interface RecommendPing {
+  iconLevel: number;
+  placeName: string;
+  sid: string;
+  px: number;
+  py: number;
+  url: string;
+  type: string;
+}
+
+export function BottomDrawer({
   nonMembers: initialNonMembers,
   eventName: initialEventName,
   id,
-}: BottomDrawerProps) {
-  const [eventName, setEventName] = useState(initialEventName);
+}: BottomDrawerProps): JSX.Element {
+  const [eventName, setEventName] = useState<string>(initialEventName);
   const [selectedButton, setSelectedButton] = useState<number | null>(null);
   const [nonMembers, setNonMembers] = useState<NonMember[]>(initialNonMembers);
-  const [memberProfiles, setMemberProfiles] = useState<{
-    [key: number]: string;
-  }>({});
   const [allPings, setAllPings] = useState<Ping[]>([]);
+  const [isRecommend, setIsRecommend] = useState<boolean>(false);
+  const [isRecommended, setIsRecommended] = useState<boolean>(false);
+  const [neighborhood, setNeighborhood] = useState<string>("");
+  const [nonRecommend, setNonRecommend] = useState<boolean>(false);
+
   const { setCustomMarkers } = useMarkerStore();
   const moveToLocation = useLocationStore((state) => state.moveToLocation);
+
   const router = useRouter();
-  const profileImagesRef = useRef([
-    "/profile/profil1.svg",
-    "/profile/profil2.svg",
-    "/profile/profil3.svg",
-    "/profile/profil4.svg",
-  ]);
+  const lastPingElementRef = useRef(null);
 
   const apiUrl = process.env.NEXT_PUBLIC_API_BASE_URL;
-
-  useEffect(() => {
-    const profiles = nonMembers.reduce(
-      (acc, member) => {
-        const randomImage =
-          profileImagesRef.current[
-            Math.floor(Math.random() * profileImagesRef.current.length)
-          ];
-        acc[member.nonMemberId] = randomImage;
-        return acc;
-      },
-      {} as { [key: number]: string }
-    );
-    setMemberProfiles(profiles);
-  }, [nonMembers]);
 
   useEffect(() => {
     const fetchAllPings = async () => {
@@ -68,11 +69,44 @@ export default function BottomDrawer({
         const response = await fetch(`${apiUrl}/nonmembers/pings?uuid=${id}`);
         if (response.ok) {
           const data = await response.json();
-          setAllPings(data.pings || []);
-          setCustomMarkers(data.pings || []);
+          let recommendProfile = [];
+          if (data.recommendPings && data.recommendPings.length > 0) {
+            setIsRecommended(true);
+            recommendProfile = data.recommendPings.map(
+              (ping: RecommendPing) => ({
+                iconLevel: 10, // Fixed icon level
+                nonMembers: [
+                  {
+                    nonMemberId: -1,
+                    name: "추천 모핑", // Fixed name
+                    profileSvg: "/profile/recommendProfile.svg", // Fixed profileSvg
+                  },
+                ],
+                url: ping.url,
+                placeName: ping.placeName,
+                px: ping.px,
+                py: ping.py,
+                type: ping.type,
+              })
+            );
+          }
+          setEventName(data.eventName || "");
+          setNonMembers([
+            ...(recommendProfile[0]?.nonMembers || []),
+            ...(data.nonMembers || []),
+          ]);
+          setAllPings([
+            ...(data.pings || []), // 기존 pings
+            ...(recommendProfile || []), // recommendProfile 추가
+          ]);
+          setCustomMarkers([
+            ...(data.pings || []), // 기존 pings
+            ...(recommendProfile || []), // recommendProfile 추가
+          ]);
+          setNeighborhood(data.neighborhood);
         }
       } catch (error) {
-        console.log("Error:", error);
+        console.error("Error:", error);
       }
     };
     fetchAllPings();
@@ -90,96 +124,76 @@ export default function BottomDrawer({
     }
   };
 
-  const handleButtonClick = async (nonMemberId: number) => {
-    const isDeselect = selectedButton === nonMemberId;
-    setSelectedButton(isDeselect ? null : nonMemberId);
+  const handleRecommendAllowClick = () => {
+    setIsRecommend(true);
+  };
 
-    if (isDeselect) {
-      setCustomMarkers(allPings);
-    } else {
-      try {
-        const response = await fetch(
-          `${apiUrl}/nonmembers/pings/${nonMemberId}`,
-          { method: "GET", headers: { "Content-Type": "application/json" } }
+  const handleAddToMorphing = async () => {
+    const Km = 1.0;
+    let found = false;
+
+    try {
+      const response = await fetch(
+        `${apiUrl}/nonmembers/pings/recommend?uuid=${id}&radiusInKm=${Km}`,
+        { method: "GET" }
+      );
+      if (response.ok) {
+        const data = await response.json();
+        if (data.recommendPings.length === 0) {
+          setNonRecommend(true);
+        } else if (data.recommendPings.length >= 5) {
+          setCustomMarkers(data.recommendPings);
+          found = true;
+          setIsRecommend(found);
+        }
+      } else {
+        console.error(
+          "Failed to fetch recommended data, status:",
+          response.status
+        );
+      }
+    } catch (error) {
+      console.error("Error fetching recommended data:", error);
+    }
+  };
+
+  const handleRecommendCancle = () => {
+    setIsRecommend(false);
+  };
+
+  const handleButtonClick = (nonMemberId: number) => {
+    const isSelected = selectedButton === nonMemberId;
+    setSelectedButton(isSelected ? null : nonMemberId);
+
+    const pingsToShow = isSelected
+      ? [...allPings]
+      : allPings.filter((ping) =>
+          ping.nonMembers.some((member) => member.nonMemberId === nonMemberId)
         );
 
-        if (response.ok) {
-          const data = await response.json();
-          const filteredPings = data.pings.map((ping: Ping) => ({
-            ...ping,
-            iconLevel: 1,
-          }));
-          setCustomMarkers(filteredPings);
-        } else {
-          console.log("Failed to fetch data:", response.status);
-        }
-      } catch (error) {
-        console.log("Error:", error);
-      }
-    }
+    setCustomMarkers(pingsToShow);
   };
 
   const handleAddButtonClick = () => {
     router.push(`/event-maps/${id}/load-mappin/forms/name-pin`);
   };
 
-  const handleEditBtn = () => {
-    if (selectedButton !== null) {
-      router.push(`/event-maps/${id}/${selectedButton}`);
-    }
-  };
-
-  const handleShare = () => {
-    if (navigator.share) {
-      navigator.share({ url: window.location.href }).then().catch();
-    } else {
-      alert("이 브라우저에서는 공유 기능을 지원하지 않습니다.");
-    }
-  };
-
   const handleRefresh = async () => {
     try {
       const response = await fetch(
-        `${apiUrl}/nonmembers/pings/refresh-all?uuid=${id}`,
-        {
-          method: "GET",
-          headers: { "Content-Type": "application/json" },
-        }
+        `${apiUrl}/nonmembers/pings/refresh?uuid=${id}`
       );
-
       if (response.ok) {
         const data = await response.json();
-        console.log(data);
         setEventName(data.eventName);
         setNonMembers(data.nonMembers);
         setAllPings(data.pings || []);
         setCustomMarkers(data.pings || []);
       } else {
-        console.log("Failed to fetch refreshed data:", response.status);
+        console.error("Failed to fetch refreshed data:", response.status);
       }
     } catch (error) {
-      console.log("Error refreshing data:", error);
-    }
-  };
-
-  const handleDrawerClick = (
-    event:
-      | React.MouseEvent<HTMLDivElement>
-      | React.KeyboardEvent<HTMLDivElement>
-  ) => {
-    if (event.type === "keydown") {
-      const keyboardEvent = event as React.KeyboardEvent<HTMLDivElement>;
-      if (keyboardEvent.key === "Enter" || keyboardEvent.key === " ") {
-        setSelectedButton(null);
-        setCustomMarkers(allPings);
-      }
-    } else if (event.type === "click") {
-      const mouseEvent = event as React.MouseEvent<HTMLDivElement>;
-      const target = mouseEvent.target as HTMLElement;
-      if (!target.closest("button")) {
-        setSelectedButton(null);
-        setCustomMarkers(allPings);
-      }
+      console.error("Error refreshing data:", error);
     }
   };
 
@@ -187,34 +201,15 @@ export default function BottomDrawer({
     <div
       role="button"
       tabIndex={0}
-      className="bottom-drawer w-full h-[218px] bg-grayscale-90 z-10 rounded-t-xlarge"
-      onClick={handleDrawerClick}
-      onKeyDown={(e) => {
-        if (e.key === "Enter" || e.key === " ") {
-          handleDrawerClick(e);
-        }
-      }}
+      className="bottom-drawer w-full h-[760px] bg-grayscale-90 z-10 rounded-t-xlarge"
     >
-      <div className="absolute mr-[16px] right-0 -top-[120px] flex flex-col">
-        <button
-          type="button"
-          className="w-[48px] h-[48px] mb-[12px] shadow-medium"
-          onClick={handleShare}
-        >
-          <Image src="/svg/share.svg" alt="share" width={48} height={48} />
-        </button>
-        <button
-          type="button"
-          className="w-[48px] h-[48px] shadow-medium"
-          onClick={handleLocationClick}
-        >
-          <Image
-            src="/svg/my-location.svg"
-            alt="location"
-            width={48}
-            height={48}
-          />
-        </button>
+      {!isRecommend && !isRecommended && (
+        <div className="absolute ml-[16px] left-0 -top-[60px] flex">
+          <RecommendButton onClick={handleRecommendAllowClick} />
+        </div>
+      )}
+      <div className="absolute mr-[16px] right-0 -top-[60px] flex">
+        <LocationButton onClick={handleLocationClick} />
       </div>
       <div className="w-full h-[20px] flex justify-center">
         <Image
@@ -225,66 +220,31 @@ export default function BottomDrawer({
           className="mt-[12px]"
         />
       </div>
-      <div className="h-[62px] w-full pt-[16px] pb-[14px] pl-[20px] pr-[16px] flex justify-between text-lg text-grayscale-0 font-300">
-        <div className="truncate max-w-[210px]">{eventName}</div>
-        <div>
-          {selectedButton !== null ? (
-            <button
-              type="button"
-              className="w-[32px] h-[32px]"
-              onClick={handleEditBtn}
-            >
-              <Image src="/svg/edit.svg" alt="edit" width={32} height={32} />
-            </button>
-          ) : (
-            <button
-              type="button"
-              className="w-[32px] h-[32px]"
-              onClick={handleRefresh}
-            >
-              <Image
-                src="/svg/refresh.svg"
-                alt="refresh"
-                width={32}
-                height={32}
-              />
-            </button>
-          )}
-        </div>
-      </div>
-      <div className="h-[96px] w-full flex pt-[6px] px-[16px] text-caption font-200 text-grayscale-20 overflow-x-auto scrollbar-hide gap-[12px]">
-        <div className="w-[68px] h-[90px] flex flex-col justify-between shrink-0">
-          <button
-            type="button"
-            onClick={handleAddButtonClick}
-            className="w-[68px] h-[68px] rounded-lg"
-          >
-            <Image src="/svg/add.svg" alt="add" width={68} height={68} />
-          </button>
-        </div>
-        {nonMembers.map((member) => (
-          <div
-            key={member.nonMemberId}
-            className="w-[68px] h-[90px] flex flex-col justify-between shrink-0"
-          >
-            <button
-              type="button"
-              onClick={() => handleButtonClick(member.nonMemberId)}
-              className={`w-[72px] h-[72px] p-[2px] ${selectedButton === member.nonMemberId ? "border-2 rounded-lg border-primary-50" : ""}`}
-            >
-              <Image
-                src={
-                  memberProfiles[member.nonMemberId] || "/profile/default.svg"
-                }
-                alt="profile"
-                width={68}
-                height={68}
-              />
-            </button>
-            <div className="text-center">{member.name}</div>
-          </div>
-        ))}
-      </div>
+
+      {isRecommend ? (
+        <RecommendActive
+          neighborhood={neighborhood}
+          handleRecommendCancle={handleRecommendCancle}
+          handleAddToMorphing={handleAddToMorphing}
+          setIsRecommend={setIsRecommend}
+          nonRecommend={nonRecommend}
+          setNonRecommend={setNonRecommend}
+        />
+      ) : (
+        <RecommendInActive
+          nonMembers={nonMembers}
+          handleButtonClick={handleButtonClick}
+          handleAddButtonClick={handleAddButtonClick}
+          allPings={allPings}
+          lastPingElementRef={lastPingElementRef}
+          selectedButton={selectedButton}
+          handleRefresh={handleRefresh}
+          eventName={eventName}
+          id={id}
+        />
+      )}
     </div>
   );
 }
+
+export default BottomDrawer;
