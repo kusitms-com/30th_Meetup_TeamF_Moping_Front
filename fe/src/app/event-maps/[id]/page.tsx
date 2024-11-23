@@ -5,7 +5,7 @@ import { useParams, useRouter } from "next/navigation";
 import { a } from "@react-spring/web";
 import { useDrag } from "@use-gesture/react";
 import MapComponent from "./components/MapComponent";
-import BottomDrawer from "./components/BottomDrawer";
+import { BottomDrawer } from "./components/BottomDrawer";
 import useDrawer from "./hooks/useDrawer";
 import { useLocationStore } from "./stores/useLocationStore";
 import { useMarkerStore } from "./load-mappin/stores/useMarkerStore";
