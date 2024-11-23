@@ -6,31 +6,29 @@ import Image from "next/image";
 
 interface NavigationProps {
   showBackButton?: boolean;
-  title?: string;
   onBack?: () => void;
+  title?: string;
 }
 
 function Navigation({
   showBackButton = true,
-  title = "",
   onBack,
+  title = "",
 }: NavigationProps) {
   const router = useRouter();
 
   const handleBackClick = () => {
-    if (onBack) onBack();
-    else router.back();
+    if (onBack) {
+      onBack();
+    } else {
+      router.back();
+    }
   };
 
   return (
-    <header className="fixed top-0 left-1/2 transform -translate-x-1/2 w-[360px] h-[56px] bg-white flex items-center justify-between px-4 z-10">
+    <header className="fixed top-0 left-1/2 transform -translate-x-1/2 w-[360px] h-[56px] bg-white flex items-center justify-between px-2 z-10">
       {showBackButton && (
-        <button
-          type="button"
-          onClick={handleBackClick}
-          className="p-2 flex items-center"
-          aria-label="뒤로가기"
-        >
+        <button type="button" onClick={handleBackClick} className="p-2">
           <Image
             src="/images/ArrowBack.svg"
             alt="뒤로가기"

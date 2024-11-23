@@ -10,16 +10,15 @@ interface MapComponentProps {
 export default function MapComponent({ px, py }: MapComponentProps) {
   const mapRef = useRef<HTMLDivElement | null>(null);
   const mapInstanceRef = useRef<naver.maps.Map | null>(null);
-  const { customMarkers } = useMarkerStore(); // MarkerStore에서 customMarkers 가져오기
+  const { customMarkers } = useMarkerStore();
   const { center } = useLocationStore();
   const [selectedMarker, setSelectedMarker] = useState<number | null>(null);
-  const markersRef = useRef<naver.maps.Marker[]>([]);
+  const markersRef = useRef<naver.maps.Marker[]>([]); // 초기값을 빈 배열로 설정
 
-  // 레벨에 따라 커스텀 마커 아이콘 설정
   const getIconByLevel = (level: number, isSelected: boolean = false) => {
-    const size = isSelected ? 44 : 36; // 선택된 마커는 44px, 기본 마커는 24px
+    const size = isSelected ? 44 : 36;
     return {
-      url: `/pin/level${level}.svg`, // 레벨에 따라 다른 아이콘 파일 사용
+      url: `/pin/level${level}.svg`,
       size: new window.naver.maps.Size(size, size),
       scaledSize: new window.naver.maps.Size(size, size),
       origin: new window.naver.maps.Point(0, 0),
@@ -55,12 +54,11 @@ export default function MapComponent({ px, py }: MapComponentProps) {
     }
   }, [px, py]);
 
-  // customMarkers가 변경될 때마다 마커를 업데이트
   useEffect(() => {
-    if (!mapInstanceRef.current) return;
+    if (!mapInstanceRef.current || !customMarkers) return;
 
     // 이전 마커 제거
-    markersRef.current.forEach((marker) => marker.setMap(null));
+    (markersRef.current || []).forEach((marker) => marker.setMap(null));
     markersRef.current = [];
 
     // 새로운 마커 추가
@@ -72,12 +70,10 @@ export default function MapComponent({ px, py }: MapComponentProps) {
       });
       markersRef.current.push(marker);
 
-      // `nonMembers` 이름을 콤마로 연결된 문자열로 변환
       const nonMemberNames = (ping.nonMembers || [])
         .map((member) => member.name)
         .join(", ");
 
-      // Custom tooltip style with triangle arrow for infoWindow
       const infoWindowContent = `
         <div style="position: relative; padding: 8px; background: black; color: white; border-radius: 8px; font-size: 14px; max-width: 200px;">
           <strong>${nonMemberNames}</strong><br/>
@@ -95,22 +91,18 @@ export default function MapComponent({ px, py }: MapComponentProps) {
         backgroundColor: "transparent",
       });
 
-      // 마커 클릭 이벤트
       window.naver.maps.Event.addListener(marker, "click", () => {
-        // 이전 선택된 마커의 크기를 원래대로 초기화
         if (selectedMarker !== null && selectedMarker !== index) {
           markersRef.current[selectedMarker].setIcon(
             getIconByLevel(customMarkers[selectedMarker].iconLevel)
           );
         }
 
-        // 현재 클릭된 마커를 선택하고 크기 변경
         setSelectedMarker(index);
         marker.setIcon(getIconByLevel(ping.iconLevel, true));
         infoWindow.open(mapInstanceRef.current!, marker);
       });
 
-      // 지도 클릭 시 모든 마커 초기화
       window.naver.maps.Event.addListener(
         mapInstanceRef.current!,
         "click",
@@ -119,7 +111,7 @@ export default function MapComponent({ px, py }: MapComponentProps) {
             markersRef.current[selectedMarker].setIcon(
               getIconByLevel(customMarkers[selectedMarker].iconLevel)
             );
-            setSelectedMarker(null); // 선택된 마커 상태 초기화
+            setSelectedMarker(null);
             infoWindow.close();
           }
         }
@@ -127,7 +119,6 @@ export default function MapComponent({ px, py }: MapComponentProps) {
     });
   }, [customMarkers, selectedMarker]);
 
-  // `center` 위치가 변경될 때마다 지도의 중심 업데이트
   useEffect(() => {
     if (mapInstanceRef.current) {
       mapInstanceRef.current.setCenter(

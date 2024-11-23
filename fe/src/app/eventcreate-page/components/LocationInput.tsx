@@ -24,7 +24,8 @@ function LocationInput({
 
   return (
     <div className={`relative flex flex-col ${className} mt-4`}>
-      <label className="text-[#2c2c2c] text-xl font-semibold font-['Pretendard'] leading-loose mb-4">
+      {/* Updated Label Styling */}
+      <label className="text-[#2c2c2c] text-[22px] font-semibold font-['Pretendard'] leading-[30px] mb-2">
         어디서 모여요?
       </label>
       <button
@@ -39,11 +40,12 @@ function LocationInput({
           height={24}
           className="mr-3"
         />
+        {/* Updated Input Placeholder Styling */}
         <input
           type="text"
           value={location}
           placeholder="장소를 입력해주세요"
-          className="bg-transparent border-none flex-grow text-[#2c2c2c] text-base font-medium outline-none"
+          className="bg-transparent border-none flex-grow text-[#2c2c2c] text-base font-medium font-['Pretendard'] leading-normal outline-none"
           readOnly
         />
       </button>

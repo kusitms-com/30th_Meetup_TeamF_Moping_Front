@@ -17,7 +17,7 @@ function SearchResults({ results, searchTerm, onSelect }: SearchResultsProps) {
   if (results.length === 0) return null;
 
   return (
-    <ul className="w-full max-w-[360px] max-h-[240px] overflow-y-auto bg-white mt-2">
+    <ul className="w-full max-w-[360px] max-h-[240px] overflow-y-auto bg-white">
       {renderedResults}
     </ul>
   );
