@@ -1,9 +1,10 @@
+// types/types.ts
 export interface ButtonProps {
   label: string;
   onClick: () => void;
-  type?: "start" | "next"; // start와 next 타입
+  type?: "start" | "next" | "submit"; // "submit" 추가
   className?: string;
-  disabled?: boolean; // disabled 속성 추가
+  disabled?: boolean;
 }
 
 export interface NavigationProps {
