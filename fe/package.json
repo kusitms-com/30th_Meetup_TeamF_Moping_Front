@@ -23,6 +23,7 @@
     "next-auth": "^4.24.8",
     "react": "^18",
     "react-dom": "^18",
+    "react-swipeable": "^7.0.2",
     "tailwind-scrollbar-hide": "^1.1.7",
     "uuid": "^10.0.0",
     "winston": "^3.14.2",
