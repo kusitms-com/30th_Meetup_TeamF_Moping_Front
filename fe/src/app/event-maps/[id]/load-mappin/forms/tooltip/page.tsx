@@ -69,7 +69,7 @@ export default function ToolTipPage() {
       <Navigation />
 
       {/* Title Section */}
-      <div className="w-[328px] mt-16 mb-[48px]">
+      <div className="w-full px-4 mt-16 mb-[48px]">
         <h1 className="text-[#2c2c2c] text-[22px] font-semibold font-['Pretendard'] leading-[30px]">
           이렇게 공유 버튼이 안 보이나요?
           <br />
@@ -78,7 +78,7 @@ export default function ToolTipPage() {
       </div>
 
       {/* Slide Content */}
-      <div className="w-[328px] h-[406px] mb-[20px]">
+      <div className="w-full px-4 mb-[20px]">
         <div className="bg-[#F8F8F8] rounded-xl border border-[#F0F0F0] p-[20px]">
           {slides[currentSlide].step && (
             <div className="flex items-center gap-2 mb-2">
@@ -123,13 +123,15 @@ export default function ToolTipPage() {
       </div>
 
       {/* Button Section */}
-      <Button
-        label="네이버 지도 바로 열기"
-        onClick={() => {
-          window.location.href = "https://m.map.naver.com/";
-        }}
-        className="w-[328px] h-[60px] text-lg font-medium font-['Pretendard'] rounded-lg flex justify-center items-center"
-      />
+      <div className="w-full px-4">
+        <Button
+          label="네이버 지도 바로 열기"
+          onClick={() => {
+            window.location.href = "https://m.map.naver.com/";
+          }}
+          className="w-full h-[60px] text-lg font-medium font-['Pretendard'] rounded-lg flex justify-center items-center"
+        />
+      </div>
     </div>
   );
 }
