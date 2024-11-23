@@ -1,6 +1,5 @@
-import React from "react";
+import React, { Dispatch, SetStateAction } from "react";
 import Image from "next/image";
-import { Dispatch, SetStateAction } from "react";
 
 interface RecommendActiveProps {
   neighborhood: string;
@@ -11,25 +10,29 @@ interface RecommendActiveProps {
   nonRecommend: boolean;
 }
 
-const RecommendActive: React.FC<RecommendActiveProps> = ({
+export function RecommendActive({
   neighborhood,
   handleRecommendCancle,
   handleAddToMorphing,
   setIsRecommend,
   setNonRecommend,
   nonRecommend,
-}) => {
+}: RecommendActiveProps): JSX.Element {
   return (
     <div>
       {/* nonRecommend이 true일 때 다른 UI를 렌더링 */}
       {nonRecommend ? (
         <>
-          {/* 추천 데이터가 있을 때 기본 UI */}
+          {/* 추천 데이터가 없을 때 UI */}
           <div className="text-text-lg text-white px-[20px] pt-[16px] pb-[14px] flex justify-between">
             <div>
               <div>근처에 추천할만한 공간이 없어요</div>
             </div>
-            <button className="h-[32px]" onClick={handleRecommendCancle}>
+            <button
+              type="button"
+              className="h-[32px]"
+              onClick={handleRecommendCancle}
+            >
               <Image
                 src="/svg/recommendCancle.svg"
                 alt="cancle"
@@ -40,6 +43,7 @@ const RecommendActive: React.FC<RecommendActiveProps> = ({
           </div>
           <div className="px-[20px] py-[10px]">
             <button
+              type="button"
               className="bg-danger-base rounded-small text-white w-full h-[48px]"
               onClick={() => {
                 setIsRecommend(false);
@@ -63,7 +67,11 @@ const RecommendActive: React.FC<RecommendActiveProps> = ({
                 <div>인기 공간</div>
               </div>
             </div>
-            <button className="h-[32px]" onClick={handleRecommendCancle}>
+            <button
+              type="button"
+              className="h-[32px]"
+              onClick={handleRecommendCancle}
+            >
               <Image
                 src="/svg/recommendCancle.svg"
                 alt="cancle"
@@ -74,6 +82,7 @@ const RecommendActive: React.FC<RecommendActiveProps> = ({
           </div>
           <div className="px-[20px] py-[10px]">
             <button
+              type="button"
               className="bg-danger-base rounded-small text-white w-full h-[48px]"
               onClick={handleAddToMorphing}
             >
@@ -84,6 +93,6 @@ const RecommendActive: React.FC<RecommendActiveProps> = ({
       )}
     </div>
   );
-};
+}
 
 export default RecommendActive;

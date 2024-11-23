@@ -30,8 +30,9 @@ const StoreItem = forwardRef<HTMLDivElement, StoreItemProps>(
         </div>
       </div>
       <button
+        type="button" // 명시적으로 버튼 타입 설정
         onClick={() => {
-          location.href = `${url}`;
+          window.location.href = url; // window.location.href로 수정
         }}
         className="flex justify-center items-center text-text-disabled text-caption"
       >
