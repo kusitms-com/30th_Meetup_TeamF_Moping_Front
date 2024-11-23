@@ -76,7 +76,7 @@ export default function MapComponent({ px, py }: MapComponentProps) {
     const iconSize_h = isSelected ? 40 : 32;
     let textColor, textShadow;
 
-    if (level === 1) {
+    if (level === 1 || level === 10 || level === 10) {
       textColor = "#000000"; // 검정색 글씨
       textShadow =
         "-1px 0px #FFFFFF, 0px 1px #FFFFFF, 1px 0px #FFFFFF, 0px -1px #FFFFFF"; // 흰색 텍스트 쉐도우 테두리
@@ -87,11 +87,13 @@ export default function MapComponent({ px, py }: MapComponentProps) {
     }
 
     return {
-      content: `<div style="position: relative; width: ${iconSize_w}px; height: ${iconSize_h}px; background: url('/pin/level${level}.svg') no-repeat center center; background-size: contain;">
-                <div style="position: absolute; top: ${iconSize_w / 1.2}px; left: 50%; transform: translateX(-50%); white-space: nowrap; color: ${textColor}; font-size: 12px; text-align: center; text-shadow: ${textShadow}; padding: 2px 4px; border-radius: 4px;">
-                  ${placeName}
-                </div>
-              </div>`,
+      content: `<div style="position: relative; width: ${iconSize_w}px; height: ${iconSize_h}px; background: url('${
+        level === 10 ? "/pin/recommendPing.svg" : `/pin/level${level}.svg`
+      }') no-repeat center center; background-size: contain;">
+        <div style="position: absolute; top: ${iconSize_w}px; left: 50%; transform: translateX(-50%); white-space: nowrap; color: ${textColor}; font-size: 12px; text-align: center; text-shadow: ${textShadow}; padding: 2px 4px; border-radius: 4px;">
+          ${placeName}
+        </div>
+      </div>`,
       size: new window.naver.maps.Size(iconSize_w, iconSize_h),
       anchor: new window.naver.maps.Point(iconSize_w / 2, iconSize_h + 15), // 라벨이 포함되므로 앵커 포지션 조정
     };
@@ -304,7 +306,7 @@ export default function MapComponent({ px, py }: MapComponentProps) {
         if (mapInstanceRef.current) {
           infoWindow.open(mapInstanceRef.current, marker);
         }
-
+        console.log(customMarkers);
         infoWindowRef.current = infoWindow;
       });
     });
@@ -334,6 +336,7 @@ export default function MapComponent({ px, py }: MapComponentProps) {
         }
       );
     }
+    console.log(customMarkers);
   }, [customMarkers]);
 
   useEffect(() => {

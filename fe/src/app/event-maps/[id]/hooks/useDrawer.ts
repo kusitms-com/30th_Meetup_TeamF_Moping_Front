@@ -9,13 +9,13 @@ const useDrawer = () => {
     let stopPointsPercent;
     if (window.matchMedia("(max-height: 668px)").matches) {
       // 작은 기종
-      stopPointsPercent = [55, 30, 0, -20];
+      stopPointsPercent = [54, 30, 0, -20];
     } else if (window.matchMedia("(max-height: 850px)").matches) {
       // 중간 기종
-      stopPointsPercent = [60, 24, 0, -15.5];
+      stopPointsPercent = [59, 24, 0, -15.5];
     } else {
       // 큰 기종
-      stopPointsPercent = [57.5, 22.5, 0, -14];
+      stopPointsPercent = [57, 22.5, 0, -14];
     }
     const vh = window.innerHeight;
     setStopPoints(stopPointsPercent.map((p) => vh * (p / 100) * -1));

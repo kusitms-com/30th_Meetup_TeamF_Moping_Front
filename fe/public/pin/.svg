@@ -3,5 +3,5 @@
 <rect x="3" y="3" width="22" height="22" rx="2" fill="#3A91EA" stroke="black" stroke-width="2"/>
 <path d="M14 6.08203L15.4678 7.50201L17.49 7.21599L17.8428 9.22755L19.6469 10.1847L18.75 12.0195L19.6469 13.8543L17.8428 14.8115L17.49 16.8231L15.4678 16.5371L14 17.957L12.5322 16.5371L10.51 16.8231L10.1572 14.8115L8.3531 13.8543L9.25 12.0195L8.3531 10.1847L10.1572 9.22755L10.51 7.21599L12.5322 7.50201L14 6.08203Z" fill="black" stroke="black" stroke-width="1.58333" stroke-linejoin="bevel"/>
 <path d="M16.375 16.373V21.9147L14 19.9355L11.625 21.9147V16.373" stroke="black" stroke-width="1.58333" stroke-linejoin="bevel"/>
-<path d="M12.021 14.1361V10.1777L14.0002 12.2888L15.9793 10.1777V14.1361" stroke="#3A91EA" stroke-width="1.2" stroke-linejoin="bevel"/>
+<path d="M12.0215 14.1361V10.1777L14.0007 12.2888L15.9798 10.1777V14.1361" stroke="#3A91EA" stroke-width="1.2" stroke-linejoin="bevel"/>
 </svg>
