@@ -92,7 +92,7 @@ function LocationSearch() {
   };
 
   return (
-    <div className="flex flex-col items-center mt-[4px]">
+    <div className="flex flex-col items-center">
       <header className="fixed top-0 left-1/2 transform -translate-x-1/2 w-[360px] h-[56px] bg-white flex items-center justify-between px-4 z-10">
         <button type="button" onClick={handleBackClick} className="p-2">
           <Image
@@ -104,13 +104,6 @@ function LocationSearch() {
           />
         </button>
         <div className="flex items-center w-full h-12 px-4 bg-[#f7f7f7] rounded-lg ml-2">
-          <Image
-            src="/images/Search.svg"
-            alt="돋보기 아이콘"
-            width={24}
-            height={24}
-            className="mr-3"
-          />
           <input
             type="text"
             ref={inputRef} // 인풋 참조 추가
@@ -130,7 +123,7 @@ function LocationSearch() {
               }}
             >
               <Image
-                src="/images/Cancel.svg"
+                src="/svg/delete.svg"
                 alt="삭제 아이콘"
                 width={24}
                 height={24}

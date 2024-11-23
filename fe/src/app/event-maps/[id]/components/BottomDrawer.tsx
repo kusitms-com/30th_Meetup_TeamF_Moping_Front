@@ -175,7 +175,7 @@ export function BottomDrawer({
   };
 
   const handleAddButtonClick = () => {
-    router.push(`/event-maps/${id}/load-mappin`);
+    router.push(`/event-maps/${id}/load-mappin/forms/name-pin`);
   };
 
   const handleRefresh = async () => {

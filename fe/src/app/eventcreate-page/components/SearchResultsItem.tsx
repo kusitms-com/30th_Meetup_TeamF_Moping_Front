@@ -57,7 +57,7 @@ function SearchResultItem({
     >
       <div className="w-6 h-6 flex-shrink-0">
         <Image
-          src="/images/LocationPin.svg"
+          src="/svg/LocationPin.svg"
           alt="위치 핀"
           width={24}
           height={24}
