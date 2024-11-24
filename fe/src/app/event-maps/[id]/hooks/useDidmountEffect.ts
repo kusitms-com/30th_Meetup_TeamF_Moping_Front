@@ -16,8 +16,10 @@ const useDidMountEffect = (
     if (didMount.current) {
       func();
     } else {
-      didMount.current = true; // Set to true after the first render
+      didMount.current = true;
     }
+    // Ensure 'func' is included in the dependencies
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, deps);
 };
 
