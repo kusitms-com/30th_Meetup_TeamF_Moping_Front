@@ -49,6 +49,9 @@ export function RecommendInActive({
 }: RecommendInActiveProps): JSX.Element {
   const router = useRouter();
 
+  // iconLevel에 따라 내림차순으로 정렬
+  const sortedPings = [...allPings].sort((a, b) => b.iconLevel - a.iconLevel);
+
   return (
     <>
       <div className="h-[62px] w-full pt-[16px] pb-[14px] pl-[20px] pr-[16px] flex justify-between text-lg text-grayscale-0 font-300">
@@ -91,14 +94,16 @@ export function RecommendInActive({
         ))}
       </div>
       <div className="h-[484px] flex flex-col gap-[12px] p-[20px] overflow-auto mt-[20px]">
-        {allPings.map((ping, index) => (
+        {sortedPings.map((ping, index) => (
           <StoreItem
             key={ping.url}
             url={ping.url}
             name={ping.placeName}
             type={ping.type}
             iconLevel={ping.iconLevel}
-            ref={index === allPings.length - 1 ? lastPingElementRef : undefined}
+            ref={
+              index === sortedPings.length - 1 ? lastPingElementRef : undefined
+            }
           />
         ))}
       </div>

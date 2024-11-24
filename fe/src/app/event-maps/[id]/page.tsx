@@ -2,6 +2,7 @@
 
 import React, { useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
+import Image from "next/image";
 import { a } from "@react-spring/web";
 import { useDrag } from "@use-gesture/react";
 import MapComponent from "./components/MapComponent";
@@ -10,6 +11,8 @@ import useDrawer from "./hooks/useDrawer";
 import { useLocationStore } from "./stores/useLocationStore";
 import { useMarkerStore } from "./load-mappin/stores/useMarkerStore";
 import ExitModal from "./components/EventMapExitModal";
+import useUpdateTimeStore from "./stores/useUpdateTime";
+import useDidMountEffect from "./hooks/useDidmountEffect";
 
 interface NonMember {
   nonMemberId: number;
@@ -39,10 +42,13 @@ export default function Page() {
   const { id } = useParams();
   const parsedId = Array.isArray(id) ? id[0] : id;
   const [data, setData] = useState<Data | null>(null);
-  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
+  const [isVisible, setIsVisible] = useState<boolean>(false);
+  const [isFadingOut, setIsFadingOut] = useState<boolean>(false);
   const moveToLocation = useLocationStore((state) => state.moveToLocation);
   const setCustomMarkers = useMarkerStore((state) => state.setCustomMarkers);
   const router = useRouter();
+  const { updateTime, trigger } = useUpdateTimeStore();
 
   useEffect(() => {
     const fetchData = async () => {
@@ -96,6 +102,25 @@ export default function Page() {
     setIsModalOpen(false);
   };
 
+  useDidMountEffect(() => {
+    // 메시지를 표시하고, 일정 시간 후에 숨깁니다.
+    setIsVisible(true);
+
+    const fadeOutTimer = setTimeout(() => {
+      setIsFadingOut(true);
+    }, 4000);
+
+    const hideTimer = setTimeout(() => {
+      setIsVisible(false);
+      setIsFadingOut(false); // 상태 초기화
+    }, 4500);
+
+    return () => {
+      clearTimeout(fadeOutTimer);
+      clearTimeout(hideTimer);
+    }; // 타이머 정리
+  }, [updateTime, trigger]); // updateTime이 변경될 때만 실행
+
   const bind = useDrag(
     ({ last, movement: [, my], memo = y.get() }) => {
       if (last) {
@@ -123,6 +148,17 @@ export default function Page() {
 
   return (
     <div>
+      {isVisible && (
+        <div
+          className={`fixed h-[60px] mt-[16px] mx-[16px] text-white z-20 bg-[#1d1d1d] rounded-[8px] px-[16px] py-[14px] flex items-center text-text-md2 gap-[12px]  backdrop-blur-lg ${
+            isFadingOut ? "animate-fadeout" : "animate-fadein2"
+          }`}
+          style={{ width: "calc(100% - 32px)" }}
+        >
+          <Image src="/profile/level3.svg" width={45} height={50} alt="핑" />
+          <div>{updateTime} 전 맵핀이 업데이트 됐어요!</div>
+        </div>
+      )}
       <div className="w-[100%] h-[56px] px-[16px] py-[16px] fixed z-10 flex justify-end">
         <button
           type="button"

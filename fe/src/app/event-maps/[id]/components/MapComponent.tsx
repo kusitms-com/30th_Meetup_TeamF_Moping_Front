@@ -319,6 +319,7 @@ export default function MapComponent({
                 false
               )
             );
+
             previousMarkerIndexRef.current = null;
           }
 
