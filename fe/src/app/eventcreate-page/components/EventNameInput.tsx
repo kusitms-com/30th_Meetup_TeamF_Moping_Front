@@ -12,7 +12,7 @@ function EventNameInput({
   value,
 }: EventNameInputProps) {
   const [hasUserEdited, setHasUserEdited] = useState(false);
-  const [isTyping, setIsTyping] = useState(false); // 타이핑 상태 추가
+  const [isTyping, setIsTyping] = useState(false);
   const showWarning = hasUserEdited && value.trim().length < 1;
 
   useEffect(() => {

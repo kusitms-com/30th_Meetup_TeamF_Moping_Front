@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import { useRouter, useParams } from "next/navigation"; // Moved to the correct order
+import { useRouter, useParams } from "next/navigation"; // Correct order
 import Navigation from "@/app/components/common/Navigation";
 import Button from "@/app/components/common/Button";
 import LinkField from "./components/LinkField";
@@ -84,7 +84,7 @@ export default function LinksPage() {
     <div className="w-[360px] h-screen bg-white mx-auto flex flex-col">
       <Navigation onBack={handleBack} />
       {/* Scrollable Content */}
-      <div className="flex-1 mt-[16px] px-[16px] pt-[72px] w-full overflow-y-auto pb-[80px]">
+      <div className="flex-1 mt-[16px] px-[16px] pt-[72px] w-full overflow-y-auto pb-[100px]">
         <div className="text-[#2c2c2c] text-[22px] font-semibold leading-[30px] font-['Pretendard']">
           마음에 쏙 든 공간을 불러와요
         </div>
@@ -109,7 +109,7 @@ export default function LinksPage() {
           />
 
           {/* CheckBox Section */}
-          <div className="flex items-center mt-[83px] mb-[18px] w-full">
+          <div className="flex items-center mb-[18px] w-full">
             <CheckBox isChecked={isChecked} onChange={handleCheckboxChange} />
             <span className="ml-2 text-[#8e8e8e] text-xs font-medium font-['Pretendard'] leading-none">
               내 공간 정보를 모핑에서 활용하는 것에 동의합니다
@@ -118,8 +118,11 @@ export default function LinksPage() {
         </form>
       </div>
 
-      {/* Sticky Save Button */}
-      <div className="w-full px-[16px] bg-white sticky bottom-0 border-t border-[#f0f0f0]">
+      {/* Fixed Save Button */}
+      <div
+        className="w-full px-[16px] bg-white fixed bottom-0 left-0 border-t border-[#f0f0f0]"
+        style={{ zIndex: 50 }}
+      >
         <Button
           label="저장"
           onClick={handleSubmit}

@@ -13,31 +13,68 @@ function LoadingPage() {
   };
 
   return (
-    <div className="w-full h-screen bg-[#1d1d1d] flex flex-col items-center relative">
-      {/* 중앙 로고 */}
-      <div className="flex flex-col items-center absolute inset-x-0 top-[152px]">
-        <Image
-          src="/images/mopinglogo.svg"
-          alt="Moping Logo"
-          width={150}
-          height={169}
-          className="object-cover"
-          priority
-        />
+    <div className="flex flex-col items-center min-h-screen bg-black text-white px-[14.17px]">
+      {/* 상단 여백 */}
+      <div className="mt-[32px]" />
 
-        {/* MOPING 텍스트 */}
-        <div className="mt-[27px]">
+      {/* 위 선 */}
+      <div className="w-full h-[0px] border-t-[1px] border-white mb-[16px]" />
+
+      {/* 로고 */}
+      <div className="w-full flex">
+        <Image
+          src="/svg/logo.svg"
+          alt="Moping Logo"
+          width={170}
+          height={24}
+          className="h-auto"
+        />
+      </div>
+
+      {/* 아래 선 */}
+      <div className="w-full h-[0px] border-t-[1px] border-white mt-[16px] mb-[32px]" />
+
+      {/* 아이콘들 */}
+      <div className="grid grid-cols-2 gap-y-[28.69px] gap-x-[28.69px] mb-auto">
+        <div className="flex items-center justify-center">
           <Image
-            src="/images/MOPING.svg"
-            alt="Moping Text"
-            width={193}
-            height={27}
-            className="object-cover"
+            src="/svg/loding1.svg"
+            alt="Loading Icon 1"
+            width={169}
+            height={169}
+            className="h-auto"
+          />
+        </div>
+        <div className="flex items-center justify-center">
+          <Image
+            src="/svg/loding2.svg"
+            alt="Loading Icon 2"
+            width={169}
+            height={169}
+            className="h-auto"
+          />
+        </div>
+        <div className="flex items-center justify-center">
+          <Image
+            src="/svg/loding3.svg"
+            alt="Loading Icon 3"
+            width={169}
+            height={169}
+            className="h-auto"
+          />
+        </div>
+        <div className="flex items-center justify-center">
+          <Image
+            src="/svg/loding4.svg"
+            alt="Loading Icon 4"
+            width={169}
+            height={169}
+            className="h-auto"
           />
         </div>
       </div>
 
-      {/* 시작하기 버튼 */}
+      {/* 모핑 시작하기 버튼 */}
       <div className="fixed bottom-[45px] w-full flex justify-center px-4">
         <Button
           label="모핑 시작하기"
