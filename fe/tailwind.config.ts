@@ -15,8 +15,16 @@ const config: Config = {
             opacity: "0",
           },
           "100%": {
-            opacity: "1",
+            opacity: "0.8",
           },
+        },
+        fadeout: {
+          "0%": { opacity: "0.8", transform: "translateY(0)" },
+          "100%": { opacity: "0", transform: "translateY(-10px)" },
+        },
+        fadein2: {
+          "0%": { opacity: "0", transform: "translateY(-10px)" },
+          "100%": { opacity: "0.8", transform: "translateY(0px)" },
         },
       },
       colors: {
@@ -170,6 +178,8 @@ const config: Config = {
     },
     animation: {
       fadein: "fadein 2s ease-in-out",
+      fadein2: "fadein2 0.5s ease-in-out forwards",
+      fadeout: "fadeout 0.5s ease-in-out forwards",
     },
     scrollbarHide: {
       "&::-webkit-scrollbar": {
