@@ -87,11 +87,11 @@ export function BottomDrawer({
             setIsRecommended(true);
             recommendProfile = data.recommendPings.map(
               (ping: CustomRecommendPing) => ({
-                iconLevel: 10, 
+                iconLevel: 10,
                 nonMembers: [
                   {
                     nonMemberId: -1,
-                    name: "추천 모핑", 
+                    name: "추천 모핑",
                     profileSvg: "/profile/recommendProfile.svg",
                   },
                 ],
@@ -108,13 +108,10 @@ export function BottomDrawer({
             ...(recommendProfile[0]?.nonMembers || []),
             ...(data.nonMembers || []),
           ]);
-          setAllPings([
-            ...(data.pings || []), 
-            ...(recommendProfile || []), 
-          ]);
+          setAllPings([...(data.pings || []), ...(recommendProfile || [])]);
           setCustomMarkers([
-            ...(data.pings || []), 
-            ...(recommendProfile || []), 
+            ...(data.pings || []),
+            ...(recommendProfile || []),
           ]);
           setNeighborhood(data.neighborhood);
           console.log(data);
@@ -139,11 +136,11 @@ export function BottomDrawer({
   };
 
   const handleAddToMorphing = async () => {
-    const uuid = id; 
-    const sids = recommendPings.map((item) => item.sid); 
+    const uuid = id;
+    const sids = recommendPings.map((item) => item.sid);
 
     const requestBody = {
-      uuid, 
+      uuid,
       sids,
     };
 
@@ -160,10 +157,10 @@ export function BottomDrawer({
         throw new Error(`HTTP error! Status: ${response.status}`);
       }
 
-      const result = await response.json(); 
+      const result = await response.json();
       console.log("Recommended Data Response:", result);
       setTrigger((prev) => !prev);
-      setIsRecommend(false); 
+      setIsRecommend(false);
     } catch (error) {
       console.error("Error fetching recommended data:", error);
     }
@@ -235,12 +232,12 @@ export function BottomDrawer({
 
           recommendProfile = data.recommendPings.map(
             (ping: CustomRecommendPing) => ({
-              iconLevel: 10, 
+              iconLevel: 10,
               nonMembers: [
                 {
                   nonMemberId: -1,
-                  name: "추천 모핑", 
-                  profileSvg: "/profile/recommendProfile.svg", 
+                  name: "추천 모핑",
+                  profileSvg: "/profile/recommendProfile.svg",
                 },
               ],
               url: ping.url,
@@ -256,14 +253,8 @@ export function BottomDrawer({
           ...(recommendProfile[0]?.nonMembers || []),
           ...(data.nonMembers || []),
         ]);
-        setAllPings([
-          ...(data.pings || []), 
-          ...(recommendProfile || []),  
-        ]);
-        setCustomMarkers([
-          ...(data.pings || []), 
-          ...(recommendProfile || []), 
-        ]);
+        setAllPings([...(data.pings || []), ...(recommendProfile || [])]);
+        setCustomMarkers([...(data.pings || []), ...(recommendProfile || [])]);
         setNeighborhood(data.neighborhood);
         setUpdateTime(data.pingLastUpdateTime);
       } else {

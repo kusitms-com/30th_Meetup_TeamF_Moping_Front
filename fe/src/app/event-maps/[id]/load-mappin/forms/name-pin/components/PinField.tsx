@@ -86,7 +86,7 @@ export default function PinField({ value, onChange }: PinFieldProps) {
       <div className="flex space-x-[16px]">
         {value.map((digit, index) => (
           <input
-            key={inputKeys[index]} 
+            key={inputKeys[index]}
             type="text"
             inputMode="numeric"
             maxLength={1}

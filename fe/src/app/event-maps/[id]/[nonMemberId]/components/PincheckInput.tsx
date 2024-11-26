@@ -1,13 +1,13 @@
 "use client";
 
 import React, { useRef, useState, useEffect, useCallback } from "react";
-import Image from "next/image"; 
+import Image from "next/image";
 import { useRouter, useParams } from "next/navigation";
 import { v4 as uuidv4 } from "uuid";
 import { useUserDataStore } from "../stores/useUserDataStore";
 
 interface PasswordInputProps {
-  iconUrl: string | null; 
+  iconUrl: string | null;
 }
 
 export default function PasswordInput({ iconUrl }: PasswordInputProps) {

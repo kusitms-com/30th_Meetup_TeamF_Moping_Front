@@ -17,7 +17,7 @@ function Button({
   return (
     <div className="w-full fixed bottom-[20px] left-0 right-0 flex justify-center">
       <button
-        type={type === "submit" ? "submit" : "button"} 
+        type={type === "submit" ? "submit" : "button"}
         onClick={onClick}
         className={`${buttonStyle} ${className} w-[328px] h-[60px] py-[17px] rounded-lg`}
         disabled={disabled}

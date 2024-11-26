@@ -25,14 +25,14 @@ function EventNameInput({
   const handleInputChange = useCallback(
     (e: React.ChangeEvent<HTMLInputElement>) => {
       setHasUserEdited(true);
-      setIsTyping(true); 
+      setIsTyping(true);
       onChange(e.target.value);
     },
     [onChange]
   );
 
   const handleBlur = useCallback(() => {
-    setIsTyping(false); 
+    setIsTyping(false);
   }, []);
 
   const handleClear = useCallback(() => {
@@ -50,9 +50,9 @@ function EventNameInput({
         className={classNames(
           "relative w-[328px] h-14 p-4 bg-[#f7f7f7] rounded-lg flex justify-between items-center border-2",
           {
-            "border-danger-base": showWarning, 
-            "border-[#555555]": isTyping, 
-            "border-transparent": !isTyping && !showWarning, 
+            "border-danger-base": showWarning,
+            "border-[#555555]": isTyping,
+            "border-transparent": !isTyping && !showWarning,
           }
         )}
       >
@@ -60,13 +60,13 @@ function EventNameInput({
           type="text"
           value={value}
           onChange={handleInputChange}
-          onBlur={handleBlur} 
-          onFocus={() => setIsTyping(true)} 
+          onBlur={handleBlur}
+          onFocus={() => setIsTyping(true)}
           placeholder="모임"
           className={classNames(
             "bg-transparent text-base font-medium font-['Pretendard'] leading-normal outline-none flex-grow",
             {
-              "text-[#2c2c2c]": isTyping || value.trim().length > 0, 
+              "text-[#2c2c2c]": isTyping || value.trim().length > 0,
               "text-[#8e8e8e]": !isTyping && value.trim().length === 0,
             }
           )}

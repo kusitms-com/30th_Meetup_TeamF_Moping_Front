@@ -18,8 +18,8 @@ const useDrawer = () => {
   };
 
   useEffect(() => {
-    updateStopPoints(); 
-    window.addEventListener("resize", updateStopPoints); 
+    updateStopPoints();
+    window.addEventListener("resize", updateStopPoints);
     return () => window.removeEventListener("resize", updateStopPoints);
   }, []);
 
@@ -37,7 +37,7 @@ const useDrawer = () => {
   };
 
   const setPosition = (newY: number) => {
-    const limitedY = Math.max(Math.min(newY, stopPoints[3]), stopPoints[0]); 
+    const limitedY = Math.max(Math.min(newY, stopPoints[3]), stopPoints[0]);
     api.start({ y: limitedY });
   };
 

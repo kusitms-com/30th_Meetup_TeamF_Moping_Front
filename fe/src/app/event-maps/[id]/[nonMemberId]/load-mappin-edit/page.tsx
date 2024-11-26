@@ -27,7 +27,6 @@ export default function LinkEditPage() {
     return urlPattern.test(link.trim());
   };
 
-
   useEffect(() => {
     if (!id || !nonMemberId) {
       console.error("누락된 라우트 매개변수:", { id, nonMemberId });
@@ -127,8 +126,8 @@ export default function LinkEditPage() {
       <div
         className="flex-1 px-4 mt-[75px] overflow-y-auto"
         style={{
-          maxHeight: "calc(100vh - 60px)", 
-          paddingBottom: "120px", 
+          maxHeight: "calc(100vh - 60px)",
+          paddingBottom: "120px",
         }}
       >
         {userName && (

@@ -292,9 +292,9 @@ export default function MapComponent({
               </div>
             </div>
           `,
-          borderWidth: 0, 
-          backgroundColor: "transparent", 
-          disableAnchor: true, 
+          borderWidth: 0,
+          backgroundColor: "transparent",
+          disableAnchor: true,
         });
 
         if (mapInstanceRef.current) {

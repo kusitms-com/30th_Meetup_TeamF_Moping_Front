@@ -111,14 +111,14 @@ export default function Page() {
 
     const hideTimer = setTimeout(() => {
       setIsVisible(false);
-      setIsFadingOut(false); 
+      setIsFadingOut(false);
     }, 4500);
 
     return () => {
       clearTimeout(fadeOutTimer);
       clearTimeout(hideTimer);
-    }; 
-  }, [updateTime, trigger]); 
+    };
+  }, [updateTime, trigger]);
 
   const bind = useDrag(
     ({ last, movement: [, my], memo = y.get() }) => {
@@ -173,7 +173,7 @@ export default function Page() {
           <a.div
             {...bind()}
             style={{
-              transform: y.to((val) => `translateY(${val}px)`), 
+              transform: y.to((val) => `translateY(${val}px)`),
               touchAction: "none",
             }}
             className="w-full h-[218px] fixed bottom-0 z-10 bg-white shadow-lg rounded-t-lg"

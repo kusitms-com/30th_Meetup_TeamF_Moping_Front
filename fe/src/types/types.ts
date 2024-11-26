@@ -1,7 +1,7 @@
 export interface ButtonProps {
   label: string;
   onClick: () => void;
-  type?: "start" | "next" | "submit"; 
+  type?: "start" | "next" | "submit";
   className?: string;
   disabled?: boolean;
 }

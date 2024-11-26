@@ -63,7 +63,7 @@ body {
   padding: 16px;
   max-width: 360px;
   width: 100%;
-  height: calc(100vh - 164px); 
+  height: calc(100vh - 164px);
   box-sizing: border-box;
   overflow-y: auto;
   margin: 0 auto;

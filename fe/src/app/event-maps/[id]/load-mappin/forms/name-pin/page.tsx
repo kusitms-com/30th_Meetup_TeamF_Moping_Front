@@ -9,7 +9,7 @@ import PinField from "./components/PinField";
 export default function NamePinPage() {
   const [name, setName] = useState("");
   const [pin, setPin] = useState(["", "", "", ""]);
-  const [isNameInputComplete, setIsNameInputComplete] = useState(false); 
+  const [isNameInputComplete, setIsNameInputComplete] = useState(false);
   const router = useRouter();
   const { id } = useParams();
   const nameInputRef = useRef<HTMLInputElement>(null);
@@ -60,7 +60,7 @@ export default function NamePinPage() {
           value={name}
           onChange={setName}
           inputRef={nameInputRef}
-          onBlur={handleNameBlur} 
+          onBlur={handleNameBlur}
         />
         <div className="mt-[24px]">
           <PinField value={pin} onChange={setPin} />

@@ -7,8 +7,8 @@ interface NameFieldProps {
   value: string;
   onChange: (value: string) => void;
   inputRef: React.RefObject<HTMLInputElement>;
-  onFocus?: () => void; 
-  onBlur?: () => void; 
+  onFocus?: () => void;
+  onBlur?: () => void;
 }
 
 export default function NameField({
@@ -20,7 +20,7 @@ export default function NameField({
 }: NameFieldProps) {
   const [localErrorType, setLocalErrorType] = useState<"invalid" | null>(null);
   const [isFocused, setIsFocused] = useState(false);
-  const charLimit = 6; 
+  const charLimit = 6;
   useEffect(() => {
     const storedName = localStorage.getItem("userName");
     if (storedName) {
@@ -32,7 +32,7 @@ export default function NameField({
     const inputValue = e.target.value;
 
     if (inputValue.length > charLimit) {
-      return; 
+      return;
     }
 
     if (/^[ㄱ-ㅎ가-힣a-zA-Z]*$/.test(inputValue)) {
@@ -52,12 +52,12 @@ export default function NameField({
 
   const getInputBorderClass = () => {
     if (localErrorType) {
-      return "border-2 border-[#f73a2c] focus:ring-0"; 
+      return "border-2 border-[#f73a2c] focus:ring-0";
     }
     if (isFocused) {
       return "border-2 border-[#555555] focus:ring-0";
     }
-    return "border-transparent"; 
+    return "border-transparent";
   };
 
   useEffect(() => {
@@ -106,7 +106,7 @@ export default function NameField({
           </button>
         )}
       </div>
-      {(isFocused || value) && ( 
+      {(isFocused || value) && (
         <div className="flex justify-between items-center mt-[8px]">
           <div
             className={`text-sm ${

@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 
-const BASE_API_URL = process.env.NEXT_PUBLIC_API_URL 
+const BASE_API_URL = process.env.NEXT_PUBLIC_API_URL;
 
 export async function GET(req: NextRequest) {
   const { searchParams } = new URL(req.url);

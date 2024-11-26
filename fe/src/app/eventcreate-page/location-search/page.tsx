@@ -14,7 +14,7 @@ function LocationSearch() {
   const [isFetching, setIsFetching] = useState(false);
   const router = useRouter();
   const { setLocation: setStoreLocation } = useLocationStore();
-  const inputRef = useRef<HTMLInputElement>(null); 
+  const inputRef = useRef<HTMLInputElement>(null);
 
   const fetchPlacesBySearch = useCallback(
     async (query: string) => {
@@ -47,10 +47,10 @@ function LocationSearch() {
         setIsFetching(false);
       }
     },
-    [isFetching] 
+    [isFetching]
   );
 
-  const debouncedFetch = useRef(debounce(fetchPlacesBySearch, 300)).current; 
+  const debouncedFetch = useRef(debounce(fetchPlacesBySearch, 300)).current;
 
   useEffect(() => {
     if (location.trim()) {
@@ -67,7 +67,7 @@ function LocationSearch() {
     if (inputRef.current) {
       setTimeout(() => {
         inputRef.current?.focus();
-      }, 100); 
+      }, 100);
     }
   }, []);
 
@@ -104,7 +104,7 @@ function LocationSearch() {
         <div className="flex items-center w-full h-12 px-4 bg-[#f7f7f7] rounded-lg ml-2">
           <input
             type="text"
-            ref={inputRef} 
+            ref={inputRef}
             value={location}
             onChange={handleSearch}
             placeholder="장소를 입력해주세요"
