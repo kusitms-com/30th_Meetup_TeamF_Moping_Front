@@ -3,15 +3,12 @@
 import React, { useState, useEffect, useRef } from "react";
 import { nanoid } from "nanoid";
 import Image from "next/image";
-import { useRouter, useParams } from "next/navigation";
 
 interface LinkFieldEditProps {
   label: string;
   placeholder: string;
   value: string[];
   onChange: (value: string[]) => void;
-  showTooltip?: boolean;
-  onInfoClick?: () => void;
 }
 
 interface InputField {
@@ -20,9 +17,9 @@ interface InputField {
   error: string;
   isValid: boolean;
   isTyping: boolean;
-  canEdit: boolean;
 }
 
+// 전체 코드에 에러가 발생할 가능성이 있는 부분 수정
 export default function LinkFieldEdit({
   label,
   placeholder,
@@ -37,7 +34,6 @@ export default function LinkFieldEdit({
           error: "",
           isValid: true,
           isTyping: false,
-          canEdit: true,
         }))
       : [
           {
@@ -46,15 +42,13 @@ export default function LinkFieldEdit({
             error: "",
             isValid: false,
             isTyping: false,
-            canEdit: true,
           },
         ]
   );
 
   const inputRefs = useRef<(HTMLInputElement | null)[]>([]);
-  const router = useRouter();
-  const { id } = useParams();
 
+  // 업데이트된 유효 링크 관리
   useEffect(() => {
     const validLinks = inputFields
       .filter((field) => field.isValid)
@@ -69,7 +63,7 @@ export default function LinkFieldEdit({
       const response = await fetch(
         `${process.env.NEXT_PUBLIC_API_BASE_URL}${endpoint}`,
         {
-          method: "POST",
+          method: "PUT",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ url }),
         }
@@ -119,19 +113,29 @@ export default function LinkFieldEdit({
           : fieldItem
       )
     );
-
-    validateLink(fieldId, inputValue, label);
   };
 
-  const handleFocus = (fieldId: string) => {
-    setInputFields((prevFields) =>
-      prevFields.map((fieldItem) =>
-        fieldItem.id === fieldId ? { ...fieldItem, isTyping: true } : fieldItem
-      )
-    );
+  const handlePaste = (fieldId: string, event: React.ClipboardEvent) => {
+    const pastedText = event.clipboardData.getData("Text").trim();
+
+    if (pastedText) {
+      setInputFields((prevFields) =>
+        prevFields.map((fieldItem) =>
+          fieldItem.id === fieldId
+            ? { ...fieldItem, text: pastedText, isValid: false, isTyping: true }
+            : fieldItem
+        )
+      );
+      validateLink(fieldId, pastedText, label);
+    }
   };
 
   const handleBlur = (fieldId: string) => {
+    const field = inputFields.find((fieldItem) => fieldItem.id === fieldId);
+    if (field && field.text) {
+      validateLink(fieldId, field.text, label);
+    }
+
     setInputFields((prevFields) =>
       prevFields.map((fieldItem) =>
         fieldItem.id === fieldId ? { ...fieldItem, isTyping: false } : fieldItem
@@ -148,7 +152,6 @@ export default function LinkFieldEdit({
         error: "",
         isValid: false,
         isTyping: false,
-        canEdit: true,
       },
     ]);
   };
@@ -161,18 +164,6 @@ export default function LinkFieldEdit({
           : fieldItem
       )
     );
-  };
-
-  const navigateToTooltipPage = () => {
-    if (id) {
-      router.push(`/event-maps/${id}/load-mappin/forms/tooltip`);
-    } else {
-      console.error("ID not found for navigation");
-    }
-  };
-
-  const handleNaverMove = () => {
-    window.location.href = "https://m.map.naver.com/";
   };
 
   const getClassNames = (item: InputField): string => {
@@ -192,51 +183,14 @@ export default function LinkFieldEdit({
     <div className="mb-[48px] relative">
       <label className="text-[#2c2c2c] font-300 text-lg mb-[8px] flex items-center">
         {label}
-        {label === "북마크 공유 링크" && (
-          <div
-            className="relative group"
-            onClick={(e) => {
-              e.stopPropagation();
-              navigateToTooltipPage();
-            }}
-            role="button"
-            tabIndex={0}
-            onKeyPress={(e) => {
-              if (e.key === "Enter") navigateToTooltipPage();
-            }}
-          >
-            <Image
-              src="/svg/information.svg"
-              alt="information"
-              width={18}
-              height={18}
-              className="p-[3px] w-[24px] h-[24px] ml-[6px] cursor-pointer"
-            />
-          </div>
-        )}
-        <span
-          className="mr-0 ml-auto text-[#8e8e8e] text-sm font-medium font-['Pretendard'] leading-tight cursor-pointer"
-          onClick={handleNaverMove}
-          role="button"
-          tabIndex={0}
-          onKeyPress={(e) => {
-            if (e.key === "Enter") handleNaverMove();
-          }}
-        >
-          네이버지도 열기
-        </span>
-        <Image
-          src="/svg/rightArrow.svg"
-          alt="rightArrow"
-          width={12}
-          height={24}
-        />
       </label>
       <div className="flex flex-col items-center border-[#F0F0F0] border p-[16px] rounded-xl w-[328px]">
         {inputFields.map((item, index) => (
           <div
             key={item.id}
-            className={`relative w-full ${index === inputFields.length - 1 ? "" : "mb-[16px]"}`}
+            className={`relative w-full ${
+              index === inputFields.length - 1 ? "" : "mb-[16px]"
+            }`}
           >
             <div
               className={`w-[296px] h-[52px] px-4 py-3.5 pr-[40px] rounded-md inline-flex relative ${getClassNames(
@@ -252,13 +206,11 @@ export default function LinkFieldEdit({
                 }}
                 type="text"
                 value={item.text}
-                onFocus={() => handleFocus(item.id)}
                 onChange={(e) => handleInputChange(item.id, e.target.value)}
+                onPaste={(e) => handlePaste(item.id, e)}
                 onBlur={() => handleBlur(item.id)}
                 placeholder={placeholder}
-                className={`flex-1 bg-transparent outline-none placeholder:text-[#8e8e8e] text-sm font-medium font-['Pretendard'] ${
-                  item.isValid ? "text-[#3A91EA]" : ""
-                }`}
+                className="flex-1 bg-transparent outline-none placeholder:text-[#8e8e8e] text-sm font-medium font-['Pretendard']"
               />
               {item.text && (
                 <button
@@ -277,7 +229,7 @@ export default function LinkFieldEdit({
                 </button>
               )}
             </div>
-            {item.error && (
+            {!item.isTyping && item.error && (
               <div className="text-sm font-medium font-['Pretendard'] text-[#f73a2c] mt-[4px]">
                 {item.error}
               </div>
