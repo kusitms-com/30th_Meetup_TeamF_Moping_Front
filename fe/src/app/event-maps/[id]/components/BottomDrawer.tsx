@@ -169,7 +169,6 @@ export function BottomDrawer({
   const handleRecommendShowClick = async () => {
     const Km = 1.0;
     let found = false;
-
     try {
       const response = await fetch(
         `${apiUrl}/nonmembers/pings/recommend?uuid=${id}&radiusInKm=${Km}`,
@@ -180,6 +179,8 @@ export function BottomDrawer({
         console.log(data);
         if (data.recommendPings.length === 0) {
           setNonRecommend(true);
+          found = true;
+          setIsRecommend(found);
         } else if (data.recommendPings.length >= 5) {
           setCustomMarkers(data.recommendPings);
           found = true;
