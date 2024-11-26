@@ -7,8 +7,8 @@ interface NameFieldProps {
   value: string;
   onChange: (value: string) => void;
   inputRef: React.RefObject<HTMLInputElement>;
-  onFocus?: () => void; // onFocus 속성 추가
-  onBlur?: () => void; // onBlur 속성 추가
+  onFocus?: () => void; 
+  onBlur?: () => void; 
 }
 
 export default function NameField({
@@ -20,8 +20,7 @@ export default function NameField({
 }: NameFieldProps) {
   const [localErrorType, setLocalErrorType] = useState<"invalid" | null>(null);
   const [isFocused, setIsFocused] = useState(false);
-  const charLimit = 6; // Character limit
-
+  const charLimit = 6; 
   useEffect(() => {
     const storedName = localStorage.getItem("userName");
     if (storedName) {
@@ -32,12 +31,10 @@ export default function NameField({
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const inputValue = e.target.value;
 
-    // 글자 수 제한 조건
     if (inputValue.length > charLimit) {
-      return; // 입력 중단
+      return; 
     }
 
-    // 유효성 검사
     if (/^[ㄱ-ㅎ가-힣a-zA-Z]*$/.test(inputValue)) {
       setLocalErrorType(null);
       onChange(inputValue);
@@ -55,16 +52,15 @@ export default function NameField({
 
   const getInputBorderClass = () => {
     if (localErrorType) {
-      return "border-2 border-[#f73a2c] focus:ring-0"; // 에러 테두리 색상
+      return "border-2 border-[#f73a2c] focus:ring-0"; 
     }
     if (isFocused) {
-      return "border-2 border-[#555555] focus:ring-0"; // 활성화 테두리 색상
+      return "border-2 border-[#555555] focus:ring-0";
     }
-    return "border-transparent"; // 기본 테두리
+    return "border-transparent"; 
   };
 
   useEffect(() => {
-    // Save to localStorage when the name is valid or changed
     if (localErrorType === null) {
       localStorage.setItem("userName", value);
     }
@@ -110,7 +106,7 @@ export default function NameField({
           </button>
         )}
       </div>
-      {(isFocused || value) && ( // 입력 활성화 시만 메시지 표시
+      {(isFocused || value) && ( 
         <div className="flex justify-between items-center mt-[8px]">
           <div
             className={`text-sm ${

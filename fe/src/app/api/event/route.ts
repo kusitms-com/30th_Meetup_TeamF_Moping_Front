@@ -1,4 +1,3 @@
-// pages/api/event.ts
 import { NextResponse } from "next/server";
 
 const BASE_API_URL = process.env.NEXT_PUBLIC_API_BASE_URL;

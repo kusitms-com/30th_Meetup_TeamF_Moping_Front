@@ -20,10 +20,8 @@ export function RecommendActive({
 }: RecommendActiveProps): JSX.Element {
   return (
     <div>
-      {/* nonRecommend이 true일 때 다른 UI를 렌더링 */}
       {nonRecommend ? (
         <>
-          {/* 추천 데이터가 없을 때 UI */}
           <div className="text-text-lg text-white px-[20px] pt-[16px] pb-[14px] flex justify-between">
             <div>
               <div>근처에 추천할만한 공간이 없어요</div>
@@ -56,7 +54,6 @@ export function RecommendActive({
         </>
       ) : (
         <>
-          {/* 추천 데이터가 있을 때 기본 UI */}
           <div className="text-text-lg text-white px-[20px] pt-[16px] pb-[14px] flex justify-between">
             <div>
               <div>우리끼리만 보는</div>

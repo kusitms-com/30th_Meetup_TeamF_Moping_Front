@@ -8,11 +8,11 @@ interface UpdateTimeState {
 
 const useUpdateTimeStore = create<UpdateTimeState>((set) => ({
   updateTime: "방금",
-  trigger: false, // 트리거 상태 추가
+  trigger: false, 
   setUpdateTime: (time) =>
     set((state) => ({
       updateTime: time,
-      trigger: !state.trigger, // 트리거 상태를 토글
+      trigger: !state.trigger, 
     })),
 }));
 

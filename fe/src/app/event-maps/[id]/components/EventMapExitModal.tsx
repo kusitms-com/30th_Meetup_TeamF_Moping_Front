@@ -11,7 +11,7 @@ function ExitModal({ onCancel, onExit }: ExitModalProps) {
       <div className="w-[272px] h-[202px] flex flex-col items-center bg-white rounded-lg overflow-hidden shadow-lg">
         <div className="w-full h-[148px] px-[39px] pt-6 pb-7 flex flex-col items-center gap-2.5">
           {" "}
-          {/* pt 값을 줄여서 위로 올림 */}
+
           <div className="w-full flex flex-col items-center gap-2">
             <div className="text-center text-[#1d1d1d] text-xl font-semibold font-['Pretendard'] leading-7">
               이벤트를 저장하지 않고 나갈까요?

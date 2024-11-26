@@ -14,13 +14,10 @@ function LoadingPage() {
 
   return (
     <div className="flex flex-col items-center min-h-screen bg-black text-white px-[14.17px]">
-      {/* 상단 여백 */}
       <div className="mt-[32px]" />
 
-      {/* 위 선 */}
       <div className="w-full h-[0px] border-t-[1px] border-white mb-[16px]" />
 
-      {/* 로고 */}
       <div className="w-full flex">
         <Image
           src="/svg/logo.svg"
@@ -31,10 +28,8 @@ function LoadingPage() {
         />
       </div>
 
-      {/* 아래 선 */}
       <div className="w-full h-[0px] border-t-[1px] border-white mt-[16px] mb-[32px]" />
 
-      {/* 아이콘들 */}
       <div className="grid grid-cols-2 gap-y-[28.69px] gap-x-[28.69px] mb-auto">
         <div className="flex items-center justify-center">
           <Image
@@ -74,7 +69,6 @@ function LoadingPage() {
         </div>
       </div>
 
-      {/* 모핑 시작하기 버튼 */}
       <div className="fixed bottom-[45px] w-full flex justify-center px-4">
         <Button
           label="모핑 시작하기"

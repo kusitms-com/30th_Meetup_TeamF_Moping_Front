@@ -87,12 +87,12 @@ export function BottomDrawer({
             setIsRecommended(true);
             recommendProfile = data.recommendPings.map(
               (ping: CustomRecommendPing) => ({
-                iconLevel: 10, // Fixed icon level
+                iconLevel: 10, 
                 nonMembers: [
                   {
                     nonMemberId: -1,
-                    name: "추천 모핑", // Fixed name
-                    profileSvg: "/profile/recommendProfile.svg", // Fixed profileSvg
+                    name: "추천 모핑", 
+                    profileSvg: "/profile/recommendProfile.svg",
                   },
                 ],
                 url: ping.url,
@@ -109,12 +109,12 @@ export function BottomDrawer({
             ...(data.nonMembers || []),
           ]);
           setAllPings([
-            ...(data.pings || []), // 기존 pings
-            ...(recommendProfile || []), // recommendProfile 추가
+            ...(data.pings || []), 
+            ...(recommendProfile || []), 
           ]);
           setCustomMarkers([
-            ...(data.pings || []), // 기존 pings
-            ...(recommendProfile || []), // recommendProfile 추가
+            ...(data.pings || []), 
+            ...(recommendProfile || []), 
           ]);
           setNeighborhood(data.neighborhood);
           console.log(data);
@@ -139,12 +139,12 @@ export function BottomDrawer({
   };
 
   const handleAddToMorphing = async () => {
-    const uuid = id; // id를 uuid로 설정
-    const sids = recommendPings.map((item) => item.sid); // sid 값만 추출
+    const uuid = id; 
+    const sids = recommendPings.map((item) => item.sid); 
 
     const requestBody = {
-      uuid, // 문자열로 uuid 설정
-      sids, // 추출한 sid 배열
+      uuid, 
+      sids,
     };
 
     try {
@@ -160,10 +160,10 @@ export function BottomDrawer({
         throw new Error(`HTTP error! Status: ${response.status}`);
       }
 
-      const result = await response.json(); // 응답 데이터 처리
+      const result = await response.json(); 
       console.log("Recommended Data Response:", result);
       setTrigger((prev) => !prev);
-      setIsRecommend(false); // 추천 모드 비활성화
+      setIsRecommend(false); 
     } catch (error) {
       console.error("Error fetching recommended data:", error);
     }
@@ -235,12 +235,12 @@ export function BottomDrawer({
 
           recommendProfile = data.recommendPings.map(
             (ping: CustomRecommendPing) => ({
-              iconLevel: 10, // Fixed icon level
+              iconLevel: 10, 
               nonMembers: [
                 {
                   nonMemberId: -1,
-                  name: "추천 모핑", // Fixed name
-                  profileSvg: "/profile/recommendProfile.svg", // Fixed profileSvg
+                  name: "추천 모핑", 
+                  profileSvg: "/profile/recommendProfile.svg", 
                 },
               ],
               url: ping.url,
@@ -257,12 +257,12 @@ export function BottomDrawer({
           ...(data.nonMembers || []),
         ]);
         setAllPings([
-          ...(data.pings || []), // 기존 pings
-          ...(recommendProfile || []), // recommendProfile 추가
+          ...(data.pings || []), 
+          ...(recommendProfile || []),  
         ]);
         setCustomMarkers([
-          ...(data.pings || []), // 기존 pings
-          ...(recommendProfile || []), // recommendProfile 추가
+          ...(data.pings || []), 
+          ...(recommendProfile || []), 
         ]);
         setNeighborhood(data.neighborhood);
         setUpdateTime(data.pingLastUpdateTime);

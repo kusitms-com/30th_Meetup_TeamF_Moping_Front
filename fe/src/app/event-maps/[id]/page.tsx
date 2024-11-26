@@ -103,7 +103,6 @@ export default function Page() {
   };
 
   useDidMountEffect(() => {
-    // 메시지를 표시하고, 일정 시간 후에 숨깁니다.
     setIsVisible(true);
 
     const fadeOutTimer = setTimeout(() => {
@@ -112,14 +111,14 @@ export default function Page() {
 
     const hideTimer = setTimeout(() => {
       setIsVisible(false);
-      setIsFadingOut(false); // 상태 초기화
+      setIsFadingOut(false); 
     }, 4500);
 
     return () => {
       clearTimeout(fadeOutTimer);
       clearTimeout(hideTimer);
-    }; // 타이머 정리
-  }, [updateTime, trigger]); // updateTime이 변경될 때만 실행
+    }; 
+  }, [updateTime, trigger]); 
 
   const bind = useDrag(
     ({ last, movement: [, my], memo = y.get() }) => {
@@ -174,7 +173,7 @@ export default function Page() {
           <a.div
             {...bind()}
             style={{
-              transform: y.to((val) => `translateY(${val}px)`), // Use translateY from y value
+              transform: y.to((val) => `translateY(${val}px)`), 
               touchAction: "none",
             }}
             className="w-full h-[218px] fixed bottom-0 z-10 bg-white shadow-lg rounded-t-lg"

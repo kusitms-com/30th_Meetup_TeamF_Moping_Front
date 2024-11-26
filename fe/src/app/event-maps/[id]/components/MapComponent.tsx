@@ -292,9 +292,9 @@ export default function MapComponent({
               </div>
             </div>
           `,
-          borderWidth: 0, // 보더 제거
-          backgroundColor: "transparent", // 백그라운드 설정
-          disableAnchor: true, // 앵커 비활성화
+          borderWidth: 0, 
+          backgroundColor: "transparent", 
+          disableAnchor: true, 
         });
 
         if (mapInstanceRef.current) {
