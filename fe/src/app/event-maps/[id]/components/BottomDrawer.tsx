@@ -79,7 +79,7 @@ export function BottomDrawer({
   useEffect(() => {
     const fetchAllPings = async () => {
       try {
-        const response = await fetch(`${apiUrl}/nonmembers/pings?uuid=${id}`);
+        const response = await fetch(`${apiUrl}/pings?uuid=${id}`);
         if (response.ok) {
           const data = await response.json();
           let recommendProfile = [];
@@ -145,7 +145,7 @@ export function BottomDrawer({
     };
 
     try {
-      const response = await fetch(`${apiUrl}/nonmembers/pings/recommend`, {
+      const response = await fetch(`${apiUrl}/pings/recommend`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json;charset=UTF-8",
@@ -172,7 +172,7 @@ export function BottomDrawer({
 
     try {
       const response = await fetch(
-        `${apiUrl}/nonmembers/pings/recommend?uuid=${id}&radiusInKm=${Km}`,
+        `${apiUrl}/pings/recommend?uuid=${id}&radiusInKm=${Km}`,
         { method: "GET" }
       );
       if (response.ok) {
@@ -220,10 +220,9 @@ export function BottomDrawer({
 
   const handleRefresh = async () => {
     try {
-      const response = await fetch(
-        `${apiUrl}/nonmembers/pings/refresh-all?uuid=${id}`,
-        { method: "GET" }
-      );
+      const response = await fetch(`${apiUrl}/pings/refresh-all?uuid=${id}`, {
+        method: "GET",
+      });
       if (response.ok) {
         const data = await response.json();
         let recommendProfile = [];

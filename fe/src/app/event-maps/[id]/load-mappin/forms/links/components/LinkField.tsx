@@ -69,7 +69,7 @@ export default function LinkField({
       const response = await fetch(
         `${process.env.NEXT_PUBLIC_API_BASE_URL}${endpoint}`,
         {
-          method: "POST",
+          method: "PUT",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ url }),
         }
@@ -124,8 +124,8 @@ export default function LinkField({
 
         validateLink(fieldId, clipboardText, label);
       }
-    } catch {
-      // 클립보드 읽기 실패 시 처리
+    } catch (error) {
+      console.error("클립보드에서 텍스트를 읽는 데 실패했습니다:", error);
     }
   };
 

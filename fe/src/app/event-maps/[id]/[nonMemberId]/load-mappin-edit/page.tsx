@@ -78,7 +78,7 @@ export default function LinkEditPage() {
 
     try {
       const response = await fetch(
-        `${process.env.NEXT_PUBLIC_API_BASE_URL}/nonmembers/pings`,
+        `${process.env.NEXT_PUBLIC_API_BASE_URL}/pings`,
         {
           method: "PUT",
           headers: {
@@ -151,7 +151,7 @@ export default function LinkEditPage() {
             value={storeLinks}
             onChange={setStoreLinks}
           />
-          <div className="flex items-center mt-[83px] mb-[20px] w-full">
+          <div className="flex items-center mb-[20px] w-full">
             <CheckBox
               isChecked={isChecked}
               onChange={() => setIsChecked(!isChecked)}

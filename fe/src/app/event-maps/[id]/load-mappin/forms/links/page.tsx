@@ -51,7 +51,7 @@ export default function LinksPage() {
     try {
       setIsSubmitting(true);
       const response = await fetch(
-        `${process.env.NEXT_PUBLIC_API_BASE_URL}/nonmembers/pings`,
+        `${process.env.NEXT_PUBLIC_API_BASE_URL}/pings`,
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -62,11 +62,17 @@ export default function LinksPage() {
       if (response.ok) {
         localStorage.clear();
         router.push(`/event-maps/${id}`);
+      } else if (response.status === 409) {
+        // 405 에러 처리
+        alert("이미 존재하는 이름입니다. 다시 시도해주세요.");
       } else {
         setIsFormComplete(false);
+        alert("저장에 실패했습니다. 다시 시도해주세요.");
       }
-    } catch {
+    } catch (error) {
+      console.error("저장 중 에러 발생:", error);
       setIsFormComplete(false);
+      alert("네트워크 오류가 발생했습니다. 다시 시도해주세요.");
     } finally {
       setIsSubmitting(false);
     }
@@ -82,15 +88,12 @@ export default function LinksPage() {
 
   return (
     <div className="w-[360px] h-screen bg-white mx-auto flex flex-col">
-      {/* 내비게이션 바 */}
       <div className="fixed top-0 left-0 w-full z-50 bg-white h-[56px]">
         <Navigation onBack={handleBack} />
       </div>
 
-      {/* 메인 컨텐츠 */}
       <div className="flex-1 px-[16px] pt-[72px] w-full overflow-y-auto pb-[100px]">
-        {/* 타이틀 영역 */}
-        <div className="text-[#2c2c2c] text-[22px] font-semibold leading-[30px] font-['Pretendard'] mb-[16px]">
+        <div className="text-[#2c2c2c] text-[22px] font-semibold leading-[30px] font-['Pretendard']">
           마음에 쏙 든 공간을 불러와요
         </div>
         <div className="text-[#555555] text-base font-medium leading-relaxed font-['Pretendard'] mb-[24px]">

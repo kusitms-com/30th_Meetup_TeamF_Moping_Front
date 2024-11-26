@@ -54,7 +54,7 @@ export default function Page() {
     const fetchData = async () => {
       try {
         const response = await fetch(
-          `${process.env.NEXT_PUBLIC_API_BASE_URL}/nonmembers/pings?uuid=${id}`,
+          `${process.env.NEXT_PUBLIC_API_BASE_URL}/pings?uuid=${id}`,
           {
             method: "GET",
             headers: {
