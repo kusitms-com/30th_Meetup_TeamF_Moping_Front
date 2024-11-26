@@ -24,7 +24,6 @@ function LocationInput({
 
   return (
     <div className={`relative flex flex-col ${className} mt-4`}>
-      {/* Updated Label Styling */}
       <label className="text-[#2c2c2c] text-[22px] font-semibold font-['Pretendard'] leading-[30px] mb-2">
         어디서 모여요?
       </label>
@@ -40,7 +39,6 @@ function LocationInput({
           height={24}
           className="mr-3"
         />
-        {/* Updated Input Placeholder Styling */}
         <input
           type="text"
           value={location}

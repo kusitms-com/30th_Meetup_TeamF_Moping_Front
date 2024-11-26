@@ -1,7 +1,6 @@
-// pages/api/nonmembers/pings.ts
 import { NextRequest, NextResponse } from "next/server";
 
-const BASE_API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8080";
+const BASE_API_URL = process.env.NEXT_PUBLIC_API_URL;
 
 export async function GET(req: NextRequest) {
   const { searchParams } = new URL(req.url);

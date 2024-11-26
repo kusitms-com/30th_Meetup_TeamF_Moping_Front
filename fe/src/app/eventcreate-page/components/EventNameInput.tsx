@@ -25,14 +25,14 @@ function EventNameInput({
   const handleInputChange = useCallback(
     (e: React.ChangeEvent<HTMLInputElement>) => {
       setHasUserEdited(true);
-      setIsTyping(true); // 타이핑 상태 활성화
+      setIsTyping(true);
       onChange(e.target.value);
     },
     [onChange]
   );
 
   const handleBlur = useCallback(() => {
-    setIsTyping(false); // 타이핑 상태 비활성화
+    setIsTyping(false);
   }, []);
 
   const handleClear = useCallback(() => {
@@ -50,9 +50,9 @@ function EventNameInput({
         className={classNames(
           "relative w-[328px] h-14 p-4 bg-[#f7f7f7] rounded-lg flex justify-between items-center border-2",
           {
-            "border-danger-base": showWarning, // 경고 상태
-            "border-[#555555]": isTyping, // 타이핑 중
-            "border-transparent": !isTyping && !showWarning, // 기본 상태
+            "border-danger-base": showWarning,
+            "border-[#555555]": isTyping,
+            "border-transparent": !isTyping && !showWarning,
           }
         )}
       >
@@ -60,14 +60,14 @@ function EventNameInput({
           type="text"
           value={value}
           onChange={handleInputChange}
-          onBlur={handleBlur} // 포커스 해제 시 상태 변경
-          onFocus={() => setIsTyping(true)} // 포커스 시 타이핑 활성화
+          onBlur={handleBlur}
+          onFocus={() => setIsTyping(true)}
           placeholder="모임"
           className={classNames(
             "bg-transparent text-base font-medium font-['Pretendard'] leading-normal outline-none flex-grow",
             {
-              "text-[#2c2c2c]": isTyping || value.trim().length > 0, // 타이핑 중 또는 텍스트 입력 완료
-              "text-[#8e8e8e]": !isTyping && value.trim().length === 0, // 기본 텍스트 색상
+              "text-[#2c2c2c]": isTyping || value.trim().length > 0,
+              "text-[#8e8e8e]": !isTyping && value.trim().length === 0,
             }
           )}
           aria-label="이벤트 이름 입력"

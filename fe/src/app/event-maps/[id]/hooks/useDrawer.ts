@@ -4,17 +4,13 @@ import { useSpring } from "@react-spring/web";
 const useDrawer = () => {
   const [stopPoints, setStopPoints] = useState<number[]>([]);
 
-  // 뷰포트 크기에 따른 스톱 포인트 계산
   const updateStopPoints = () => {
     let stopPointsPercent;
     if (window.matchMedia("(max-height: 668px)").matches) {
-      // 작은 기종
       stopPointsPercent = [54, 30, 0, -20];
     } else if (window.matchMedia("(max-height: 850px)").matches) {
-      // 중간 기종
       stopPointsPercent = [59, 24, 0, -15.5];
     } else {
-      // 큰 기종
       stopPointsPercent = [57, 22.5, 0, -14];
     }
     const vh = window.innerHeight;
@@ -22,8 +18,8 @@ const useDrawer = () => {
   };
 
   useEffect(() => {
-    updateStopPoints(); // 초기 설정
-    window.addEventListener("resize", updateStopPoints); // 창 크기 변경에 따라 업데이트
+    updateStopPoints();
+    window.addEventListener("resize", updateStopPoints);
     return () => window.removeEventListener("resize", updateStopPoints);
   }, []);
 
@@ -41,7 +37,7 @@ const useDrawer = () => {
   };
 
   const setPosition = (newY: number) => {
-    const limitedY = Math.max(Math.min(newY, stopPoints[3]), stopPoints[0]); // y 값 제한
+    const limitedY = Math.max(Math.min(newY, stopPoints[3]), stopPoints[0]);
     api.start({ y: limitedY });
   };
 
@@ -50,7 +46,7 @@ const useDrawer = () => {
     isOpen,
     openDrawer,
     closeDrawer,
-    setPosition, // 함수를 반환 객체에 추가
+    setPosition,
     stopPoints,
   };
 };

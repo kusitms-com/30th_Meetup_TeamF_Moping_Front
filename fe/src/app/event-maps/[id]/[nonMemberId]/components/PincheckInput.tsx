@@ -1,13 +1,13 @@
 "use client";
 
 import React, { useRef, useState, useEffect, useCallback } from "react";
-import Image from "next/image"; // Import 순서 수정
+import Image from "next/image";
 import { useRouter, useParams } from "next/navigation";
 import { v4 as uuidv4 } from "uuid";
 import { useUserDataStore } from "../stores/useUserDataStore";
 
 interface PasswordInputProps {
-  iconUrl: string | null; // iconUrl prop 타입 정의
+  iconUrl: string | null;
 }
 
 export default function PasswordInput({ iconUrl }: PasswordInputProps) {
@@ -56,7 +56,6 @@ export default function PasswordInput({ iconUrl }: PasswordInputProps) {
         setCurrentIndex(0);
       }
     } catch {
-      // 서버 오류 처리 시 console.error 대신 메시지 로깅 또는 적절한 에러 핸들링 수행
       setHasError(true);
     }
   }, [id, nonMemberId, password, router, setUserData]);
@@ -114,7 +113,6 @@ export default function PasswordInput({ iconUrl }: PasswordInputProps) {
 
   return (
     <div className="flex flex-col items-center">
-      {/* 아이콘 */}
       <div className="mt-[48px] w-[84px] h-[84px] mb-[36px]">
         {iconUrl ? (
           <Image
@@ -129,12 +127,9 @@ export default function PasswordInput({ iconUrl }: PasswordInputProps) {
         )}
       </div>
 
-      {/* 안내 텍스트 */}
       <p className="text-xl font-medium mb-[20px] text-center">
         암호를 입력하세요
       </p>
-
-      {/* 입력 필드 */}
       <div className="inline-flex items-center justify-center gap-[16px]">
         {password.map((_, i) => (
           <div
@@ -162,7 +157,6 @@ export default function PasswordInput({ iconUrl }: PasswordInputProps) {
         ))}
       </div>
 
-      {/* 에러 메시지 */}
       {hasError && (
         <p className="text-[#f73a2c] mt-4 text-left text-sm font-medium font-['Pretendard'] leading-tight w-full max-w-xs">
           암호가 일치하지 않아요

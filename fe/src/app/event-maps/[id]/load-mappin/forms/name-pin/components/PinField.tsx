@@ -12,7 +12,6 @@ export default function PinField({ value, onChange }: PinFieldProps) {
   const pinRefs = useRef<HTMLInputElement[]>([]);
   const [inputKeys, setInputKeys] = useState<string[]>([]);
 
-  // 초기화 시 고유한 key 생성
   useEffect(() => {
     setInputKeys((prevKeys) =>
       value.length === prevKeys.length ? prevKeys : value.map(() => nanoid())
@@ -87,7 +86,7 @@ export default function PinField({ value, onChange }: PinFieldProps) {
       <div className="flex space-x-[16px]">
         {value.map((digit, index) => (
           <input
-            key={inputKeys[index]} // 고유한 key 사용
+            key={inputKeys[index]}
             type="text"
             inputMode="numeric"
             maxLength={1}

@@ -14,9 +14,8 @@ function LocationSearch() {
   const [isFetching, setIsFetching] = useState(false);
   const router = useRouter();
   const { setLocation: setStoreLocation } = useLocationStore();
-  const inputRef = useRef<HTMLInputElement>(null); // 인풋 참조
+  const inputRef = useRef<HTMLInputElement>(null);
 
-  // 장소 검색 함수
   const fetchPlacesBySearch = useCallback(
     async (query: string) => {
       if (isFetching) return;
@@ -48,10 +47,10 @@ function LocationSearch() {
         setIsFetching(false);
       }
     },
-    [isFetching] // 의존성 배열에 isFetching 추가
+    [isFetching]
   );
 
-  const debouncedFetch = useRef(debounce(fetchPlacesBySearch, 300)).current; // debouncedFetch를 ref로 설정
+  const debouncedFetch = useRef(debounce(fetchPlacesBySearch, 300)).current;
 
   useEffect(() => {
     if (location.trim()) {
@@ -65,11 +64,10 @@ function LocationSearch() {
   }, [location, debouncedFetch]);
 
   useEffect(() => {
-    // 컴포넌트가 마운트될 때 인풋에 포커스를 주고 키보드를 열리게 합니다.
     if (inputRef.current) {
       setTimeout(() => {
         inputRef.current?.focus();
-      }, 100); // 100ms 지연 후 포커스
+      }, 100);
     }
   }, []);
 
@@ -106,7 +104,7 @@ function LocationSearch() {
         <div className="flex items-center w-full h-12 px-4 bg-[#f7f7f7] rounded-lg ml-2">
           <input
             type="text"
-            ref={inputRef} // 인풋 참조 추가
+            ref={inputRef}
             value={location}
             onChange={handleSearch}
             placeholder="장소를 입력해주세요"

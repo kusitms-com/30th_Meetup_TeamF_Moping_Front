@@ -67,8 +67,6 @@ export default function ToolTipPage() {
       {...handlers}
     >
       <Navigation />
-
-      {/* Title Section */}
       <div className="w-full px-4 mt-16 mb-[48px]">
         <h1 className="text-[#2c2c2c] text-[22px] font-semibold font-['Pretendard'] leading-[30px]">
           이렇게 공유 버튼이 안 보이나요?
@@ -76,8 +74,6 @@ export default function ToolTipPage() {
           이렇게 하면 해결 완
         </h1>
       </div>
-
-      {/* Slide Content */}
       <div className="w-full px-4 mb-[20px]">
         <div className="bg-[#F8F8F8] rounded-xl border border-[#F0F0F0] p-[20px]">
           {slides[currentSlide].step && (
@@ -107,8 +103,6 @@ export default function ToolTipPage() {
           />
         </div>
       </div>
-
-      {/* Slide Indicators */}
       <div className="flex justify-center items-center gap-2 mb-[50px]">
         {slides.map((slide) => (
           <div
@@ -121,8 +115,6 @@ export default function ToolTipPage() {
           />
         ))}
       </div>
-
-      {/* Button Section */}
       <div className="w-full px-4">
         <Button
           label="네이버 지도 바로 열기"

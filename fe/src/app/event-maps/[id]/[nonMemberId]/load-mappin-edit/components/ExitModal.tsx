@@ -15,7 +15,6 @@ const ExitModal: React.FC<ExitModalProps> = function ExitModal({
   return (
     <div className="fixed inset-0 bg-gray-500 bg-opacity-50 flex justify-center items-center z-50">
       <div className="w-[272px] bg-white rounded-lg shadow-lg flex flex-col">
-        {/* Top Section */}
         <div className="flex flex-col items-center px-6 pt-7 pb-6 gap-4">
           <div className="flex flex-col items-center">
             <Image

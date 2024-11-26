@@ -22,13 +22,11 @@ export default function LinkEditPage() {
   const router = useRouter();
   const { id, nonMemberId } = useParams();
 
-  // URL 유효성 검사 함수
   const isValidLink = (link: string) => {
     const urlPattern = /^(https?:\/\/[^\s]+)/g;
     return urlPattern.test(link.trim());
   };
 
-  // 데이터 로드 및 초기화
   useEffect(() => {
     if (!id || !nonMemberId) {
       console.error("누락된 라우트 매개변수:", { id, nonMemberId });
@@ -123,15 +121,13 @@ export default function LinkEditPage() {
 
   return (
     <div className="w-[360px] h-screen bg-white mx-auto flex flex-col">
-      {/* 상단 네비게이션 */}
       <Navigation onBack={handleBack} />
 
-      {/* 스크롤 가능 영역 */}
       <div
         className="flex-1 px-4 mt-[75px] overflow-y-auto"
         style={{
-          maxHeight: "calc(100vh - 60px)", // 화면 높이에서 저장 버튼 높이를 뺀 영역
-          paddingBottom: "120px", // 저장 버튼과 내용 간 여백 추가
+          maxHeight: "calc(100vh - 60px)",
+          paddingBottom: "120px",
         }}
       >
         {userName && (
@@ -167,7 +163,6 @@ export default function LinkEditPage() {
         </form>
       </div>
 
-      {/* 하단 저장 버튼 */}
       <div
         className="w-full px-[16px] bg-white fixed bottom-0 left-0 border-t border-[#f0f0f0]"
         style={{ zIndex: 50 }}
@@ -181,8 +176,6 @@ export default function LinkEditPage() {
           disabled={!isSaveButtonEnabled}
         />
       </div>
-
-      {/* Exit Modal */}
       {showExitModal && (
         <ExitModal onCancel={handleCancel} onExit={handleExit} />
       )}

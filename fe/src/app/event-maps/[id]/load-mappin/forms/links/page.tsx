@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import { useRouter, useParams } from "next/navigation"; // Correct order
+import { useRouter, useParams } from "next/navigation";
 import Navigation from "@/app/components/common/Navigation";
 import Button from "@/app/components/common/Button";
 import LinkField from "./components/LinkField";
@@ -82,10 +82,15 @@ export default function LinksPage() {
 
   return (
     <div className="w-[360px] h-screen bg-white mx-auto flex flex-col">
-      <Navigation onBack={handleBack} />
-      {/* Scrollable Content */}
-      <div className="flex-1 mt-[16px] px-[16px] pt-[72px] w-full overflow-y-auto pb-[100px]">
-        <div className="text-[#2c2c2c] text-[22px] font-semibold leading-[30px] font-['Pretendard']">
+      {/* 내비게이션 바 */}
+      <div className="fixed top-0 left-0 w-full z-50 bg-white h-[56px]">
+        <Navigation onBack={handleBack} />
+      </div>
+
+      {/* 메인 컨텐츠 */}
+      <div className="flex-1 px-[16px] pt-[72px] w-full overflow-y-auto pb-[100px]">
+        {/* 타이틀 영역 */}
+        <div className="text-[#2c2c2c] text-[22px] font-semibold leading-[30px] font-['Pretendard'] mb-[16px]">
           마음에 쏙 든 공간을 불러와요
         </div>
         <div className="text-[#555555] text-base font-medium leading-relaxed font-['Pretendard'] mb-[24px]">
@@ -93,14 +98,12 @@ export default function LinksPage() {
         </div>
 
         <form onSubmit={handleSubmit} className="w-full">
-          {/* 북마크 공유 링크 */}
           <LinkField
             label="북마크 공유 링크"
             placeholder="네이버지도 저장 리스트 붙여넣기"
             value={mapLinks}
             onChange={setMapLinks}
           />
-          {/* 가게 링크 */}
           <LinkField
             label="가게 링크"
             placeholder="마음에 쏙 든 가게 하나만 공유하기"
@@ -108,8 +111,8 @@ export default function LinksPage() {
             onChange={setStoreLinks}
           />
 
-          {/* CheckBox Section */}
-          <div className="flex items-center mb-[18px] w-full">
+          {/* 체크박스 */}
+          <div className="flex items-center">
             <CheckBox isChecked={isChecked} onChange={handleCheckboxChange} />
             <span className="ml-2 text-[#8e8e8e] text-xs font-medium font-['Pretendard'] leading-none">
               내 공간 정보를 모핑에서 활용하는 것에 동의합니다
@@ -118,9 +121,9 @@ export default function LinksPage() {
         </form>
       </div>
 
-      {/* Fixed Save Button */}
+      {/* 하단 버튼 */}
       <div
-        className="w-full px-[16px] bg-white fixed bottom-0 left-0 border-t border-[#f0f0f0]"
+        className="w-fix px-[16px] bg-white fixed py-[8px]"
         style={{ zIndex: 50 }}
       >
         <Button
@@ -135,6 +138,7 @@ export default function LinksPage() {
         />
       </div>
 
+      {/* 바텀 시트 */}
       <BottomSheet />
     </div>
   );

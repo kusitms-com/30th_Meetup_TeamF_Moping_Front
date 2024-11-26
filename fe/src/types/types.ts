@@ -1,8 +1,7 @@
-// types/types.ts
 export interface ButtonProps {
   label: string;
   onClick: () => void;
-  type?: "start" | "next" | "submit"; // "submit" 추가
+  type?: "start" | "next" | "submit";
   className?: string;
   disabled?: boolean;
 }
