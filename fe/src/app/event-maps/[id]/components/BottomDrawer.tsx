@@ -181,7 +181,7 @@ export function BottomDrawer({
           setNonRecommend(true);
           found = true;
           setIsRecommend(found);
-        } else if (data.recommendPings.length >= 5) {
+        } else if (data.recommendPings.length >= 1) {
           setCustomMarkers(data.recommendPings);
           found = true;
           setrecommendPings(data.recommendPings);
@@ -199,6 +199,7 @@ export function BottomDrawer({
   };
 
   const handleRecommendCancle = () => {
+    setTrigger((prev) => !prev);
     setIsRecommend(false);
   };
 
