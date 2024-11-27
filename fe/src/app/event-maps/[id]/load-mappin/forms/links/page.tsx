@@ -132,7 +132,7 @@ export default function LinksPage() {
         <Button
           label="저장"
           onClick={handleSubmit}
-          className={`w-fix h-[60px] py-[17px] rounded-lg text-base font-medium text-white ${
+          className={`w-[328px] h-[60px] py-[17px] rounded-lg text-lg font-['Pretendard'] font-medium bg-[#F73A2C] text-white ${
             isFormComplete && !isSubmitting
               ? "bg-black"
               : "bg-[#d9d9d9] cursor-not-allowed"
