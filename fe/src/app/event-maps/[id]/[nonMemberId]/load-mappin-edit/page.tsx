@@ -22,11 +22,6 @@ export default function LinkEditPage() {
   const router = useRouter();
   const { id, nonMemberId } = useParams();
 
-  const isValidLink = (link: string) => {
-    const urlPattern = /^(https?:\/\/[^\s]+)/g;
-    return urlPattern.test(link.trim());
-  };
-
   useEffect(() => {
     if (!id || !nonMemberId) {
       console.error("누락된 라우트 매개변수:", { id, nonMemberId });
@@ -46,6 +41,8 @@ export default function LinkEditPage() {
         );
         setUserName(parsedData.name || "");
         setUserData(parsedData);
+      } else {
+        console.warn("비회원 ID가 일치하지 않습니다.");
       }
     } else {
       setMapLinks(userData.bookmarkUrls.length ? userData.bookmarkUrls : [""]);
@@ -58,10 +55,8 @@ export default function LinkEditPage() {
 
   // 저장 버튼 활성화 상태 업데이트
   useEffect(() => {
-    const allMapLinksValid = mapLinks.length > 0 && mapLinks.every(isValidLink);
-    const allStoreLinksValid =
-      storeLinks.length > 0 && storeLinks.every(isValidLink);
-
+    const allMapLinksValid = mapLinks.every((link) => link.trim() !== "");
+    const allStoreLinksValid = storeLinks.every((link) => link.trim() !== "");
     const isComplete = (allMapLinksValid || allStoreLinksValid) && isChecked;
     setIsSaveButtonEnabled(isComplete);
   }, [mapLinks, storeLinks, isChecked]);
@@ -69,11 +64,14 @@ export default function LinkEditPage() {
   const handleSubmit = async (e?: React.FormEvent) => {
     if (e) e.preventDefault();
 
+    const filteredMapLinks = mapLinks.filter((link) => link.trim() !== "");
+    const filteredStoreLinks = storeLinks.filter((link) => link.trim() !== "");
+
     const updatedData = {
       nonMemberId: userData.nonMemberId || Number(nonMemberId),
       name: userName,
-      bookmarkUrls: mapLinks,
-      storeUrls: storeLinks,
+      bookmarkUrls: filteredMapLinks,
+      storeUrls: filteredStoreLinks,
     };
 
     try {
@@ -94,7 +92,6 @@ export default function LinkEditPage() {
 
       setUserData(updatedData);
       localStorage.setItem("userData", JSON.stringify(updatedData));
-
       router.push(`/event-maps/${id}`);
     } catch (error) {
       console.error("API 호출 오류:", error);
@@ -169,8 +166,10 @@ export default function LinkEditPage() {
       >
         <Button
           label="저장"
-          className={`w-fixl h-[60px] py-[17px] rounded-lg text-base font-medium text-white ${
-            isSaveButtonEnabled ? "bg-black" : "bg-[#e0e0e0] cursor-not-allowed"
+          className={`w-fix h-[60px] py-[17px] rounded-lg text-base font-medium text-white ${
+            isSaveButtonEnabled
+              ? "bg-black"
+              : "bg-[#e0e0e0] pointer-events-none"
           }`}
           onClick={handleSubmit}
           disabled={!isSaveButtonEnabled}
