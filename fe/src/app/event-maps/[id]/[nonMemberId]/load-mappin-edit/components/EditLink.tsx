@@ -19,6 +19,7 @@ interface InputField {
   isTyping: boolean;
 }
 
+// 전체 코드에 에러가 발생할 가능성이 있는 부분 수정
 export default function LinkFieldEdit({
   label,
   placeholder,
@@ -47,6 +48,7 @@ export default function LinkFieldEdit({
 
   const inputRefs = useRef<(HTMLInputElement | null)[]>([]);
 
+  // 업데이트된 유효 링크 관리
   useEffect(() => {
     const validLinks = inputFields
       .filter((field) => field.isValid)
@@ -153,6 +155,11 @@ export default function LinkFieldEdit({
   };
 
   const handleBlur = (fieldId: string) => {
+    const field = inputFields.find((fieldItem) => fieldItem.id === fieldId);
+    if (field && field.text) {
+      validateLink(fieldId, field.text, label);
+    }
+
     setInputFields((prevFields) =>
       prevFields.map((fieldItem) =>
         fieldItem.id === fieldId ? { ...fieldItem, isTyping: false } : fieldItem
@@ -218,13 +225,11 @@ export default function LinkFieldEdit({
                 }}
                 type="text"
                 value={item.text}
-                onFocus={() => handleFocus(item.id)}
                 onChange={(e) => handleInputChange(item.id, e.target.value)}
+                onPaste={(e) => handlePaste(item.id, e)}
                 onBlur={() => handleBlur(item.id)}
                 placeholder={placeholder}
-                className={`flex-1 bg-transparent outline-none placeholder:text-[#8e8e8e] text-sm font-medium font-['Pretendard'] ${
-                  item.isValid ? "text-[#3A91EA]" : ""
-                }`}
+                className="flex-1 bg-transparent outline-none placeholder:text-[#8e8e8e] text-sm font-medium font-['Pretendard']"
               />
               {item.text && (
                 <button
