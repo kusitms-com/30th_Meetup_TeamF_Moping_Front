@@ -10,8 +10,6 @@ interface LinkFieldEditProps {
   placeholder: string;
   value: string[];
   onChange: (value: string[]) => void;
-  showTooltip?: boolean;
-  onInfoClick?: () => void;
 }
 
 interface InputField {
@@ -20,7 +18,6 @@ interface InputField {
   error: string;
   isValid: boolean;
   isTyping: boolean;
-  canEdit: boolean;
 }
 
 export default function LinkFieldEdit({
@@ -37,7 +34,6 @@ export default function LinkFieldEdit({
           error: "",
           isValid: true,
           isTyping: false,
-          canEdit: true,
         }))
       : [
           {
@@ -46,7 +42,6 @@ export default function LinkFieldEdit({
             error: "",
             isValid: false,
             isTyping: false,
-            canEdit: true,
           },
         ]
   );
@@ -62,6 +57,11 @@ export default function LinkFieldEdit({
     onChange(validLinks);
   }, [inputFields, onChange]);
 
+  const cleanURL = (url: string): string => {
+    const match = url.match(/https?:\/\/[^\s]+/);
+    return match ? match[0].trim() : "";
+  };
+
   const validateLink = async (fieldId: string, url: string, type: string) => {
     const endpoint =
       type === "북마크 공유 링크" ? "/pings/bookmark" : "/pings/store";
@@ -69,7 +69,7 @@ export default function LinkFieldEdit({
       const response = await fetch(
         `${process.env.NEXT_PUBLIC_API_BASE_URL}${endpoint}`,
         {
-          method: "POST",
+          method: "PUT",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ url }),
         }
@@ -95,8 +95,7 @@ export default function LinkFieldEdit({
           )
         );
       }
-    } catch (error) {
-      console.error("API 요청 실패:", error);
+    } catch {
       setInputFields((prevFields) =>
         prevFields.map((fieldItem) =>
           fieldItem.id === fieldId
@@ -111,16 +110,39 @@ export default function LinkFieldEdit({
     }
   };
 
+  const handlePasteFromClipboard = async (fieldId: string) => {
+    try {
+      const clipboardText = await navigator.clipboard.readText();
+      const cleanedValue = cleanURL(clipboardText); // URL 정리
+      if (cleanedValue) {
+        setInputFields((prevFields) =>
+          prevFields.map((fieldItem) =>
+            fieldItem.id === fieldId
+              ? { ...fieldItem, text: cleanedValue, isValid: false }
+              : fieldItem
+          )
+        );
+
+        validateLink(fieldId, cleanedValue, label);
+      }
+    } catch (error) {
+      console.error("클립보드에서 텍스트를 읽는 데 실패했습니다:", error);
+    }
+  };
+
   const handleInputChange = (fieldId: string, inputValue: string) => {
+    const cleanedValue = cleanURL(inputValue); // URL 정리
     setInputFields((prevFields) =>
       prevFields.map((fieldItem) =>
         fieldItem.id === fieldId
-          ? { ...fieldItem, text: inputValue, isValid: false, isTyping: true }
+          ? { ...fieldItem, text: cleanedValue, isValid: false, isTyping: true }
           : fieldItem
       )
     );
 
-    validateLink(fieldId, inputValue, label);
+    if (cleanedValue) {
+      validateLink(fieldId, cleanedValue, label);
+    }
   };
 
   const handleFocus = (fieldId: string) => {
@@ -129,6 +151,8 @@ export default function LinkFieldEdit({
         fieldItem.id === fieldId ? { ...fieldItem, isTyping: true } : fieldItem
       )
     );
+
+    handlePasteFromClipboard(fieldId);
   };
 
   const handleBlur = (fieldId: string) => {
@@ -148,7 +172,6 @@ export default function LinkFieldEdit({
         error: "",
         isValid: false,
         isTyping: false,
-        canEdit: true,
       },
     ]);
   };
@@ -166,8 +189,6 @@ export default function LinkFieldEdit({
   const navigateToTooltipPage = () => {
     if (id) {
       router.push(`/event-maps/${id}/load-mappin/forms/tooltip`);
-    } else {
-      console.error("ID not found for navigation");
     }
   };
 
@@ -176,15 +197,10 @@ export default function LinkFieldEdit({
   };
 
   const getClassNames = (item: InputField): string => {
-    if (item.error && !item.isTyping) {
+    if (item.error && !item.isTyping)
       return "border-2 border-[#f73a2c] bg-[#F8F8F8]";
-    }
-    if (item.isValid) {
-      return "bg-[#EBF4FD] text-[#3a91ea]";
-    }
-    if (item.isTyping) {
-      return "border-2 border-[#555555] bg-[#F8F8F8]";
-    }
+    if (item.isValid) return "bg-[#EBF4FD] text-[#3a91ea]";
+    if (item.isTyping) return "border-2 border-[#555555] bg-[#F8F8F8]";
     return "bg-[#F8F8F8]";
   };
 
@@ -201,9 +217,7 @@ export default function LinkFieldEdit({
             }}
             role="button"
             tabIndex={0}
-            onKeyPress={(e) => {
-              if (e.key === "Enter") navigateToTooltipPage();
-            }}
+            onKeyDown={(e) => e.key === "Enter" && navigateToTooltipPage()}
           >
             <Image
               src="/svg/information.svg"
@@ -219,9 +233,7 @@ export default function LinkFieldEdit({
           onClick={handleNaverMove}
           role="button"
           tabIndex={0}
-          onKeyPress={(e) => {
-            if (e.key === "Enter") handleNaverMove();
-          }}
+          onKeyDown={(e) => e.key === "Enter" && handleNaverMove()}
         >
           네이버지도 열기
         </span>
@@ -236,7 +248,9 @@ export default function LinkFieldEdit({
         {inputFields.map((item, index) => (
           <div
             key={item.id}
-            className={`relative w-full ${index === inputFields.length - 1 ? "" : "mb-[16px]"}`}
+            className={`relative w-full ${
+              index === inputFields.length - 1 ? "" : "mb-[16px]"
+            }`}
           >
             <div
               className={`w-[296px] h-[52px] px-4 py-3.5 pr-[40px] rounded-md inline-flex relative ${getClassNames(
@@ -277,7 +291,7 @@ export default function LinkFieldEdit({
                 </button>
               )}
             </div>
-            {item.error && (
+            {!item.isTyping && item.error && (
               <div className="text-sm font-medium font-['Pretendard'] text-[#f73a2c] mt-[4px]">
                 {item.error}
               </div>
