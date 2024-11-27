@@ -19,7 +19,6 @@ interface InputField {
   isTyping: boolean;
 }
 
-// 전체 코드에 에러가 발생할 가능성이 있는 부분 수정
 export default function LinkFieldEdit({
   label,
   placeholder,
@@ -48,13 +47,17 @@ export default function LinkFieldEdit({
 
   const inputRefs = useRef<(HTMLInputElement | null)[]>([]);
 
-  // 업데이트된 유효 링크 관리
   useEffect(() => {
     const validLinks = inputFields
       .filter((field) => field.isValid)
       .map((field) => field.text);
     onChange(validLinks);
   }, [inputFields, onChange]);
+
+  const cleanURL = (url: string): string => {
+    const match = url.match(/https?:\/\/[^\s]+/);
+    return match ? match[0].trim() : "";
+  };
 
   const validateLink = async (fieldId: string, url: string, type: string) => {
     const endpoint =
@@ -89,8 +92,7 @@ export default function LinkFieldEdit({
           )
         );
       }
-    } catch (error) {
-      console.error("API 요청 실패:", error);
+    } catch {
       setInputFields((prevFields) =>
         prevFields.map((fieldItem) =>
           fieldItem.id === fieldId
@@ -105,37 +107,52 @@ export default function LinkFieldEdit({
     }
   };
 
+  const handlePasteFromClipboard = async (fieldId: string) => {
+    try {
+      const clipboardText = await navigator.clipboard.readText();
+      const cleanedValue = cleanURL(clipboardText); // URL 정리
+      if (cleanedValue) {
+        setInputFields((prevFields) =>
+          prevFields.map((fieldItem) =>
+            fieldItem.id === fieldId
+              ? { ...fieldItem, text: cleanedValue, isValid: false }
+              : fieldItem
+          )
+        );
+
+        validateLink(fieldId, cleanedValue, label);
+      }
+    } catch (error) {
+      console.error("클립보드에서 텍스트를 읽는 데 실패했습니다:", error);
+    }
+  };
+
   const handleInputChange = (fieldId: string, inputValue: string) => {
+    const cleanedValue = cleanURL(inputValue); // URL 정리
     setInputFields((prevFields) =>
       prevFields.map((fieldItem) =>
         fieldItem.id === fieldId
-          ? { ...fieldItem, text: inputValue, isValid: false, isTyping: true }
+          ? { ...fieldItem, text: cleanedValue, isValid: false, isTyping: true }
           : fieldItem
       )
     );
+
+    if (cleanedValue) {
+      validateLink(fieldId, cleanedValue, label);
+    }
   };
 
-  const handlePaste = (fieldId: string, event: React.ClipboardEvent) => {
-    const pastedText = event.clipboardData.getData("Text").trim();
+  const handleFocus = (fieldId: string) => {
+    setInputFields((prevFields) =>
+      prevFields.map((fieldItem) =>
+        fieldItem.id === fieldId ? { ...fieldItem, isTyping: true } : fieldItem
+      )
+    );
 
-    if (pastedText) {
-      setInputFields((prevFields) =>
-        prevFields.map((fieldItem) =>
-          fieldItem.id === fieldId
-            ? { ...fieldItem, text: pastedText, isValid: false, isTyping: true }
-            : fieldItem
-        )
-      );
-      validateLink(fieldId, pastedText, label);
-    }
+    handlePasteFromClipboard(fieldId);
   };
 
   const handleBlur = (fieldId: string) => {
-    const field = inputFields.find((fieldItem) => fieldItem.id === fieldId);
-    if (field && field.text) {
-      validateLink(fieldId, field.text, label);
-    }
-
     setInputFields((prevFields) =>
       prevFields.map((fieldItem) =>
         fieldItem.id === fieldId ? { ...fieldItem, isTyping: false } : fieldItem
@@ -167,15 +184,10 @@ export default function LinkFieldEdit({
   };
 
   const getClassNames = (item: InputField): string => {
-    if (item.error && !item.isTyping) {
+    if (item.error && !item.isTyping)
       return "border-2 border-[#f73a2c] bg-[#F8F8F8]";
-    }
-    if (item.isValid) {
-      return "bg-[#EBF4FD] text-[#3a91ea]";
-    }
-    if (item.isTyping) {
-      return "border-2 border-[#555555] bg-[#F8F8F8]";
-    }
+    if (item.isValid) return "bg-[#EBF4FD] text-[#3a91ea]";
+    if (item.isTyping) return "border-2 border-[#555555] bg-[#F8F8F8]";
     return "bg-[#F8F8F8]";
   };
 
@@ -206,11 +218,13 @@ export default function LinkFieldEdit({
                 }}
                 type="text"
                 value={item.text}
+                onFocus={() => handleFocus(item.id)}
                 onChange={(e) => handleInputChange(item.id, e.target.value)}
-                onPaste={(e) => handlePaste(item.id, e)}
                 onBlur={() => handleBlur(item.id)}
                 placeholder={placeholder}
-                className="flex-1 bg-transparent outline-none placeholder:text-[#8e8e8e] text-sm font-medium font-['Pretendard']"
+                className={`flex-1 bg-transparent outline-none placeholder:text-[#8e8e8e] text-sm font-medium font-['Pretendard'] ${
+                  item.isValid ? "text-[#3A91EA]" : ""
+                }`}
               />
               {item.text && (
                 <button
