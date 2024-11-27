@@ -13,6 +13,7 @@ import { useMarkerStore } from "./load-mappin/stores/useMarkerStore";
 import ExitModal from "./components/EventMapExitModal";
 import useUpdateTimeStore from "./stores/useUpdateTime";
 import useDidMountEffect from "./hooks/useDidmountEffect";
+import LoginModal from "./components/LoginModal";
 
 interface NonMember {
   nonMemberId: number;
@@ -27,6 +28,7 @@ interface Ping {
   placeName: string;
   px: number;
   py: number;
+  sid: string;
 }
 
 interface Data {
@@ -190,6 +192,7 @@ export default function Page() {
         </>
       )}
       {isModalOpen && <ExitModal onCancel={handleCancel} onExit={handleExit} />}
+      <LoginModal eventId={parsedId} />
     </div>
   );
 }

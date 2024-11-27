@@ -22,6 +22,7 @@ interface Ping {
   url: string;
   type: string;
   nonMembers: NonMember[];
+  sid: string;
 }
 
 interface BottomDrawerProps {

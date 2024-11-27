@@ -13,6 +13,7 @@ interface Ping {
   url: string;
   nonMembers: NonMember[];
   type: string;
+  sid: string;
 }
 
 export type PingWithoutNonMembers = Omit<Ping, "nonMembers">;

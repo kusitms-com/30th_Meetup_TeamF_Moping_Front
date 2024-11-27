@@ -2,10 +2,49 @@ import React from "react";
 import Image from "next/image";
 import { useMapStore } from "../stores/useMapStore";
 import { useMarkerStore } from "../load-mappin/stores/useMarkerStore";
+import { useLoginModalStore } from "../stores/useLoginModalStore";
 
 export default function PingInformaion() {
   const { customMarkers } = useMarkerStore();
   const selectedMarkerName = useMapStore((state) => state.selectedMarkerName);
+
+  const { openLoginModal } = useLoginModalStore();
+
+  const sendPingApi = async () => {
+    try {
+      const token = localStorage.getItem("authToken");
+      if (!token) {
+        throw new Error("Authorization token is missing!");
+      }
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_API_BASE_URL}/pings/member`,
+        {
+          method: "POST",
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            sid: selectedPing?.sid,
+          }),
+        }
+      );
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      const data = await response.json();
+      console.log("API Response:", data);
+    } catch (error) {
+      console.error("API Error:", error);
+      alert("API 요청 중 오류가 발생했습니다. 다시 시도해주세요.");
+    }
+  };
+
+  const handleOpenLoginModal = () => {
+    sendPingApi();
+    console.log("Button clicked: Open login modal");
+    openLoginModal();
+  };
 
   const selectedPing = customMarkers.find(
     (ping) => ping.placeName === selectedMarkerName
@@ -30,7 +69,7 @@ export default function PingInformaion() {
           <div className="text-white text-title-sm w-[200px] truncate">
             {selectedPing.placeName}
           </div>
-          <button type="button">
+          <button type="button" onClick={handleOpenLoginModal}>
             <Image
               src="/svg/plus.svg"
               alt="내 핀에 추가"

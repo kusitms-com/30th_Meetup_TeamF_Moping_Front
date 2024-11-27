@@ -24,6 +24,7 @@ interface Ping {
   py: number;
   url: string;
   type: string;
+  sid: string;
 }
 
 interface RecommendInActiveProps {

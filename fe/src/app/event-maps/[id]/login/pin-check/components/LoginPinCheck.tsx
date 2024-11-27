@@ -2,7 +2,7 @@
 
 import React, { useRef, useState, useEffect, useCallback } from "react";
 import Image from "next/image";
-import { useSearchParams } from "next/navigation";
+import { useSearchParams, useParams } from "next/navigation";
 import { v4 as uuidv4 } from "uuid"; // UUID를 생성하기 위해 추가
 
 export interface PasswordInputProps {
@@ -15,7 +15,7 @@ export default function PasswordInput({ iconUrl }: PasswordInputProps) {
   const [hasError, setHasError] = useState(false);
   const inputRefs = useRef<(HTMLInputElement | null)[]>([]);
   const searchParams = useSearchParams();
-
+  const { id } = useParams();
   const nonMemberId = searchParams.get("nonMemberId");
 
   const submitPassword = useCallback(async () => {
@@ -44,7 +44,7 @@ export default function PasswordInput({ iconUrl }: PasswordInputProps) {
 
       if (response.ok) {
         const { accessToken } = await response.json();
-
+        console.log(accessToken);
         // 토큰을 로컬 스토리지에 저장
         localStorage.setItem("authToken", accessToken);
 
@@ -52,7 +52,7 @@ export default function PasswordInput({ iconUrl }: PasswordInputProps) {
         alert("로그인이 완료되었습니다!");
 
         // 페이지 이동(호야 이거 너가 설정해)
-        window.location.href = `/event-maps/${searchParams.get("eventId")}`;
+        window.location.href = `/event-maps/${id}`;
       } else {
         setHasError(true);
         setPassword(["", "", "", ""]);
