@@ -3,6 +3,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import { nanoid } from "nanoid";
 import Image from "next/image";
+import { useRouter, useParams } from "next/navigation";
 
 interface LinkFieldEditProps {
   label: string;
@@ -46,6 +47,8 @@ export default function LinkFieldEdit({
   );
 
   const inputRefs = useRef<(HTMLInputElement | null)[]>([]);
+  const router = useRouter();
+  const { id } = useParams();
 
   useEffect(() => {
     const validLinks = inputFields
@@ -183,6 +186,16 @@ export default function LinkFieldEdit({
     );
   };
 
+  const navigateToTooltipPage = () => {
+    if (id) {
+      router.push(`/event-maps/${id}/load-mappin/forms/tooltip`);
+    }
+  };
+
+  const handleNaverMove = () => {
+    window.location.href = "https://m.map.naver.com/";
+  };
+
   const getClassNames = (item: InputField): string => {
     if (item.error && !item.isTyping)
       return "border-2 border-[#f73a2c] bg-[#F8F8F8]";
@@ -195,6 +208,41 @@ export default function LinkFieldEdit({
     <div className="mb-[48px] relative">
       <label className="text-[#2c2c2c] font-300 text-lg mb-[8px] flex items-center">
         {label}
+        {label === "북마크 공유 링크" && (
+          <div
+            className="relative group"
+            onClick={(e) => {
+              e.stopPropagation();
+              navigateToTooltipPage();
+            }}
+            role="button"
+            tabIndex={0}
+            onKeyDown={(e) => e.key === "Enter" && navigateToTooltipPage()}
+          >
+            <Image
+              src="/svg/information.svg"
+              alt="information"
+              width={18}
+              height={18}
+              className="p-[3px] w-[24px] h-[24px] ml-[6px] cursor-pointer"
+            />
+          </div>
+        )}
+        <span
+          className="mr-0 ml-auto text-[#8e8e8e] text-sm font-medium font-['Pretendard'] leading-tight cursor-pointer"
+          onClick={handleNaverMove}
+          role="button"
+          tabIndex={0}
+          onKeyDown={(e) => e.key === "Enter" && handleNaverMove()}
+        >
+          네이버지도 열기
+        </span>
+        <Image
+          src="/svg/rightArrow.svg"
+          alt="rightArrow"
+          width={12}
+          height={24}
+        />
       </label>
       <div className="flex flex-col items-center border-[#F0F0F0] border p-[16px] rounded-xl w-[328px]">
         {inputFields.map((item, index) => (
