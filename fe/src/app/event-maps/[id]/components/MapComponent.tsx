@@ -175,7 +175,7 @@ export default function MapComponent({
         setSelectedMarkerName(transformedPing.placeName);
       });
     });
-  }, [customMarkers]);
+  }, [customMarkers, setSelectedMarkerName]);
 
   useEffect(() => {
     if (mapInstanceRef.current) {
@@ -201,7 +201,7 @@ export default function MapComponent({
         }
       );
     }
-  }, [customMarkers]);
+  }, [customMarkers, setSelectedMarkerName]);
 
   useEffect(() => {
     if (mapInstanceRef.current) {

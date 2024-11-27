@@ -1,7 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
-
-import Image from "next/image";
 import { useLocationStore } from "../stores/useLocationStore";
 import { useMarkerStore } from "../load-mappin/stores/useMarkerStore";
 import { RecommendButton } from "./RecommendButton";

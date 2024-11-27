@@ -30,7 +30,7 @@ export default function PingInformaion() {
           <div className="text-white text-title-sm w-[200px] truncate">
             {selectedPing.placeName}
           </div>
-          <button>
+          <button type="button">
             <Image
               src="/svg/plus.svg"
               alt="내 핀에 추가"
@@ -61,7 +61,9 @@ export default function PingInformaion() {
       <button
         type="button"
         className="bg-danger-base rounded-small text-white w-full mt-[16px] h-[48px]"
-        onClick={() => (window.location.href = selectedPing.url)}
+        onClick={() => {
+          window.location.href = selectedPing.url;
+        }}
       >
         자세히 보러 가기
       </button>
