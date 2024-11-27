@@ -3,12 +3,15 @@
 import React, { useState, useEffect, useRef } from "react";
 import { nanoid } from "nanoid";
 import Image from "next/image";
+import { useRouter, useParams } from "next/navigation";
 
-interface LinkFieldEditProps {
+interface LinkFieldProps {
   label: string;
   placeholder: string;
   value: string[];
   onChange: (value: string[]) => void;
+  showTooltip?: boolean;
+  onInfoClick?: () => void;
 }
 
 interface InputField {
@@ -17,14 +20,15 @@ interface InputField {
   error: string;
   isValid: boolean;
   isTyping: boolean;
+  canEdit: boolean;
 }
 
-export default function LinkFieldEdit({
+export default function LinkField({
   label,
   placeholder,
   value,
   onChange,
-}: LinkFieldEditProps) {
+}: LinkFieldProps) {
   const [inputFields, setInputFields] = useState<InputField[]>(
     value.length > 0
       ? value.map((val) => ({
@@ -33,6 +37,7 @@ export default function LinkFieldEdit({
           error: "",
           isValid: true,
           isTyping: false,
+          canEdit: true,
         }))
       : [
           {
@@ -41,11 +46,14 @@ export default function LinkFieldEdit({
             error: "",
             isValid: false,
             isTyping: false,
+            canEdit: true,
           },
         ]
   );
 
   const inputRefs = useRef<(HTMLInputElement | null)[]>([]);
+  const router = useRouter();
+  const { id } = useParams();
 
   useEffect(() => {
     const validLinks = inputFields
@@ -54,11 +62,6 @@ export default function LinkFieldEdit({
     onChange(validLinks);
   }, [inputFields, onChange]);
 
-  const cleanURL = (url: string): string => {
-    const match = url.match(/https?:\/\/[^\s]+/);
-    return match ? match[0].trim() : "";
-  };
-
   const validateLink = async (fieldId: string, url: string, type: string) => {
     const endpoint =
       type === "북마크 공유 링크" ? "/pings/bookmark" : "/pings/store";
@@ -66,7 +69,7 @@ export default function LinkFieldEdit({
       const response = await fetch(
         `${process.env.NEXT_PUBLIC_API_BASE_URL}${endpoint}`,
         {
-          method: "PUT",
+          method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ url }),
         }
@@ -110,36 +113,32 @@ export default function LinkFieldEdit({
   const handlePasteFromClipboard = async (fieldId: string) => {
     try {
       const clipboardText = await navigator.clipboard.readText();
-      const cleanedValue = cleanURL(clipboardText);
-      if (cleanedValue) {
+      if (clipboardText.trim()) {
         setInputFields((prevFields) =>
           prevFields.map((fieldItem) =>
             fieldItem.id === fieldId
-              ? { ...fieldItem, text: cleanedValue, isValid: false }
+              ? { ...fieldItem, text: clipboardText, isValid: false }
               : fieldItem
           )
         );
 
-        validateLink(fieldId, cleanedValue, label);
+        validateLink(fieldId, clipboardText, label);
       }
-    } catch (error) {
-      console.error("클립보드에서 텍스트를 읽는 데 실패했습니다:", error);
+    } catch {
+      // 클립보드 읽기 실패 시 처리
     }
   };
 
   const handleInputChange = (fieldId: string, inputValue: string) => {
-    const cleanedValue = cleanURL(inputValue); // URL 정리
     setInputFields((prevFields) =>
       prevFields.map((fieldItem) =>
         fieldItem.id === fieldId
-          ? { ...fieldItem, text: cleanedValue, isValid: false, isTyping: true }
+          ? { ...fieldItem, text: inputValue, isValid: false, isTyping: true }
           : fieldItem
       )
     );
 
-    if (cleanedValue) {
-      validateLink(fieldId, cleanedValue, label);
-    }
+    validateLink(fieldId, inputValue, label);
   };
 
   const handleFocus = (fieldId: string) => {
@@ -169,6 +168,7 @@ export default function LinkFieldEdit({
         error: "",
         isValid: false,
         isTyping: false,
+        canEdit: true,
       },
     ]);
   };
@@ -183,6 +183,16 @@ export default function LinkFieldEdit({
     );
   };
 
+  const navigateToTooltipPage = () => {
+    if (id) {
+      router.push(`/event-maps/${id}/load-mappin/forms/tooltip`);
+    }
+  };
+
+  const handleNaverMove = () => {
+    window.location.href = "https://m.map.naver.com/";
+  };
+
   const getClassNames = (item: InputField): string => {
     if (item.error && !item.isTyping)
       return "border-2 border-[#f73a2c] bg-[#F8F8F8]";
@@ -195,14 +205,47 @@ export default function LinkFieldEdit({
     <div className="mb-[48px] relative">
       <label className="text-[#2c2c2c] font-300 text-lg mb-[8px] flex items-center">
         {label}
+        {label === "북마크 공유 링크" && (
+          <div
+            className="relative group"
+            onClick={(e) => {
+              e.stopPropagation();
+              navigateToTooltipPage();
+            }}
+            role="button"
+            tabIndex={0}
+            onKeyDown={(e) => e.key === "Enter" && navigateToTooltipPage()}
+          >
+            <Image
+              src="/svg/information.svg"
+              alt="information"
+              width={18}
+              height={18}
+              className="p-[3px] w-[24px] h-[24px] ml-[6px] cursor-pointer"
+            />
+          </div>
+        )}
+        <span
+          className="mr-0 ml-auto text-[#8e8e8e] text-sm font-medium font-['Pretendard'] leading-tight cursor-pointer"
+          onClick={handleNaverMove}
+          role="button"
+          tabIndex={0}
+          onKeyDown={(e) => e.key === "Enter" && handleNaverMove()}
+        >
+          네이버지도 열기
+        </span>
+        <Image
+          src="/svg/rightArrow.svg"
+          alt="rightArrow"
+          width={12}
+          height={24}
+        />
       </label>
       <div className="flex flex-col items-center border-[#F0F0F0] border p-[16px] rounded-xl w-[328px]">
         {inputFields.map((item, index) => (
           <div
             key={item.id}
-            className={`relative w-full ${
-              index === inputFields.length - 1 ? "" : "mb-[16px]"
-            }`}
+            className={`relative w-full ${index === inputFields.length - 1 ? "" : "mb-[16px]"}`}
           >
             <div
               className={`w-[296px] h-[52px] px-4 py-3.5 pr-[40px] rounded-md inline-flex relative ${getClassNames(
