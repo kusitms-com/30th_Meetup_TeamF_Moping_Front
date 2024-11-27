@@ -12,35 +12,35 @@ const slides = [
     title: "혹시 지금 이렇게 보이시나요?",
     description:
       "공유 버튼이 안 보이시죠?\n장소 리스트가 비공개로 되어 있어서 그래요",
-    image: "/images/placeholder1.png",
+    image: "/svg/0.svg",
   },
   {
     id: 2,
     step: "STEP 1",
     title: "공개 설정 리스트 새로 만들기",
     description: "[공개 범위 ‘공개’ 로 선택 > 새 리스트를 생성]",
-    image: "/images/placeholder2.png",
+    image: "/gif/1.gif",
   },
   {
     id: 3,
     step: "STEP 2",
     title: "북마크 옮기기",
     description: "[비공개 리스트 > 편집 > 장소 목록 편집]",
-    image: "/images/placeholder3.png",
+    image: "/gif/2.gif",
   },
   {
     id: 4,
     step: "STEP 3",
     title: "북마크 옮기기",
     description: "[전체 선택 > 이동 > 이동할 리스트 선택 > 완료]",
-    image: "/images/placeholder4.png",
+    image: "/gif/2.gif",
   },
   {
     id: 5,
     step: "STEP 4",
     title: "링크 복사하기",
     description: "공유해서 링크 복사하면 끝!",
-    image: "/images/placeholder5.png",
+    image: "/gif/3.gif",
   },
 ];
 
@@ -115,13 +115,13 @@ export default function ToolTipPage() {
           />
         ))}
       </div>
-      <div className="w-full px-4">
+      <div className="w-fix px-4">
         <Button
           label="네이버 지도 바로 열기"
           onClick={() => {
             window.location.href = "https://m.map.naver.com/";
           }}
-          className="w-full h-[60px] text-lg font-medium font-['Pretendard'] rounded-lg flex justify-center items-center"
+          className="w-fix h-[60px] text-lg font-medium font-['Pretendard'] rounded-lg flex justify-center items-center"
         />
       </div>
     </div>
