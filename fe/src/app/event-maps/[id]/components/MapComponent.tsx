@@ -1,6 +1,7 @@
 import React, { useEffect, useRef } from "react";
 import { useLocationStore } from "../stores/useLocationStore";
 import { useMarkerStore } from "../load-mappin/stores/useMarkerStore";
+import { useMapStore } from "../stores/useMapStore";
 
 interface MapComponentProps {
   px: number;
@@ -60,6 +61,7 @@ export default function MapComponent({
   const mapInstanceRef = useRef<naver.maps.Map | null>(null);
   const { customMarkers } = useMarkerStore();
   const { center } = useLocationStore();
+  const { setSelectedMarkerName } = useMapStore();
   const markersRef = useRef<naver.maps.Marker[]>([]);
   const infoWindowRef = useRef<naver.maps.InfoWindow | null>(null);
   const previousMarkerIndexRef = useRef<number | null>(null);
@@ -143,6 +145,12 @@ export default function MapComponent({
       markersRef.current.push(marker);
 
       window.naver.maps.Event.addListener(marker, "click", () => {
+        if (transformedPing.iconLevel === 10) {
+          // 아이콘 레벨이 10인 경우 링크로 이동
+          window.location.href = transformedPing.url;
+          return;
+        }
+
         if (
           previousMarkerIndexRef.current !== null &&
           previousMarkerIndexRef.current !== index
@@ -155,7 +163,6 @@ export default function MapComponent({
             )
           );
         }
-
         marker.setIcon(
           getHtmlIconByLevel(
             transformedPing.iconLevel,
@@ -165,142 +172,7 @@ export default function MapComponent({
         );
         previousMarkerIndexRef.current = index;
 
-        if (infoWindowRef.current) {
-          infoWindowRef.current.close();
-        }
-
-        const infoWindow = new window.naver.maps.InfoWindow({
-          content: `
-            <div
-              style="
-                width: 256px;
-                background: #1d1d1d;
-                border-radius: 4px;
-                padding: 12px;
-              "
-            >
-              <div style="margin-left: 4px; margin-right: 4px; margin-bottom: 12px">
-                <div
-                  style="
-                    color: #8e8e8e;
-                    font-size: 12px;
-                    display: flex;
-                    justify-content: space-between;
-                  "
-                >
-                  <div>${transformedPing.type}</div>
-                  <div style="display: flex; align-items: center;">
-                    <a href="${transformedPing.url}" target="_blank" style="color: inherit; text-decoration: none; display: flex; align-items: center;">
-                      더보기 <img src="/svg/seeMore.svg" style="margin-left: 4px;" />
-                    </a>
-                  </div>
-                </div>
-                <div
-                  style="
-                    color: white;
-                    font-size: 16px;
-                    width: 127px;
-                    white-space: nowrap;
-                    overflow: hidden;
-                    text-overflow: ellipsis;
-                  "
-                >
-                  ${transformedPing.placeName}
-                </div>
-              </div>
-              <!-- 드롭다운 열리기 전 -->
-              <div
-                style="
-                  padding: 8px;
-                  background-color: #2d2d2d;
-                  display: flex;
-                  justify-content: space-evenly;
-                  align-items: center;
-                  gap: 12px;
-                "
-              >
-                <div
-                  style="
-                    background-color: #f73a2c;
-                    width: 41px;
-                    height: 24px;
-                    border-radius: 2px;
-                    display: flex;
-                    justify-content: center;
-                    align-items: center;
-                  "
-                >
-                  <img src="/svg/people.svg" />
-                  ${transformedPing.nonMembers.length}
-                </div>
-                <div
-                  class="names-short"
-                  style="
-                    width: 127px;
-                    font-size: 12px;
-                    white-space: nowrap;
-                    overflow: hidden;
-                    text-overflow: ellipsis;
-                    color: white;
-                    opacity: 1;
-                  "
-                >
-                  ${transformedPing.nonMembers.map((member) => member.name).join(", ")}
-                </div>
-                <img
-                  src="/svg/dropdown.svg"
-                  style="transform: rotate(180deg); cursor: pointer"
-                  onclick="window.toggleDropdown()"
-                />
-              </div>
-              <!-- 드롭다운 열린 후 -->
-              <div
-                id="dropdownExtended"
-                style="padding: 8px; background-color: #2d2d2d; display: none"
-              >
-                <div
-                  style="
-                    display: flex;
-                    flex-wrap: wrap;
-                    gap: 8px;
-                    font-size: 14px;
-                    width: 216px;
-                    margin-left: 8px;
-                    margin-right: 8px;
-                  "
-                >
-                  ${transformedPing.nonMembers
-                    .map(
-                      (member) => `
-                    <div
-                      style="
-                        background-color: #1d1d1d;
-                        padding-left: 8px;
-                        padding-right: 8px;
-                        padding-top: 2px;
-                        padding-bottom: 2px;
-                        color: white;
-                        border-radius: 2px;
-                      "
-                    >
-                      ${member.name}
-                    </div>
-                  `
-                    )
-                    .join("")}
-                </div>
-              </div>
-            </div>
-          `,
-          borderWidth: 0,
-          backgroundColor: "transparent",
-          disableAnchor: true,
-        });
-
-        if (mapInstanceRef.current) {
-          infoWindow.open(mapInstanceRef.current, marker);
-        }
-        infoWindowRef.current = infoWindow;
+        setSelectedMarkerName(transformedPing.placeName);
       });
     });
   }, [customMarkers]);
@@ -322,7 +194,7 @@ export default function MapComponent({
 
             previousMarkerIndexRef.current = null;
           }
-
+          setSelectedMarkerName(null);
           if (infoWindowRef.current) {
             infoWindowRef.current.close();
           }
