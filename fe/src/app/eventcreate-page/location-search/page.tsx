@@ -91,7 +91,7 @@ function LocationSearch() {
 
   return (
     <div className="flex flex-col items-center">
-      <header className="fixed top-0 left-1/2 transform -translate-x-1/2 w-[360px] h-[56px] bg-white flex items-center justify-between px-4 z-10">
+      <header className="fixed top-0 left-1/2 transform -translate-x-1/2 w-[360px] h-[56px] bg-white flex items-center justify-between px-2 z-10">
         <button type="button" onClick={handleBackClick} className="p-2">
           <Image
             src="/images/ArrowBack.svg"
