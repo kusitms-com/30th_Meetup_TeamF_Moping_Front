@@ -1,7 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
-
-import Image from "next/image";
 import { useLocationStore } from "../stores/useLocationStore";
 import { useMarkerStore } from "../load-mappin/stores/useMarkerStore";
 import { RecommendButton } from "./RecommendButton";
@@ -92,7 +90,7 @@ export function BottomDrawer({
                   {
                     nonMemberId: -1,
                     name: "추천 모핑",
-                    profileSvg: "/profile/recommendProfile.svg",
+                    profileSvg: "/profile/level10.svg",
                   },
                 ],
                 url: ping.url,
@@ -238,7 +236,7 @@ export function BottomDrawer({
                 {
                   nonMemberId: -1,
                   name: "추천 모핑",
-                  profileSvg: "/profile/recommendProfile.svg",
+                  profileSvg: "/profile/level10.svg",
                 },
               ],
               url: ping.url,
@@ -281,13 +279,7 @@ export function BottomDrawer({
         <LocationButton onClick={handleLocationClick} />
       </div>
       <div className="w-full h-[20px] flex justify-center">
-        <Image
-          src="/svg/Grabber.svg"
-          alt="Grabber"
-          width={36}
-          height={4}
-          className="mt-[12px]"
-        />
+        <div className="w-[36px] h-[4px] rounded-[2.5px] bg-grayscale-70 mt-[12px]" />
       </div>
 
       {isRecommend ? (

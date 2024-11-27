@@ -20,7 +20,7 @@ const StoreItem = forwardRef<HTMLDivElement, StoreItemProps>(
         <div className="flex gap-[12px]">
           <Image
             src={imageSrc}
-            onError={() => setImageSrc("/profile/recommendProfile.svg")}
+            onError={() => setImageSrc("/profile/level10.svg")}
             alt="pin"
             width={40}
             height={40}

@@ -12,6 +12,7 @@ interface Ping {
   py: number;
   url: string;
   nonMembers: NonMember[];
+  type: string;
 }
 
 export type PingWithoutNonMembers = Omit<Ping, "nonMembers">;
