@@ -2,8 +2,8 @@
 
 import React, { useRef, useState, useEffect, useCallback } from "react";
 import Image from "next/image";
-import { useSearchParams } from "next/navigation";
-import { v4 as uuidv4 } from "uuid";
+import { useSearchParams, useParams } from "next/navigation";
+import { v4 as uuidv4 } from "uuid"; // UUID를 생성하기 위해 추가
 
 export interface PasswordInputProps {
   iconUrl: string | null;
