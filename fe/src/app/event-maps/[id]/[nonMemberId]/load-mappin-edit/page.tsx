@@ -98,13 +98,14 @@ export default function LinkEditPage() {
   };
 
   const handleBack = () => {
-    router.push(`/event-maps/${id}`);
+    setShowExitModal(true); // ExitModal을 표시
   };
 
-  const handleExit = () => {
+  const handleExitConfirm = () => {
+    // 데이터 삭제 후 뒤로가기
     localStorage.removeItem("userData");
     localStorage.removeItem("formData");
-    router.back();
+    router.push(`/event-maps/${id}`);
   };
 
   const handleCancel = () => {
@@ -175,7 +176,7 @@ export default function LinkEditPage() {
         />
       </div>
       {showExitModal && (
-        <ExitModal onCancel={handleCancel} onExit={handleExit} />
+        <ExitModal onCancel={handleCancel} onExit={handleExitConfirm} />
       )}
     </div>
   );

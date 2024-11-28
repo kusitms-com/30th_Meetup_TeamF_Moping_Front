@@ -63,7 +63,6 @@ export default function LinksPage() {
         localStorage.clear();
         router.push(`/event-maps/${id}`);
       } else if (response.status === 409) {
-        // 405 에러 처리
         alert("이미 존재하는 이름입니다. 다시 시도해주세요.");
       } else {
         setIsFormComplete(false);
@@ -93,11 +92,13 @@ export default function LinksPage() {
       </div>
 
       <div className="flex-1 px-[16px] pt-[72px] w-full overflow-y-auto pb-[100px]">
-        <div className="text-[#2c2c2c] text-[22px] font-semibold leading-[30px] font-['Pretendard']">
-          마음에 쏙 든 공간을 불러와요
-        </div>
-        <div className="text-[#555555] text-base font-medium leading-relaxed font-['Pretendard'] mb-[24px]">
-          네이버지도에 북마크 해 둔 공간을 불러와요
+        <div className="mt-[16px] mb-[36px]">
+          <div className="text-[#2c2c2c] text-[22px] font-semibold leading-[30px] font-['Pretendard']">
+            마음에 쏙 든 공간을 불러와요
+          </div>
+          <div className="text-[#555555] text-base font-medium leading-relaxed font-['Pretendard'] mt-2">
+            네이버지도에 북마크 해 둔 공간을 불러와요
+          </div>
         </div>
 
         <form onSubmit={handleSubmit} className="w-full">

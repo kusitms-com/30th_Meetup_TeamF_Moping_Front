@@ -32,7 +32,7 @@ export default function LinkFieldEdit({
           id: nanoid(),
           text: val,
           error: "",
-          isValid: true,
+          isValid: !!val,
           isTyping: false,
         }))
       : [
@@ -110,28 +110,6 @@ export default function LinkFieldEdit({
     }
   };
 
-  const handlePasteFromClipboard = async (fieldId: string) => {
-    try {
-      const clipboardText = await navigator.clipboard.readText();
-
-      const cleanedValue = cleanURL(clipboardText);
-
-      if (cleanedValue) {
-        setInputFields((prevFields) =>
-          prevFields.map((fieldItem) =>
-            fieldItem.id === fieldId
-              ? { ...fieldItem, text: cleanedValue, isValid: false }
-              : fieldItem
-          )
-        );
-
-        validateLink(fieldId, cleanedValue, label);
-      }
-    } catch (error) {
-      console.error("클립보드에서 텍스트를 읽는 데 실패했습니다:", error);
-    }
-  };
-
   const handleInputChange = (fieldId: string, inputValue: string) => {
     const cleanedValue = cleanURL(inputValue);
     setInputFields((prevFields) =>
@@ -147,14 +125,33 @@ export default function LinkFieldEdit({
     }
   };
 
-  const handleFocus = (fieldId: string) => {
+  const handleFocus = async (fieldId: string) => {
     setInputFields((prevFields) =>
       prevFields.map((fieldItem) =>
         fieldItem.id === fieldId ? { ...fieldItem, isTyping: true } : fieldItem
       )
     );
 
-    handlePasteFromClipboard(fieldId);
+    // 자동 클립보드 붙여넣기 기능
+    if (navigator.clipboard) {
+      try {
+        const clipboardText = await navigator.clipboard.readText();
+        const cleanedValue = cleanURL(clipboardText);
+        if (cleanedValue) {
+          setInputFields((prevFields) =>
+            prevFields.map((fieldItem) =>
+              fieldItem.id === fieldId
+                ? { ...fieldItem, text: cleanedValue, isValid: false }
+                : fieldItem
+            )
+          );
+
+          validateLink(fieldId, cleanedValue, label);
+        }
+      } catch (error) {
+        console.error("클립보드에서 텍스트를 읽는 데 실패했습니다:", error);
+      }
+    }
   };
 
   const handleBlur = (fieldId: string) => {
@@ -199,6 +196,7 @@ export default function LinkFieldEdit({
   };
 
   const getClassNames = (item: InputField): string => {
+    if (!item.text) return "bg-[#F8F8F8]";
     if (item.error && !item.isTyping)
       return "border-2 border-[#f73a2c] bg-[#F8F8F8]";
     if (item.isValid) return "bg-[#EBF4FD] text-[#3a91ea]";
