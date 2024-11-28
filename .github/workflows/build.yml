@@ -10,10 +10,10 @@ jobs:
 
     steps:
       - name: 레포지토리 체크아웃 중..
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4 
 
       - name: node 설치중..
-        uses: actions/setup-node@v2
+        uses: actions/setup-node@v4
         with:
           node-version: '18.18.2'
 
