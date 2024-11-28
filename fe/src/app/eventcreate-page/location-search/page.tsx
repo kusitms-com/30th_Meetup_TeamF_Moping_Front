@@ -91,17 +91,32 @@ function LocationSearch() {
 
   return (
     <div className="flex flex-col items-center">
-      <header className="fixed top-0 left-1/2 transform -translate-x-1/2 w-[360px] h-[56px] bg-white flex items-center justify-between px-2 z-10">
-        <button type="button" onClick={handleBackClick} className="p-2">
-          <Image
-            src="/images/ArrowBack.svg"
-            alt="뒤로가기"
-            width={24}
-            height={24}
-            className="mr-2"
-          />
-        </button>
-        <div className="flex items-center w-full h-12 px-4 bg-[#f7f7f7] rounded-lg ml-2">
+      <header className="fixed top-0 left-1/2 transform -translate-x-1/2 w-[360px] h-[56px] bg-white flex items-center px-4 z-10">
+        {/* 뒤로가기 버튼 */}
+        <div className="flex items-center">
+          <button
+            type="button"
+            onClick={handleBackClick}
+            className="relative flex justify-center items-center"
+            style={{
+              width: "24px",
+              height: "24px",
+              minWidth: "24px",
+              minHeight: "24px",
+            }} // 크기 고정
+          >
+            <Image
+              src="/images/ArrowBack.svg"
+              alt="뒤로가기"
+              width={24}
+              height={24}
+              className="object-contain"
+            />
+          </button>
+        </div>
+
+        {/* 입력 폼 */}
+        <div className="flex items-center w-full h-[48px] px-4 bg-[#f7f7f7] rounded-lg ml-2">
           <input
             type="text"
             ref={inputRef}
@@ -114,7 +129,13 @@ function LocationSearch() {
             <div
               role="button"
               tabIndex={0}
-              className="w-5 h-5 relative cursor-pointer ml-3"
+              className="relative cursor-pointer ml-3 flex justify-center items-center"
+              style={{
+                width: "18px",
+                height: "18px",
+                minWidth: "18px",
+                minHeight: "18px",
+              }} // 삭제 버튼 크기 고정
               onClick={handleClearLocation}
               onKeyDown={(e) => {
                 if (e.key === "Enter") handleClearLocation();
@@ -123,8 +144,9 @@ function LocationSearch() {
               <Image
                 src="/svg/delete.svg"
                 alt="삭제 아이콘"
-                width={24}
-                height={24}
+                width={18}
+                height={18}
+                className="object-contain"
               />
             </div>
           )}
