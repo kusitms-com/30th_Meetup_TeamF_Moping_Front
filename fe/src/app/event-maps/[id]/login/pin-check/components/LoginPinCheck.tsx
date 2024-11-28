@@ -3,7 +3,7 @@
 import React, { useRef, useState, useEffect, useCallback } from "react";
 import Image from "next/image";
 import { useSearchParams } from "next/navigation";
-import { v4 as uuidv4 } from "uuid"; // UUID를 생성하기 위해 추가
+import { v4 as uuidv4 } from "uuid";
 
 export interface PasswordInputProps {
   iconUrl: string | null;
