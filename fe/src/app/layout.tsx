@@ -1,5 +1,6 @@
 import "@/styles/globals.css";
-import { ReactNode } from "react";
+import React, { ReactNode } from "react";
+import ClientStorageHandler from "./components/ClientStorageHandler";
 
 export const metadata = {
   title: "Moping!",
@@ -22,8 +23,11 @@ export const metadata = {
 
 export default function RootLayout({ children }: { children: ReactNode }) {
   return (
-    <html lang="en">
-      <body>{children}</body>
+    <html lang="ko">
+      <body>
+        <ClientStorageHandler />
+        {children}
+      </body>
     </html>
   );
 }

@@ -7,6 +7,7 @@ import { RecommendInActive } from "./RecommendInActive";
 import LocationButton from "./LocationButton";
 import { RecommendActive } from "./RecommendActive";
 import useUpdateTimeStore from "../stores/useUpdateTime";
+import useTriggerStore from "../stores/useTriggerStore";
 
 interface NonMember {
   nonMemberId: number;
@@ -64,7 +65,7 @@ export function BottomDrawer({
   const [isRecommended, setIsRecommended] = useState<boolean>(false);
   const [neighborhood, setNeighborhood] = useState<string>("");
   const [nonRecommend, setNonRecommend] = useState<boolean>(false);
-  const [trigger, setTrigger] = useState<boolean>(false);
+  const { trigger, toggleTrigger } = useTriggerStore();
   const { setUpdateTime } = useUpdateTimeStore();
 
   const { setCustomMarkers } = useMarkerStore();
@@ -158,7 +159,7 @@ export function BottomDrawer({
 
       const result = await response.json();
       console.log("Recommended Data Response:", result);
-      setTrigger((prev) => !prev);
+      toggleTrigger();
       setIsRecommend(false);
     } catch (error) {
       console.error("Error fetching recommended data:", error);
@@ -198,7 +199,7 @@ export function BottomDrawer({
   };
 
   const handleRecommendCancle = () => {
-    setTrigger((prev) => !prev);
+    toggleTrigger();
     setIsRecommend(false);
   };
 

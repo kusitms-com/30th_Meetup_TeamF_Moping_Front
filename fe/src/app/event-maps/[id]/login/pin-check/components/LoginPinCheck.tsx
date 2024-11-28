@@ -4,6 +4,7 @@ import React, { useRef, useState, useEffect, useCallback } from "react";
 import Image from "next/image";
 import { useSearchParams, useParams } from "next/navigation";
 import { v4 as uuidv4 } from "uuid"; // UUID를 생성하기 위해 추가
+import { useLoginModalStore } from "../../../stores/useLoginModalStore";
 
 export interface PasswordInputProps {
   iconUrl: string | null;
@@ -48,10 +49,10 @@ export default function PasswordInput({ iconUrl }: PasswordInputProps) {
         // 토큰을 로컬 스토리지에 저장
         localStorage.setItem("authToken", accessToken);
 
-        // 일단 임시로 성공 메시지 넣어놨어
-        alert("로그인이 완료되었습니다!");
+        if (nonMemberId) {
+          localStorage.setItem("nonMemberId", nonMemberId);
+        }
 
-        // 페이지 이동(호야 이거 너가 설정해)
         window.location.href = `/event-maps/${id}`;
       } else {
         setHasError(true);
