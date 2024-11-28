@@ -36,7 +36,6 @@ const ExitModal: React.FC<ExitModalProps> = function ExitModal({
           </div>
         </div>
 
-        {/* Buttons */}
         <div className="flex border-t border-[#f0f0f0]">
           <button
             type="button"

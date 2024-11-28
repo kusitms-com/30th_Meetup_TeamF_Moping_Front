@@ -63,11 +63,10 @@ function LocationSearch() {
     };
   }, [location, debouncedFetch]);
 
+  // Focus the input field on component mount
   useEffect(() => {
     if (inputRef.current) {
-      setTimeout(() => {
-        inputRef.current?.focus();
-      }, 100);
+      inputRef.current.focus(); // Automatically focus on the input field
     }
   }, []);
 
