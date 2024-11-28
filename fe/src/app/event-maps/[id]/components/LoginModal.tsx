@@ -1,10 +1,10 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
+import Image from "next/image";
 import { useSwipeable } from "react-swipeable";
 import { useRouter } from "next/navigation";
 import { useLoginModalStore } from "../stores/useLoginModalStore";
-import Image from "next/image";
 
 interface NonMember {
   nonMemberId: number;

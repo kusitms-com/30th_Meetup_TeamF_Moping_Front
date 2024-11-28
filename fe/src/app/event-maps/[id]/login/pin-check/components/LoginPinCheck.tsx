@@ -4,7 +4,6 @@ import React, { useRef, useState, useEffect, useCallback } from "react";
 import Image from "next/image";
 import { useSearchParams, useParams } from "next/navigation";
 import { v4 as uuidv4 } from "uuid"; // UUID를 생성하기 위해 추가
-import { useLoginModalStore } from "../../../stores/useLoginModalStore";
 
 export interface PasswordInputProps {
   iconUrl: string | null;
@@ -63,7 +62,7 @@ export default function PasswordInput({ iconUrl }: PasswordInputProps) {
       setHasError(true);
       alert("로그인 API 호출에 실패했습니다. 다시 시도해주세요.");
     }
-  }, [nonMemberId, password, searchParams]);
+  }, [nonMemberId, password, id]);
 
   useEffect(() => {
     if (password.every((digit) => digit !== "")) {

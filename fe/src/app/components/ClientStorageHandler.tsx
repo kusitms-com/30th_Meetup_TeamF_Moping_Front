@@ -1,12 +1,12 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useCallback } from "react";
 import useLastUpdateStore from "../stores/useLastUpdateStore";
 
-const ClientStorageHandler = () => {
+function ClientStorageHandler() {
   const { lastUpdated } = useLastUpdateStore();
 
-  const clearLocalStorageIfExpired = () => {
+  const clearLocalStorageIfExpired = useCallback(() => {
     if (lastUpdated) {
       const elapsedTime = Date.now() - lastUpdated;
       if (elapsedTime > 24 * 60 * 60 * 1000) {
@@ -15,20 +15,17 @@ const ClientStorageHandler = () => {
         localStorage.removeItem("lastUpdated");
       }
     }
-  };
-
-  useEffect(() => {
-    const interval = setInterval(
-      () => {
-        clearLocalStorageIfExpired();
-      },
-      24 * 60 * 60 * 1000
-    );
-
-    return () => clearInterval(interval);
   }, [lastUpdated]);
 
+  useEffect(() => {
+    const interval = setInterval(() => {
+      clearLocalStorageIfExpired();
+    }, 60 * 1000);
+
+    return () => clearInterval(interval);
+  }, [clearLocalStorageIfExpired]);
+
   return null;
-};
+}
 
 export default ClientStorageHandler;
