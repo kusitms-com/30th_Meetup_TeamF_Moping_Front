@@ -92,6 +92,7 @@ function LocationSearch() {
   return (
     <div className="flex flex-col items-center">
       <header className="fixed top-0 left-1/2 transform -translate-x-1/2 w-[360px] h-[56px] bg-white flex items-center px-4 z-10">
+\
         <div className="flex items-center">
           <button
             type="button"
