@@ -77,14 +77,21 @@ function EventNameInput({
           <button
             type="button"
             onClick={handleClear}
-            className="w-5 h-5 cursor-pointer"
+            className="relative flex justify-center items-center"
+            style={{
+              width: "18px",
+              height: "18px",
+              minWidth: "18px",
+              minHeight: "18px",
+            }}
             aria-label="이름 삭제"
           >
             <Image
               src="/svg/delete.svg"
               alt="삭제 아이콘"
-              width={24}
-              height={24}
+              width={18}
+              height={18}
+              className="object-contain"
             />
           </button>
         )}

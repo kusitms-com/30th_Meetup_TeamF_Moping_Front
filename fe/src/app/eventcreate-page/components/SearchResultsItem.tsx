@@ -59,8 +59,8 @@ function SearchResultItem({
         <Image
           src="/svg/LocationPin.svg"
           alt="위치 핀"
-          width={24}
-          height={24}
+          width={18}
+          height={22}
         />
       </div>
       <div className="text-base font-medium font-['Pretendard'] text-gray-800 leading-none truncate pt-1">
