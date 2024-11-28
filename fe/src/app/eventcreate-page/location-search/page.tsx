@@ -92,7 +92,6 @@ function LocationSearch() {
   return (
     <div className="flex flex-col items-center">
       <header className="fixed top-0 left-1/2 transform -translate-x-1/2 w-[360px] h-[56px] bg-white flex items-center px-4 z-10">
-        {/* 뒤로가기 버튼 */}
         <div className="flex items-center">
           <button
             type="button"
@@ -103,7 +102,7 @@ function LocationSearch() {
               height: "24px",
               minWidth: "24px",
               minHeight: "24px",
-            }} // 크기 고정
+            }}
           >
             <Image
               src="/images/ArrowBack.svg"
@@ -115,15 +114,14 @@ function LocationSearch() {
           </button>
         </div>
 
-        {/* 입력 폼 */}
-        <div className="flex items-center w-full h-[48px] px-4 bg-[#f7f7f7] rounded-lg ml-2">
+        <div className="flex items-center w-[292px] h-[48px] px-4 bg-[#f7f7f7] rounded-lg ml-2">
           <input
             type="text"
             ref={inputRef}
             value={location}
             onChange={handleSearch}
             placeholder="장소를 입력해주세요"
-            className="bg-transparent border-none flex-grow text-[#2c2c2c] text-base font-medium font-['Pretendard'] leading-normal outline-none"
+            className="bg-transparent border-none w-full text-[#2c2c2c] text-base font-medium font-['Pretendard'] leading-normal outline-none"
           />
           {location && (
             <div
@@ -135,7 +133,7 @@ function LocationSearch() {
                 height: "18px",
                 minWidth: "18px",
                 minHeight: "18px",
-              }} // 삭제 버튼 크기 고정
+              }}
               onClick={handleClearLocation}
               onKeyDown={(e) => {
                 if (e.key === "Enter") handleClearLocation();
