@@ -1,11 +1,22 @@
 "use client";
 
-import React, { useEffect, useState, useCallback } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import Image from "next/image";
-import { EventNameInputProps } from "@/app/eventcreate-page/types/types";
 import classNames from "classnames";
+import {
+  cleanString,
+  isValidLength,
+  generateDefaultEventName,
+} from "../utils/formHelpers";
 
-function EventNameInput({
+interface EventNameInputProps {
+  className?: string;
+  selectedLocation?: string;
+  value: string;
+  onChange: (value: string) => void;
+}
+
+export default function EventNameInput({
   className,
   selectedLocation,
   onChange,
@@ -13,11 +24,11 @@ function EventNameInput({
 }: EventNameInputProps) {
   const [hasUserEdited, setHasUserEdited] = useState(false);
   const [isTyping, setIsTyping] = useState(false);
-  const showWarning = hasUserEdited && value.trim().length < 1;
+  const showWarning = hasUserEdited && !isValidLength(cleanString(value), 1);
 
   useEffect(() => {
     if (!hasUserEdited) {
-      const newEventName = selectedLocation ? `${selectedLocation} 모임` : "";
+      const newEventName: string = generateDefaultEventName(selectedLocation);
       onChange(newEventName);
     }
   }, [selectedLocation, onChange, hasUserEdited]);
@@ -50,7 +61,7 @@ function EventNameInput({
         className={classNames(
           "relative w-[328px] h-14 p-4 bg-[#f7f7f7] rounded-lg flex justify-between items-center border-2",
           {
-            "border-danger-base": showWarning,
+            "border-[#f73a2c]": showWarning,
             "border-[#555555]": isTyping,
             "border-transparent": !isTyping && !showWarning,
           }
@@ -66,13 +77,12 @@ function EventNameInput({
           className={classNames(
             "bg-transparent text-base font-medium font-['Pretendard'] leading-normal outline-none flex-grow",
             {
-              "text-[#2c2c2c]": isTyping || value.trim().length > 0,
-              "text-[#8e8e8e]": !isTyping && value.trim().length === 0,
+              "text-[#2c2c2c]": isTyping || cleanString(value).length > 0,
+              "text-[#8e8e8e]": !isTyping && cleanString(value).length === 0,
             }
           )}
           aria-label="이벤트 이름 입력"
         />
-
         {value && (
           <button
             type="button"
@@ -99,5 +109,3 @@ function EventNameInput({
     </div>
   );
 }
-
-export default EventNameInput;

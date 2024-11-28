@@ -132,7 +132,6 @@ export default function LinkFieldEdit({
       )
     );
 
-    // 자동 클립보드 붙여넣기 기능
     if (navigator.clipboard) {
       try {
         const clipboardText = await navigator.clipboard.readText();
