@@ -24,6 +24,7 @@ interface Ping {
   py: number;
   url: string;
   type: string;
+  sid: string;
 }
 
 interface RecommendInActiveProps {
@@ -68,7 +69,7 @@ export function RecommendInActive({
               <ShareButton
                 onClick={() => navigator.share({ url: window.location.href })}
               />
-              {selectedButton !== null ? (
+              {selectedButton !== -1 && selectedButton !== null ? (
                 <EditButton
                   onClick={() =>
                     router.push(`/event-maps/${id}/${selectedButton}`)

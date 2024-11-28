@@ -15,7 +15,7 @@ export default function PasswordInput({ iconUrl }: PasswordInputProps) {
   const [hasError, setHasError] = useState(false);
   const inputRefs = useRef<(HTMLInputElement | null)[]>([]);
   const searchParams = useSearchParams();
-
+  const { id } = useParams();
   const nonMemberId = searchParams.get("nonMemberId");
 
   const submitPassword = useCallback(async () => {
@@ -44,15 +44,15 @@ export default function PasswordInput({ iconUrl }: PasswordInputProps) {
 
       if (response.ok) {
         const { accessToken } = await response.json();
-
+        console.log(accessToken);
         // 토큰을 로컬 스토리지에 저장
         localStorage.setItem("authToken", accessToken);
 
-        // 일단 임시로 성공 메시지 넣어놨어
-        alert("로그인이 완료되었습니다!");
+        if (nonMemberId) {
+          localStorage.setItem("nonMemberId", nonMemberId);
+        }
 
-        // 페이지 이동(호야 이거 너가 설정해)
-        window.location.href = `/event-maps/${searchParams.get("eventId")}`;
+        window.location.href = `/event-maps/${id}`;
       } else {
         setHasError(true);
         setPassword(["", "", "", ""]);
@@ -62,7 +62,7 @@ export default function PasswordInput({ iconUrl }: PasswordInputProps) {
       setHasError(true);
       alert("로그인 API 호출에 실패했습니다. 다시 시도해주세요.");
     }
-  }, [nonMemberId, password, searchParams]);
+  }, [nonMemberId, password, id]);
 
   useEffect(() => {
     if (password.every((digit) => digit !== "")) {
