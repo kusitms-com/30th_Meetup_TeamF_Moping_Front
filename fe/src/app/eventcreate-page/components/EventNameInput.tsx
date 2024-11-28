@@ -7,7 +7,7 @@ import {
   cleanString,
   isValidLength,
   generateDefaultEventName,
-} from "../utils/formHelpers";
+} from "../utils/formHelpers";
 
 interface EventNameInputProps {
   className?: string;
@@ -24,20 +24,20 @@ export default function EventNameInput({
 }: EventNameInputProps) {
   const [hasUserEdited, setHasUserEdited] = useState(false);
   const [isTyping, setIsTyping] = useState(false);
+  const showWarning = hasUserEdited && !isValidLength(cleanString(value), 1);
 
   useEffect(() => {
-    if (!hasUserEdited && !cleanString(value)) {
-      const newEventName = generateDefaultEventName(selectedLocation);
-      if (newEventName) onChange(newEventName);
+    if (!hasUserEdited) {
+      const newEventName: string = generateDefaultEventName(selectedLocation);
+      onChange(newEventName);
     }
-  }, [selectedLocation, onChange, hasUserEdited, value]);
+  }, [selectedLocation, onChange, hasUserEdited]);
 
   const handleInputChange = useCallback(
     (e: React.ChangeEvent<HTMLInputElement>) => {
-      const trimmedValue = cleanString(e.target.value);
       setHasUserEdited(true);
       setIsTyping(true);
-      onChange(trimmedValue);
+      onChange(e.target.value);
     },
     [onChange]
   );
@@ -50,8 +50,6 @@ export default function EventNameInput({
     setHasUserEdited(true);
     onChange("");
   }, [onChange]);
-
-  const showWarning = hasUserEdited && !isValidLength(cleanString(value), 1);
 
   return (
     <div className={`relative flex flex-col mt-4 ${className}`}>

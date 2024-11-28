@@ -46,10 +46,6 @@ function EventCreatePage() {
       setIsSubmitting(false);
     }
   };
-  useEffect(() => {
-    setLocation(null); // selectedLocation 초기화
-    setEventName(""); // eventName 초기화
-  }, [setLocation]);
 
   useEffect(() => {
     if (uuid) router.push(`/event-maps/${uuid}`);
@@ -64,12 +60,14 @@ function EventCreatePage() {
           className="mt-[12px] w-full"
           value={selectedLocation?.name || ""}
         />
-        <EventNameInput
-          className="mt-[40px] w-full"
-          value={eventName}
-          selectedLocation={selectedLocation?.name || ""}
-          onChange={setEventName}
-        />
+        <div className="relative mt-[40px] w-full">
+          <EventNameInput
+            className="w-full"
+            value={eventName}
+            selectedLocation={selectedLocation?.name || ""}
+            onChange={setEventName}
+          />
+        </div>
       </div>
       <div className="w-full fixed bottom-[45px] left-0 flex justify-center">
         <Button
