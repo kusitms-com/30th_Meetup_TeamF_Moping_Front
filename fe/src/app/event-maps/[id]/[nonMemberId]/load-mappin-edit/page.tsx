@@ -53,7 +53,6 @@ export default function LinkEditPage() {
     setIsLoading(false);
   }, [id, nonMemberId, setUserData, userData, router]);
 
-  // 저장 버튼 활성화 상태 업데이트
   useEffect(() => {
     const allMapLinksValid = mapLinks.every((link) => link.trim() !== "");
     const allStoreLinksValid = storeLinks.every((link) => link.trim() !== "");
@@ -99,7 +98,7 @@ export default function LinkEditPage() {
   };
 
   const handleBack = () => {
-    setShowExitModal(true);
+    router.push(`/event-maps/${id}`);
   };
 
   const handleExit = () => {
