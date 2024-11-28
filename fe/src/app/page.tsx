@@ -69,12 +69,12 @@ function LoadingPage() {
         </div>
       </div>
 
-      <div className="fixed bottom-[45px] w-full flex justify-center px-4">
+      <div className="fixed bottom-[20px] w-full flex justify-center px-4">
         <Button
           label="모핑 시작하기"
           onClick={handleStartClick}
           type="start"
-          className="w-[328px] h-[60px] py-[17px] rounded-lg text-lg font-['Pretendard'] font-medium bg-[#F73A2C] text-white"
+          className="text-lg font-medium font-['Pretendard']"
         />
       </div>
     </div>

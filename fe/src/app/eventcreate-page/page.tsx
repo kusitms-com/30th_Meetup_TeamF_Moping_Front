@@ -67,12 +67,16 @@ function EventCreatePage() {
           onChange={setEventName}
         />
       </div>
-      <div className="w-fix fixed bottom-[45px] left-0 flex justify-center">
+      <div className="w-full fixed bottom-[45px] left-0 flex justify-center">
         <Button
           label="다음"
           type="next"
           onClick={handleNextClick}
-          className="w-[328px] h-[60px] py-[17px] rounded-lg text-[#8e8e8e] text-lg font-['Pretendard'] font-medium"
+          className={`w-[328px] h-[60px] py-[17px] rounded-lg text-lg font-['Pretendard'] font-medium ${
+            isFormComplete && !isSubmitting
+              ? "bg-black text-white"
+              : "bg-[#E4E4E4] text-[#8E8E8E]"
+          }`}
           disabled={!isFormComplete || isSubmitting}
         />
       </div>
