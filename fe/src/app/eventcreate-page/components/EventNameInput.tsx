@@ -26,19 +26,18 @@ export default function EventNameInput({
   const [isTyping, setIsTyping] = useState(false);
 
   useEffect(() => {
-    if (!hasUserEdited && !value) {
-      const newEventName: string = generateDefaultEventName(selectedLocation);
-      if (newEventName) {
-        onChange(newEventName);
-      }
+    if (!hasUserEdited && !cleanString(value)) {
+      const newEventName = generateDefaultEventName(selectedLocation);
+      if (newEventName) onChange(newEventName);
     }
   }, [selectedLocation, onChange, hasUserEdited, value]);
 
   const handleInputChange = useCallback(
     (e: React.ChangeEvent<HTMLInputElement>) => {
+      const trimmedValue = cleanString(e.target.value);
       setHasUserEdited(true);
       setIsTyping(true);
-      onChange(e.target.value);
+      onChange(trimmedValue);
     },
     [onChange]
   );
