@@ -35,8 +35,8 @@ function LocationInput({
         <Image
           src="/images/Search.svg"
           alt="돋보기 아이콘"
-          width={24}
-          height={24}
+          width={20}
+          height={20}
           className="mr-3"
         />
         <input
