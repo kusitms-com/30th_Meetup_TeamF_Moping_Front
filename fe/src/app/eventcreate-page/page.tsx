@@ -49,7 +49,8 @@ function EventCreatePage() {
   useEffect(() => {
     setLocation(null); // selectedLocation 초기화
     setEventName(""); // eventName 초기화
-  }, []);
+  }, [setLocation]);
+
   useEffect(() => {
     if (uuid) router.push(`/event-maps/${uuid}`);
   }, [uuid, router]);
