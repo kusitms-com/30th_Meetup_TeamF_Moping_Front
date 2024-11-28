@@ -114,7 +114,7 @@ export default function LinkFieldEdit({
     try {
       const clipboardText = await navigator.clipboard.readText();
 
-      const cleanedValue = cleanURL(clipboardText); 
+      const cleanedValue = cleanURL(clipboardText);
 
       if (cleanedValue) {
         setInputFields((prevFields) =>
@@ -133,8 +133,7 @@ export default function LinkFieldEdit({
   };
 
   const handleInputChange = (fieldId: string, inputValue: string) => {
-
-    const cleanedValue = cleanURL(inputValue); 
+    const cleanedValue = cleanURL(inputValue);
     setInputFields((prevFields) =>
       prevFields.map((fieldItem) =>
         fieldItem.id === fieldId
@@ -312,4 +311,3 @@ export default function LinkFieldEdit({
     </div>
   );
 }
-
