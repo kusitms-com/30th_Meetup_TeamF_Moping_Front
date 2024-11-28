@@ -7,7 +7,7 @@ import {
   cleanString,
   isValidLength,
   generateDefaultEventName,
-} from "../utils/formHelpers";
+} from "../utils/formHelpers";
 
 interface EventNameInputProps {
   className?: string;
