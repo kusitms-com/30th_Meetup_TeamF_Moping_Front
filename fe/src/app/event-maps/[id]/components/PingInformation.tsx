@@ -94,7 +94,49 @@ export default function PingInformaion() {
       return null;
     }
   };
+  const deletePingApi = async () => {
+    try {
+      const token = localStorage.getItem("authToken");
 
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_API_BASE_URL}/pings/member`,
+        {
+          method: "DELETE",
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            sid: selectedPing?.sid,
+          }),
+        }
+      );
+
+      if (!response.ok) {
+        if (response.status === 401) {
+          const errorResponse = await response.json();
+          if (errorResponse.subCode === 4) {
+            const newAccessToken = await reissueAccessToken(token);
+            if (newAccessToken) {
+              return await deletePingApi();
+            }
+            openLoginModal();
+            return null;
+          }
+        }
+        openLoginModal();
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      toggleTrigger();
+      setLastUpdated(Date.now());
+      console.log("삭제 성공");
+      return true;
+    } catch (error) {
+      console.error("삭제 중 오류 발생:", error);
+      return null;
+    }
+  };
   const handleOpenLoginModal = () => {
     sendPingApi();
     console.log("Button clicked: Open login modal");
@@ -131,12 +173,14 @@ export default function PingInformaion() {
           </div>
 
           {isAlreadyPing ? (
-            <Image
-              src="/svg/alreadyPing.svg"
-              alt="이미 내 핑"
-              width={24}
-              height={24}
-            />
+            <button type="button" onClick={deletePingApi}>
+              <Image
+                src="/svg/alreadyPing.svg"
+                alt="내 핑에서 삭제"
+                width={24}
+                height={24}
+              />
+            </button>
           ) : (
             <button type="button" onClick={handleOpenLoginModal}>
               <Image

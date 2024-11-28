@@ -9,7 +9,7 @@ interface Place {
 
 interface LocationState {
   selectedLocation: Place | null;
-  setLocation: (location: Place) => void;
+  setLocation: (location: Place | null) => void;
 }
 
 export const useLocationStore = create<LocationState>((set) => ({
