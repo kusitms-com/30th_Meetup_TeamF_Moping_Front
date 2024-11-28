@@ -133,7 +133,7 @@ function LocationSearch() {
                 height: "18px",
                 minWidth: "18px",
                 minHeight: "18px",
-
+              }}
               onClick={handleClearLocation}
               onKeyDown={(e) => {
                 if (e.key === "Enter") handleClearLocation();
@@ -165,3 +165,4 @@ function LocationSearch() {
 }
 
 export default LocationSearch;
+
