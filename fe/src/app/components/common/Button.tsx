@@ -5,7 +5,7 @@ import React from "react";
 export interface ButtonProps {
   label: string;
   onClick: () => void;
-  type?: "start" | "next" | "submit" | "default"; 
+  type?: "start" | "next" | "submit" | "default";
   className?: string;
   disabled?: boolean;
 }
@@ -13,7 +13,7 @@ export interface ButtonProps {
 function Button({
   label,
   onClick,
-  type = "default", 
+  type = "default",
   className = "",
   disabled = false,
 }: ButtonProps) {
@@ -28,7 +28,7 @@ function Button({
       case "submit":
         return "bg-[#1D1D1D] text-white";
       default:
-        return "bg-[#1D1D1D] text-white"; 
+        return "bg-[#1D1D1D] text-white";
     }
   };
 

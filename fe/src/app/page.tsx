@@ -73,7 +73,7 @@ function LoadingPage() {
         <Button
           label="모핑 시작하기"
           onClick={handleStartClick}
-          type="start" 
+          type="start"
           className="text-lg font-medium font-['Pretendard']"
         />
       </div>
